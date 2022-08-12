@@ -1,3 +1,6 @@
+process*
+*csv
+*pdf
 *nc
 cmz_ipynb/
 shapes/*

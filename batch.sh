@@ -4,7 +4,7 @@
 #PBS -l walltime=8:00:00
 #PBS -A open
 #PBS -j oe
-#PBS -N abby.process
+#PBS -N process
 
 ### Navigate to my script directly
 cd /storage/home/cmz5202/scratch/abby_test/pyfiles/
