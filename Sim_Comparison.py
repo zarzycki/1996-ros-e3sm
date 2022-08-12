@@ -939,54 +939,65 @@ for x in np.arange(0,len(time_plot2),4):
 ##Plots time of maximum for each variable to see trend in timing of variables as the simulations warm
 
 #Set AVG_2 = True if want to make figure 17 of thesis (plots both averaging techniques) set = False for figure 13
-AVG_2 = False
 
-#creating array for y axis values
-temps = [0, .3 ,1, 2, 3, 4]
-temps2 = temps*5
-temps3 = np.repeat(temps,15)
-#creating labels
-ytik = ['PI', 'Control', '+1K', '+2K', '+3K', '+4K']
-vari = ['Maximum Temperature','Maximum Precipitation','25% Snow melt ', 'Maximum Runoff', 'Maximum River Discharge']
-#picking colors for plots
-colors = ['r','b','g','k','m']
-#setting up plot
-fig, axs = plt.subplots(5,1,figsize=(9,13))
-for x,y,c,v,ax,L in zip(np.arange(0,len(max_datei),90),np.arange(0,30,6), colors,vari,axs,letters):
-    #plotting ensemble members
-    ax.scatter(max_datei[x:x+90], temps3, color=c, alpha = 0.1)
-    #plotting ensemble mean 
-    p1 = ax.plot(max_date[y:y+6], temps2[y:y+6], color=c,label='Average 1')
+for ii in range(0, 2):
+
+  if ii == 0:
+    AVG_2 = False
+  else:
+    AVG_2 = True
+
+  print(ii, AVG_2)
+  
+  #creating array for y axis values
+  temps = [0, .3 ,1, 2, 3, 4]
+  temps2 = temps*5
+  temps3 = np.repeat(temps,15)
+  #creating labels
+  ytik = ['PI', 'Control', '+1K', '+2K', '+3K', '+4K']
+  vari = ['Maximum Temperature','Maximum Precipitation','25% Snow melt ', 'Maximum Runoff', 'Maximum River Discharge']
+  #picking colors for plots
+  colors = ['r','b','g','k','m']
+  #setting up plot
+  fig, axs = plt.subplots(5,1,figsize=(9,13))
+  for x,y,c,v,ax,L in zip(np.arange(0,len(max_datei),90),np.arange(0,30,6), colors,vari,axs,letters):
+      #plotting ensemble members
+      ax.scatter(max_datei[x:x+90], temps3, color=c, alpha = 0.1)
+      #plotting ensemble mean 
+      p1 = ax.plot(max_date[y:y+6], temps2[y:y+6], color=c,label='Average 1')
     
-    #plotting ensemble mean using average 2 technique
-    if AVG_2 == True:
-        p2 = ax.plot(avgTimei[y:y+6], temps2[y:y+6], color=c, linestyle='dashed', label='Average 2')
-    ax.margins(x=0)
+      #plotting ensemble mean using average 2 technique
+      if AVG_2 == True:
+          p2 = ax.plot(avgTimei[y:y+6], temps2[y:y+6], color=c, linestyle='dashed', label='Average 2')
+      ax.margins(x=0)
 
-    #putting the subplot title in a different location for discharge than the other variables
-    if v == 'Maximum River Discharge':
-        ax.text(.57,.95,L+' Time of '+v, fontsize='x-large',transform=ax.transAxes,ha='right',va='top')
-        ax.set_xticks(time_plot2[:-2])
-        ax.set_xticklabels(time_s[:-2],fontsize='large')
-    #placing subplot title
-    else:
-        ax.text(.99,.97,L+' Time of '+v, fontsize='x-large',transform=ax.transAxes,ha='right',va='top')
-        ax.set_xticks(time_plot2[:-2])
-        ax.set_xticklabels([])
+      #putting the subplot title in a different location for discharge than the other variables
+      if v == 'Maximum River Discharge':
+          ax.text(.57,.95,L+' Time of '+v, fontsize='x-large',transform=ax.transAxes,ha='right',va='top')
+          ax.set_xticks(time_plot2[:-2])
+          ax.set_xticklabels(time_s[:-2],fontsize='large')
+      #placing subplot title
+      else:
+          ax.text(.99,.97,L+' Time of '+v, fontsize='x-large',transform=ax.transAxes,ha='right',va='top')
+          ax.set_xticks(time_plot2[:-2])
+          ax.set_xticklabels([])
     
-    #adding to plot
-    ax.set_yticks(temps)
-    ax.set_yticklabels(ytik, fontsize='medium')
-    ax.grid(color='gainsboro',linewidth=.5)
-    #only adding legend to first plot if plotting both averages
-    if AVG_2 == True:
-        if v == 'Maximum Temperature' :
-            props = dict(boxstyle='square', facecolor='white', edgecolor='grey')
-            ax.text(.015,.95,'Solid Line: Average 1 \nDashed Line: Average 2', fontsize='large',transform=ax.transAxes,ha='left',va='top',bbox=props)
-    #making plots close togther
-    plt.subplots_adjust(hspace=10**-6)
+      #adding to plot
+      ax.set_yticks(temps)
+      ax.set_yticklabels(ytik, fontsize='medium')
+      ax.grid(color='gainsboro',linewidth=.5)
+      #only adding legend to first plot if plotting both averages
+      if AVG_2 == True:
+          if v == 'Maximum Temperature' :
+              props = dict(boxstyle='square', facecolor='white', edgecolor='grey')
+              ax.text(.015,.95,'Solid Line: Average 1 \nDashed Line: Average 2', fontsize='large',transform=ax.transAxes,ha='left',va='top',bbox=props)
+      #making plots close togther
+      plt.subplots_adjust(hspace=10**-6)
 
-fig.savefig('timing_shifts_line.pdf', bbox_inches='tight', pad_inches=0)
+  if ii == 0:
+    fig.savefig('timing_shifts_line.pdf', bbox_inches='tight', pad_inches=0)
+  else:
+    fig.savefig('orig_avg_comp_timing.pdf', bbox_inches='tight', pad_inches=0)
 
 
 # ## Figure 11
