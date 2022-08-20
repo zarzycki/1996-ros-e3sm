@@ -58,9 +58,9 @@ for ax,i,t,L in zip(axs,[t2,t1,0],['2081 January Surface Temperature (K)','1996 
         ax.text(-0.07,.48,'=',ha='center',va='center',fontsize=40,fontweight='bold',transform=ax.transAxes)
     #plotting the two years
     else:
-        cont = np.arange(229,318,4)
+        cont = np.arange(235,305,5)
         wrap_data, wrap_lon = add_cyclic_point(mon_avg['T'][i,29,:,:], coord=mon_avg['lon'], axis=1)
-        plot = ax.contourf(wrap_lon,mon_avg['lat'],wrap_data, levels=cont,cmap='seismic')
+        plot = ax.contourf(wrap_lon,mon_avg['lat'],wrap_data, levels=cont,cmap='magma',extend='min')
         #adding a subtraction sign between the first two subplots
         if i == t1:
             ax.text(-0.07,.48,'\N{MINUS SIGN}',ha='center',va='center',fontsize=40,fontweight='bold',transform=ax.transAxes)
