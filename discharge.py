@@ -3,9 +3,6 @@
 
 # # This notebook makes figures 4, 5, & 6
 
-# In[35]:
-
-
 #loading necessary libraries
 import netCDF4 as nc
 import numpy as np
@@ -24,10 +21,6 @@ import cartopy
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
-
-# In[36]:
-
-
 #shifting mosart to be in the middle of the time period
 shift_MOSART = True
 
@@ -35,16 +28,8 @@ shift_MOSART = True
 LowRes = False
 Reanalysis = True
 
-
-# In[37]:
-
-
 #array of letters for subplot labels
 letters = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)']
-
-
-# In[38]:
-
 
 #loading reanalysis discharge data
 rean_dis = xr.open_dataset('/gpfs/group/cmz5202/default/arp5873/hydro/dis_1980_2018.nc')
@@ -59,15 +44,9 @@ regridder_dis = xe.Regridder(rean_dis, ds_out, 'bilinear')
 rean_dis = regridder_dis(rean_dis)
 
 
-# In[39]:
-
-
 #loading model data
 ds_mos = xr.open_dataset('ds_mos_Control_ens.nc')
 ds_mos_lr =  xr.open_dataset('Low_Res_mos_slice.nc')
-
-
-# In[40]:
 
 
 #function that creates an array of time values given a start date, end date, and timestep
@@ -78,10 +57,6 @@ def datetime_range(start, end, delta):
     while current < end:
         yield current
         current += delta
-
-
-# In[41]:
-
 
 #creating time arrays with datetime objects
         
@@ -136,8 +111,6 @@ for i in np.arange(0,len(Time_mos),2):
 # tio = USGS 01518700 Tioga River at Tioga Junction, PA 41°57'09", long 77°06'56"
 # 
 
-# In[42]:
-
 
 #loading USGS station data
 cono = pd.read_csv("./River_obs/Cono_dis.txt", sep='\t')
@@ -147,9 +120,6 @@ sun = pd.read_csv("./River_obs/sun_dis.txt", sep='\t')
 wil = pd.read_csv("./River_obs/wil_dis.txt", sep='\t')
 che = pd.read_csv("./River_obs/che_dis.txt", sep='\t')
 tio = pd.read_csv("./River_obs/tio_dis.txt", sep='\t')
-
-
-# In[43]:
 
 
 #changing the time format to be more managable (string to datetime)
@@ -163,9 +133,6 @@ for s in station:
         
         #multiplied by .0283... to change from ft^3 to m^3/s
         s[s.columns[4]][i] = s[s.columns[4]][i]*0.0283168
-
-
-# In[44]:
 
 
 #loading model lat and lon
@@ -215,9 +182,6 @@ Mcono_dis,Mmar_dis,Muna_dis,Msun_dis,Mwil_dis,Mche_dis,Mtio_dis = dis
 Rcono_dis,Rmar_dis,Runa_dis,Rsun_dis,Rwil_dis,Rche_dis,Rtio_dis = dis_r
 
 
-# In[45]:
-
-
 #doing the same thing as above but for the low res if it is set to True
 if LowRes == True:
     Lat = ds_mos.coords['lat']
@@ -258,9 +222,6 @@ if LowRes == True:
 
 
 # ## Figure 5
-
-# In[46]:
-
 
 #plots the discharge for the reanalysis data, station data, model data, and low res data on one timeseries plot
 
@@ -309,9 +270,6 @@ for s,d,r,t,ax,L in zip(station, s_dis,r_dis,str_stat,axs,letters):
 fig.savefig('discharge_timeseries_gauges.pdf', bbox_inches='tight', pad_inches=0)
 
 
-# In[47]:
-
-
 #creating empty arrays
 model_max_time = []
 obs_max_time = []
@@ -339,9 +297,6 @@ for m,o,t in zip(model_stat, obs_stat,obs):
     obs_max_time.append(k)
 
 
-# In[48]:
-
-
 #changing the format of the dates so they match 
 Time_max = []
 Model_max_time = []
@@ -363,9 +318,6 @@ for i in range(len(Model_max_time)):
 
 # ## Figure 6
 
-# In[49]:
-
-
 ##plotting the difference in the time of maximums for the model/station for each station
 
 stations = ['Cono','Mar','Sun','Wil','Tio','Che','Una']
@@ -383,9 +335,6 @@ ax.set_xticklabels(stations, fontsize='large')
 ax.set_ylabel('Time Difference (hrs)', fontsize='large')
 
 fig.savefig('discharge_err_mouth_to_head.pdf', bbox_inches='tight', pad_inches=0)
-
-
-# In[50]:
 
 
 #defining a function to create an outline of the SRB
@@ -411,9 +360,6 @@ def susq_outline(ax):
 
 
 # ## Figure 4
-
-# In[51]:
-
 
 ##plots where the stations are located in the basin
 

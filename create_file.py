@@ -104,9 +104,6 @@ for thisconfig in CONFIGS:
 
     # ## **Creating Soil File**
 
-    # In[5]:
-
-
     ###creating soil file with init as a fourth dimension
     # Copy datasets to base files for ease of use with jupyter
     ds_elm = ds_elm_full
@@ -190,9 +187,6 @@ for thisconfig in CONFIGS:
 
     # ## Creating H1 file for accumulated precip
 
-    # In[6]:
-
-
     # Copy datasets to base files for ease of use with jupyter
     ds_eam_i = ds_eam_full
 
@@ -243,9 +237,6 @@ for thisconfig in CONFIGS:
 
 
     # ## Creating EAM file averaged over initialization times
-
-    # In[7]:
-
 
     # Copy datasets to base files for ease of use with jupyter
     ds_eam_i = ds_eam_full
@@ -324,9 +315,6 @@ for thisconfig in CONFIGS:
 
     # ## Creating EAM file NOT averaged over initialization times
 
-    # In[8]:
-
-
     # Copy datasets to base files for ease of use with jupyter
     ds_eam = ds_eam_full
 
@@ -400,9 +388,6 @@ for thisconfig in CONFIGS:
 
 
     # ## Creating ELM file averaged over initialization times
-
-    # In[9]:
-
 
     import warnings
     warnings.filterwarnings('ignore')
@@ -527,9 +512,6 @@ for thisconfig in CONFIGS:
 
 
     # ## Creating ELM file NOT averaged over initialization times
-
-    # In[10]:
-
 
     # Copy datasets to base files for ease of use with jupyter
     ds_elm = ds_elm_full
@@ -695,9 +677,6 @@ for thisconfig in CONFIGS:
 
 
     # ## Creates MOSART file (NOT averaged over initialization time)
-
-    # In[12]:
-
 
     #Copy dataset to base file (which is not averaged over init)
     ds_mos = ds_mos_full

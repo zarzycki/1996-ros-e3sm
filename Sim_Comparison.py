@@ -3,9 +3,6 @@
 
 # # Creates Figure 11, Figure 12, Figure 13, Figure 15, Figure 14, Figure 17, & Figure 18
 
-# In[1]:
-
-
 #importing libraries
 import numpy as np
 import netCDF4
@@ -19,10 +16,6 @@ import datetime
 from datetime import timedelta
 import shapefile as shp
 import geopandas as gpd
-
-
-# In[2]:
-
 
 #set to true to use shapefile to average over SRB only, set to false to use rough basin average
 SRB_AVG = True
@@ -38,17 +31,9 @@ if SRB_AVG == False:
 shift_ELM = True
 shift_MOSART = True
 
-
-# In[3]:
-
-
 #setting up array of letters to put on corner of subplots
 letters = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)','(h)','(i)','(j)','(k)','(l)','(m)','(n)','(o)','(p)','(q)','(r)','(s)','(t)','(u)',
           '(v)','(w)','(x)','(y)']
-
-
-# In[4]:
-
 
 #loading low res files
 ds_eamLR = xr.open_dataset('Low_Res_eam_slice.nc')
@@ -115,10 +100,6 @@ ds_eam_Pre_Indi = xr.open_dataset('ds_eam_Pre_Indi_ens.nc')
 ds_elm_Pre_Indi = xr.open_dataset('ds_elm_Pre_Indi_ens.nc')
 ds_mos_Pre_Indi = xr.open_dataset('ds_mos_Pre_Indi_ens.nc')
 
-
-# In[5]:
-
-
 #Loading reanalysis data
 path = '/gpfs/group/cmz5202/default/arp5873/JRA_sfc/'
 runoff = xr.open_dataset(path+ 'JRA.h1.1996.ROF.nc')
@@ -146,7 +127,6 @@ regridder_runoff = xe.Regridder(runoff, ds_out, 'bilinear')
 regridder_dis = xe.Regridder(rean_dis, ds_out, 'bilinear')
 regridder_lr = xe.Regridder(ds_eamLR, ds_out, 'bilinear')
 regridder_lr_mos = xe.Regridder(ds_mosLR, ds_out, 'bilinear')
-
 
 SWE = swe['SWE']
 H2OSNO = regridder_swe(SWE)
@@ -183,11 +163,7 @@ ds_mosLR = regridder_lr_mos(ds_mosLR)
 #regridding control mosart file
 ds_mos6 = regridder_mos(ds_mos6)
 
-
-# In[6]:
-
-
-#this cell creates the necessary functions to average a variable over the shapefile
+#this block creates the necessary functions to average a variable over the shapefile
 
 from rasterio import features
 from affine import Affine
@@ -270,10 +246,6 @@ def add_shape_coord_from_data_array(xr_da, shp_path, coord_name):
                                longitude='lon', latitude='lat')
 
     return xr_da
-
-
-# In[7]:
-
 
 ##masks out all data that is not in the SRB shapefile
 if SRB_AVG == True:
@@ -402,10 +374,6 @@ if SRB_AVG == True:
     DISCHARGE = add_shape_coord_from_data_array(DISCHARGE, "./shapes/srb.shp", 'coord' )
     DISCHARGE = DISCHARGE.where(DISCHARGE.coord==0, other=np.nan)
 
-
-# In[8]:
-
-
 #function that creates an array of time values given a start date, end date, and timestep
 def datetime_range(start, end, delta):
     current = start
@@ -414,10 +382,6 @@ def datetime_range(start, end, delta):
     while current < end:
         yield current
         current += delta
-
-
-# In[9]:
-
 
 #creating time arrays of datetime objects
 time_m = ds_eam_Controli['time'].values
@@ -494,10 +458,6 @@ if shift_MOSART == True:
     for x in MOS_runs+mos_runs+Mos_runs:
         x['time'] = T_mos
 
-
-# In[10]:
-
-
 #defining a function to create an outline of the SRB
 def susq_outline(ax):
     sf = shp.Reader("./shapes/srb.shp")
@@ -525,10 +485,6 @@ def susq_outline(ax):
 
 
 # ## Figure 12
-
-# In[11]:
-
-
 ##Plotting difference between counterfactual simulations and Control for river discharge
 
 #setting up figure
@@ -597,9 +553,6 @@ for i,r,title in zip(range(6),[ds_mos_Pre_Ind,ds_mos_Control,ds_mos_Plus_1K,ds_m
 fig.savefig('map_streamflow_warming_diff.pdf', bbox_inches='tight', pad_inches=0)
 
 
-# In[12]:
-
-
 #Finding the time of the maximum and the maximum value of each variable for each simulation
 
 #choosing variables
@@ -621,7 +574,7 @@ max_p = []
 max_t = []
 del_swe = []
 
-#change these dependiing on what snow variable you want to plot: Percent used in paper
+#change these depending on what snow variable you want to plot: Percent used in paper
 SNOMAX = False
 PERCENT = True
 
@@ -734,10 +687,6 @@ for v,t in zip(vari,titl):
             vmax_time = vmax_ll.coords['time'].values
             max_time.append(vmax_time[0])
             max_d.append(vmax)
-
-
-# In[13]:
-
 
 #doing same as above cell but calculating a time for each of the 15 enesemble members rather than as an esmeble mean like above
 
@@ -861,10 +810,6 @@ for v,t in zip(vari,titl):
                 max_time3.append(vmax_time[0])
                 max_di.append(vmax)
 
-
-# In[14]:
-
-
 #creating function to create csvs
 from csv import writer
 def append_list_as_row(file_name, list_of_elem):
@@ -875,10 +820,6 @@ def append_list_as_row(file_name, list_of_elem):
         # Add contents of list as last row in the csv file
         csv_writer.writerow(list_of_elem)
 
-
-# In[15]:
-
-
 #creating csv of time of the maximums
 f = open('Time of Maximums.csv','w')
 vari = ['vari','Pre Ind', 'Control', 'Plus 1K', 'Plus 2K', 'Plus 3K', 'Plus 4K']
@@ -887,9 +828,6 @@ append_list_as_row('Time of Maximums.csv',vari)
 b_ind = np.arange(0,len(max_time),7)
 for x in b_ind:
     append_list_as_row('Time of Maximums.csv', max_time[x:x+7])
-
-
-# In[16]:
 
 
 #turning the max time into a datetime object for ensemble mean 
@@ -913,9 +851,6 @@ for j in range(len(avgTime)):
     avgTimei.append(datetime.datetime.strptime(avgTime[j], '%Y-%m-%d-%H'))
 
 
-# In[17]:
-
-
 #creating array to set xticks
 start = datetime.datetime(1996,1,17)
 end = datetime.datetime(1996,1,24)
@@ -932,13 +867,10 @@ for x in np.arange(0,len(time_plot2),4):
 
 
 # ## Figure 13/15
-
-# In[18]:
-
-
 ##Plots time of maximum for each variable to see trend in timing of variables as the simulations warm
 
 #Set AVG_2 = True if want to make figure 17 of thesis (plots both averaging techniques) set = False for figure 13
+#CMZ added ii loop so both AVG_2 = True and False upon single call of script...
 
 for ii in range(0, 2):
 
@@ -1001,9 +933,6 @@ for ii in range(0, 2):
 
 
 # ## Figure 11
-
-# In[19]:
-
 
 ##plots 4 variables spatially for the different simulations
 
@@ -1086,9 +1015,6 @@ fig.savefig('spatial_maps_bulk_quants.pdf', bbox_inches='tight', pad_inches=0)
 
 # ## Figure 18
 
-# In[20]:
-
-
 ##plots initial SWE values across basin for different simulations
 
 #setting up figure
@@ -1124,9 +1050,6 @@ fig.savefig('spatial_maps_maxSWE.pdf', bbox_inches='tight', pad_inches=0)
 
 
 # ## Figure 17
-
-# In[21]:
-
 
 ##Plotting comparison of Low res, high res, and reanalysis
 
@@ -1203,9 +1126,6 @@ fig.savefig('spatial_maps_resolution.pdf', bbox_inches='tight', pad_inches=0)
 
 
 # ## Figure 14
-
-# In[22]:
-
 
 ##compares timeseries of the 1996 event for the high res and low res model runs
 
@@ -1284,10 +1204,3 @@ if SRB_AVG == True:
     fig.tight_layout(pad=3.0)
     
 fig.savefig('hydrograph_resolution.pdf', bbox_inches='tight', pad_inches=0)
-
-
-# In[ ]:
-
-
-
-

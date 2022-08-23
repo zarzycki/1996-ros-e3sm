@@ -3,9 +3,6 @@
 
 # # Creates Figure 7
 
-# In[6]:
-
-
 import netCDF4 as nc
 import numpy as np
 import xarray as xr
@@ -20,24 +17,12 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.util import add_cyclic_point
 
-
-# In[7]:
-
-
 #loading data
 mon_anom = xr.open_dataset('/gpfs/group/cmz5202/default/ros/CESM_LENS_deltas/T/ens_T_anom.nc')
 mon_avg = xr.open_dataset('/gpfs/group/cmz5202/default/ros/CESM_LENS_deltas/T/ens_mean.nc')
 
-
-# In[8]:
-
-
 #creating array of letters for subplot labels
 letters = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)']
-
-
-# In[9]:
-
 
 ## making figure to show delta technique process
 
@@ -79,10 +64,3 @@ for ax,i,t,L in zip(axs,[t2,t1,0],['2081 January Surface Temperature (K)','1996 
     #cb.ax.set_title('K', fontsize='xx-large')
 
 fig.savefig('delta_example.pdf', bbox_inches='tight', pad_inches=0)
-
-
-# In[ ]:
-
-
-
-

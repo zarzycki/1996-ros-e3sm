@@ -10,8 +10,8 @@
 cd /storage/home/cmz5202/scratch/abby_test/pyfiles/
 
 ### Create files
-python3 create_file.py
-python3 create_file_2.py
+#python3 create_file.py
+#python3 create_file_2.py
 
 ### Perform analysis
 python3 Station_obs.py

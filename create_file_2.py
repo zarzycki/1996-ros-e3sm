@@ -66,9 +66,6 @@ ds_elm_Pre_Indi5 = xr.open_dataset('Pre_Ind-5_init_elm_slice.nc')
 ds_mos_Pre_Indi5 = xr.open_dataset('Pre_Ind-5_init_mos_slice.nc')
 
 
-# In[ ]:
-
-
 #Combining 004, 005, 006 runs for "super ensemble" for non averaged initialization times files
 DS_eam_Controli = xr.concat((ds_eam_Controli6, ds_eam_Controli4, ds_eam_Controli5), dim='init')
 DS_elm_Controli = xr.concat((ds_elm_Controli6, ds_elm_Controli4, ds_elm_Controli5), dim='init')
@@ -95,9 +92,6 @@ DS_elm_Pre_Indi = xr.concat((ds_elm_Pre_Indi6, ds_elm_Pre_Indi4, ds_elm_Pre_Indi
 DS_mos_Pre_Indi = xr.concat((ds_mos_Pre_Indi6, ds_mos_Pre_Indi4, ds_mos_Pre_Indi5), dim='init')
 
 
-# In[ ]:
-
-
 #saving ensemble as a netCDF file
 DS_eam_Controli.to_netcdf('ds_eam_Controli_ens.nc')
 DS_elm_Controli.to_netcdf('ds_elm_Controli_ens.nc')
@@ -122,9 +116,6 @@ DS_mos_Plus_4Ki.to_netcdf('ds_mos_Plus_4Ki_ens.nc')
 DS_eam_Pre_Indi.to_netcdf('ds_eam_Pre_Indi_ens.nc')
 DS_elm_Pre_Indi.to_netcdf('ds_elm_Pre_Indi_ens.nc')
 DS_mos_Pre_Indi.to_netcdf('ds_mos_Pre_Indi_ens.nc')
-
-
-# In[ ]:
 
 
 #loading files from each simulation and run for the averaged initialization time files
@@ -232,9 +223,6 @@ Ds_mos_Pre_Ind = xr.concat((ds_mos_Pre_Ind6, ds_mos_Pre_Ind4, ds_mos_Pre_Ind5), 
 ds_mos_Pre_Ind = Ds_mos_Pre_Ind.mean( dim=("run"), skipna=True, keep_attrs=True )
 
 
-# In[ ]:
-
-
 #saving the ensemble files as a netCDF
 ds_eam_Control.to_netcdf('ds_eam_Control_ens.nc')
 ds_elm_Control.to_netcdf('ds_elm_Control_ens.nc')
@@ -259,9 +247,6 @@ ds_mos_Plus_4K.to_netcdf('ds_mos_Plus_4K_ens.nc')
 ds_eam_Pre_Ind.to_netcdf('ds_eam_Pre_Ind_ens.nc')
 ds_elm_Pre_Ind.to_netcdf('ds_elm_Pre_Ind_ens.nc')
 ds_mos_Pre_Ind.to_netcdf('ds_mos_Pre_Ind_ens.nc')
-
-
-# In[ ]:
 
 
 #loading h1 files and creating an ensemble
@@ -313,9 +298,6 @@ ds_eam_Plus_2K.to_netcdf('ds_eam_Plus_2K_h1_ens.nc')
 ds_eam_Plus_3K.to_netcdf('ds_eam_Plus_3K_h1_ens.nc')
 ds_eam_Plus_4K.to_netcdf('ds_eam_Plus_4K_h1_ens.nc')
 ds_eam_Pre_Ind.to_netcdf('ds_eam_Pre_Ind_h1_ens.nc')
-
-
-# In[ ]:
 
 
 #loading the soil files and creating an ensemble

@@ -3,9 +3,6 @@
 
 # # Creates Figure 2, Figure 8, Figure 9, Figure 10, Figure 16 
 
-# In[20]:
-
-
 # importing necessary libraries
 import numpy as np
 import netCDF4
@@ -20,10 +17,6 @@ from datetime import timedelta
 import shapefile as shp
 import geopandas as gpd
 
-
-# In[21]:
-
-
 #set to true to use shapefile to average over SRB set to false to use rough basin average
 SRB_AVG = True
 
@@ -32,16 +25,8 @@ SRB_AVG = True
 shift_ELM = True
 shift_MOSART = True
 
-
-# In[22]:
-
-
 #creating letter array to label subplots
 letters = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)']
-
-
-# In[23]:
-
 
 #loading ensemble files
 ds_eam_Control = xr.open_dataset('ds_eam_Control_ens.nc')
@@ -93,10 +78,6 @@ ds_eam_Pre_Indi = xr.open_dataset('ds_eam_Pre_Indi_ens.nc')
 ds_elm_Pre_Indi = xr.open_dataset('ds_elm_Pre_Indi_ens.nc')
 ds_mos_Pre_Indi = xr.open_dataset('ds_mos_Pre_Indi_ens.nc')
 
-
-# In[24]:
-
-
 #function that creates an array of time values given a start date, end date, and timestep
 def datetime_range(start, end, delta):
     current = start
@@ -105,10 +86,6 @@ def datetime_range(start, end, delta):
     while current < end:
         yield current
         current += delta
-
-
-# In[25]:
-
 
 #creating time arrays with datetime objects
 time_m = ds_eam_Controli['time'].values
@@ -155,10 +132,6 @@ if shift_MOSART == True:
     for x in MOS_runs:
         x['time'] = Time_mos
 
-
-# In[26]:
-
-
 #regridding mosart data to match high res control
 ds_out = xr.Dataset({'lat': (['lat'], np.arange(35, 45.1, 0.125)),
                      'lon': (['lon'], np.arange(-85, -69.875, .125)),
@@ -179,9 +152,6 @@ ds_mos_Plus_2K = regridder_mos2(ds_mos_Plus_2K)
 ds_mos_Plus_3K = regridder_mos2(ds_mos_Plus_3K)
 ds_mos_Plus_4K = regridder_mos2(ds_mos_Plus_4K)
 ds_mos_Pre_Ind = regridder_mos2(ds_mos_Pre_Ind)
-
-
-# In[27]:
 
 
 #this cell creates the necessary functions to average a variable over the actual SRB rather than the square above
@@ -267,10 +237,6 @@ def add_shape_coord_from_data_array(xr_da, shp_path, coord_name):
                                longitude='lon', latitude='lat')
 
     return xr_da
-
-
-# In[28]:
-
 
 #masking out all data outside of SRB if set to TRUE
 if SRB_AVG == True:
@@ -358,10 +324,6 @@ if SRB_AVG == True:
     ds_mos_Pre_Indi = add_shape_coord_from_data_array(ds_mos_Pre_Indi, "./shapes/srb.shp", 'coord' )
     ds_mos_Pre_Indi = ds_mos_Pre_Indi.where(ds_mos_Pre_Indi.coord==0, other=np.nan)
 
-
-# In[29]:
-
-
 #creating an array of time values for the xtick labels in the graphs
 def datetime_range(start, end, delta):
     current = start
@@ -391,9 +353,6 @@ for dt in datetime_range(start2, end2, {'days':1}):
 
 
 # ## Figure 2
-
-# In[30]:
-
 
 ##plots a timeseries of the 1996 event
 
@@ -491,9 +450,6 @@ fig.savefig('event_hydrograph.pdf', bbox_inches='tight', pad_inches=0)
 
 
 # ## Figure 8
-
-# In[31]:
-
 
 ### This cell plots a timeseries of a chosen variables for the 6 different counterfactual simulations with
 ### the 25th to 75th percentiles shaded
@@ -622,9 +578,6 @@ for ax,vari,L in zip(axs,variables,letters):
     plt.subplots_adjust(hspace=10**-6)
 
 fig.savefig('timeseries_counterfactuals.pdf', bbox_inches='tight', pad_inches=0)
-
-
-# In[32]:
 
 
 ##calculates statistcs (mean and/or delta) for each variable and obtains the spread of ensemble points
@@ -760,9 +713,6 @@ for va in varis:
 
 # ## Figure 9
 
-# In[33]:
-
-
 ##plots the avg temp, avg pre, avg, runoff, and delta swe for each of the 6 simulations showing the trends for future climates
 
 #creating spacing for xticks (chose .3 bc 1996 was roughly .3C above pre industrial)
@@ -820,9 +770,6 @@ fig.savefig('avgchange_vs_warming_line.pdf', bbox_inches='tight', pad_inches=0)
 
 # ## Figure 10
 
-# In[34]:
-
-
 #plots the spread of the ensemble for each of the variables
 
 #creating array in order to plot points below 
@@ -872,9 +819,6 @@ for v,i,c,t,y,ax,L in zip(var,init_dots,colors,titl,ylab,axs,letters): #axs.rave
 fig.savefig('enschange_vs_warming_line.pdf', bbox_inches='tight', pad_inches=0)
 
 
-# In[35]:
-
-
 #calculating the ensemble averaged delta SWE by averaging across the delta swe for each ensemble member for a simulation
 snow_diff2 = []
 for i in range(6):
@@ -882,9 +826,6 @@ for i in range(6):
 
 
 # ## Figure 16
-
-# In[36]:
-
 
 ##plots comparison of two averaging techniques for delta swe - part a
 
@@ -914,9 +855,6 @@ props = dict(boxstyle='square', facecolor='white', edgecolor='k')
 ax.text(.01,.97,letters[0], fontsize='xx-large',transform=ax.transAxes,ha='left',va='top',bbox=props)
 
 fig.savefig('dSWE_avg_comp.pdf', bbox_inches='tight', pad_inches=0)
-
-
-# In[37]:
 
 
 ##plots comparison of two averaging techniques for delta swe - parts b/c
@@ -960,10 +898,3 @@ for v,i,c,t,y,ax,j in zip(var,init_dots,colors,titl,ylab,axs,[1,2]): #axs.ravel(
     plt.tight_layout()
 
 fig.savefig('dSWE_avg_comp_2.pdf', bbox_inches='tight', pad_inches=0)
-
-
-# In[ ]:
-
-
-
-

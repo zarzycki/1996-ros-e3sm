@@ -3,9 +3,6 @@
 
 # # Creates Figure 1, Figure 3, and data for Table 1
 
-# In[1]:
-
-
 #importing libraries
 import numpy as np
 import xarray as xr
@@ -24,14 +21,8 @@ from scipy import stats
 import pandas as pd
 
 
-# In[2]:
-
-
 #creating an array of letters to put in corner of figure panels
 letters = ['(a)','(b)','(c)','(d)','(e)']
-
-
-# In[3]:
 
 
 #loading high res model data
@@ -43,16 +34,10 @@ Ds_eam_lr = xr.open_dataset('Low_Res_eam_slice.nc')
 Ds_elm_lr = xr.open_dataset('Low_Res_elm_slice.nc')
 
 
-# In[4]:
-
-
 #set Low_Res = True if want to plot low res lines on plots
 Low_Res = False
 #set Rean = True if you want reanalysis lines on plots
 Rean = True
-
-
-# In[5]:
 
 
 #creating an array of time values for the xtick labels in the graphs
@@ -89,9 +74,6 @@ for i in range(len(ds_elm['time'])):
     Time_elm.append(datetime.datetime.strptime(time_m2[i], '%Y-%m-%d-%H'))
 
 
-# In[6]:
-
-
 #loading reanalysis data
 path = '/gpfs/group/cmz5202/default/arp5873/JRA_sfc/'
 temperature = xr.open_dataset(path+ 'JRA.h1.1996.T2M.nc')
@@ -122,10 +104,6 @@ DP = mpcalc.dewpoint_from_relative_humidity(TREFHT*units('degC'), RH)  #calculat
 if Low_Res == True:
     ds_eam_lr = regridder_climate(Ds_eam_lr)
     ds_elm_lr = regridder_climate(Ds_elm_lr)
-
-
-# In[7]:
-
 
 ##This cell finds the closest point to a given ASOS station and saves the data to a new variable
 
@@ -223,10 +201,6 @@ if Low_Res== True:
     Lavp_wsd,Lbgm_wsd,Lcxy_wsd,Lipt_wsd,Lunv_wsd = wnd_spd_lr
     Lavp_dwpt,Lbgm_dwpt,Lcxy_dwpt,Lipt_dwpt,Lunv_dwpt = dwpt_lr
 
-
-# In[8]:
-
-
 ##This cell does the same as above but for the reanalysis data set rather than the model data
 
 #loading model lat and lon
@@ -284,19 +258,12 @@ Ravp_rh,Rbgm_rh,Rcxy_rh,Ript_rh,Runv_rh = Rrhs
 # - ipt : Williamsport 41.24333 -76.92167
 # - unv : State College 40.85 -77.85
 
-# In[9]:
-
-
 #loading station data
 avp = pd.read_csv("./station_obs/asos_avp.txt")
 bgm = pd.read_csv("./station_obs/asos_bgm.txt")
 cxy = pd.read_csv("./station_obs/asos_cxy.txt")
 ipt = pd.read_csv("./station_obs/asos_ipt.txt")
 unv = pd.read_csv("./station_obs/asos_unv.txt")
-
-
-# In[10]:
-
 
 #replacing missing data with nan and converting temp from f to C
 
@@ -326,19 +293,11 @@ for s in stations:
     s['dwpt'] = dewpoint
 
 
-# In[11]:
-
-
 #changing station time to datetime object to match model
 for s in stations:
     index = np.arange(0,len(s['valid']))
     for i in index:
         s['valid'][i] = datetime.datetime.strptime(s['valid'][i], '%Y-%m-%d %H:%M')
-       
-
-
-# In[12]:
-
 
 ##choosing station times to match model
 
@@ -365,9 +324,6 @@ for s in stations:
                     ipt_mt.loc[y] = s.iloc[y]
                 if s['station'][s.index[-1]] == 'UNV':
                     unv_mt.loc[y] = s.iloc[y]
-
-
-# In[13]:
 
 
 ##plots time series of station and model data for temp, RH, windspeed, and dewpoint
@@ -455,9 +411,6 @@ else:
 
 # ## Calculating correlation and bias of model
 
-# In[14]:
-
-
 #creating time array of datetime64 objects
 time_eam = Time_eam
 for t in range(len(Time_eam)):
@@ -482,10 +435,6 @@ for s,t,r,w,d in zip([avp_mt,bgm_mt,ipt_mt,unv_mt,cxy_mt], [Mavp_temp,Mbgm_temp,
             rh2.append(r[i])
             wnd_spd2.append(w[i])
             dwpt2.append(d[i])
-
-
-# In[15]:
-
 
 #appending the correct data at each station to a variable with that station in the name
 Mavp_temp2 = temps2[0:len(avp_mt)]
@@ -513,10 +462,6 @@ Mipt_dwpt2 = tuple(dwpt2[len(bgm_mt)+len(avp_mt):len(bgm_mt)+len(avp_mt)+len(ipt
 Munv_dwpt2 = tuple(dwpt2[len(bgm_mt)+len(avp_mt)+ len(ipt_mt):len(bgm_mt)+len(avp_mt)+len(ipt_mt)+len(unv_mt)])
 Mcxy_dwpt2 = tuple(dwpt2[len(bgm_mt)+len(avp_mt)+ len(ipt_mt)+ len(unv_mt) :len(bgm_mt)+len(avp_mt)+len(ipt_mt)+len(unv_mt)+ len(cxy_mt)])
 
-
-# In[16]:
-
-
 ##only getting the magnitude of the data (currenlty units are attached)
 
 MAvp_dwpt2 = []
@@ -543,10 +488,6 @@ for x in range(len(Munv_dwpt2)):
 for x in range(len(Mcxy_dwpt2)):
     y = Mcxy_dwpt2[x].magnitude
     MCxy_dwpt2.append(y)
-
-
-# In[17]:
-
 
 #calulates r value and bias for the model vs station data
 Bias = []
@@ -578,10 +519,6 @@ for s,t,r,w,d,ss in zip([avp_mt,bgm_mt,ipt_mt,unv_mt,cxy_mt], [Mavp_temp2,Mbgm_t
         z = m_data-S[s_data]
         Bias.append(round(np.mean(z),5))
 
-
-# In[18]:
-
-
 #defining function to help write csvs
 from csv import writer
 def append_list_as_row(file_name, list_of_elem):
@@ -591,10 +528,6 @@ def append_list_as_row(file_name, list_of_elem):
         csv_writer = writer(write_obj)
         # Add contents of list as last row in the csv file
         csv_writer.writerow(list_of_elem)
-
-
-# In[19]:
-
 
 #creating bias and correlation csvs
 f = open('model_bias.csv','w')
@@ -614,9 +547,6 @@ for x in b_ind:
 
 
 # ## Spatial plot of station locations
-
-# In[20]:
-
 
 #creating function to outline SRB on spatial plots
 import shapefile as shp
@@ -641,10 +571,6 @@ def susq_outline(ax):
         g.right_labels = False
         g.xlines = False
         g.ylines = False
-
-
-# In[21]:
-
 
 ##Plots the stations and closest model point with outline of SRB
 
@@ -700,10 +626,3 @@ for x,l,s in zip(range(5),labels,stat_label):
 ax.legend(loc=2, fontsize=13)
 
 fig.savefig('map_asos.pdf', bbox_inches='tight', pad_inches=0)
-
-
-# In[ ]:
-
-
-
-
