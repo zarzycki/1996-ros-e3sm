@@ -3,7 +3,7 @@
 
 # # Creates Figure 7
 
-import netCDF4 as nc
+#import netCDF4 as nc
 import numpy as np
 import xarray as xr
 import datetime
@@ -26,8 +26,10 @@ letters = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)']
 
 ## making figure to show delta technique process
 
+projPC = ccrs.PlateCarree()
+
 #setting up plot
-fig, axs = plt.subplots(1,3,subplot_kw={'projection': ccrs.PlateCarree()},figsize=(20,7),constrained_layout=True)
+fig, axs = plt.subplots(1,3,subplot_kw={'projection': projPC},figsize=(20,7),constrained_layout=True)
 #choosing time indices 
 t1 = 911  #corresponds to jan 1996
 t2 = 1931 #corresponds to jan 2081 (+4K)
@@ -36,7 +38,7 @@ t2 = 1931 #corresponds to jan 2081 (+4K)
 for ax,i,t,L in zip(axs,[t2,t1,0],['2081 January Surface Temperature (K)','1996 January Surface Temperature (K)','Delta: January Surface Temperature (K)'],letters):
     #plotting the difference
     if i == 0:
-        cont = np.arange(-30,32,2)
+        cont = np.arange(-14,18,2)
         wrap_data, wrap_lon = add_cyclic_point(mon_avg['T'][t2,29,:,:] - mon_avg['T'][t1,29,:,:], coord=mon_avg['lon'], axis=1)
         plot = ax.contourf(wrap_lon,mon_avg['lat'],wrap_data, levels=cont,cmap='bwr')
         #adding an = between the last two subplots
@@ -52,6 +54,12 @@ for ax,i,t,L in zip(axs,[t2,t1,0],['2081 January Surface Temperature (K)','1996 
     #adding letters to panels
     props = dict(boxstyle='square', facecolor='white', edgecolor='k')
     ax.text(.03,.95,L, fontsize=30,transform=ax.transAxes,ha='left',va='top',bbox=props)
+    # Set extent
+    lonW = -140
+    lonE = -40
+    latS = 15
+    latN = 65
+    ax.set_extent([lonW, lonE, latS, latN], crs=projPC)
     #adding title
     ax.set_title(t,fontsize=22,ha='center')
     #adding features to plot
@@ -63,4 +71,6 @@ for ax,i,t,L in zip(axs,[t2,t1,0],['2081 January Surface Temperature (K)','1996 
     cb.ax.tick_params(labelsize='xx-large')
     #cb.ax.set_title('K', fontsize='xx-large')
 
-fig.savefig('delta_example.pdf', bbox_inches='tight', pad_inches=0)
+fig.show()
+
+#fig.savefig('delta_example.pdf', bbox_inches='tight', pad_inches=0)
