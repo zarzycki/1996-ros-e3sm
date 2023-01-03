@@ -3,7 +3,7 @@
 
 # # Creates Figure 7
 
-#import netCDF4 as nc
+import netCDF4 as nc
 import numpy as np
 import xarray as xr
 import datetime
@@ -18,8 +18,8 @@ import cartopy.feature as cfeature
 from cartopy.util import add_cyclic_point
 
 #loading data
-mon_anom = xr.open_dataset('/gpfs/group/cmz5202/default/ros/CESM_LENS_deltas/T/ens_T_anom.nc')
-mon_avg = xr.open_dataset('/gpfs/group/cmz5202/default/ros/CESM_LENS_deltas/T/ens_mean.nc')
+mon_anom = xr.open_dataset('/Users/cmz5202/NetCDF/CESMLENS/ens_T_anom.nc')
+mon_avg = xr.open_dataset('/Users/cmz5202/NetCDF/CESMLENS/ens_mean.nc')
 
 #creating array of letters for subplot labels
 letters = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)']
@@ -38,14 +38,14 @@ t2 = 1931 #corresponds to jan 2081 (+4K)
 for ax,i,t,L in zip(axs,[t2,t1,0],['2081 January Surface Temperature (K)','1996 January Surface Temperature (K)','Delta: January Surface Temperature (K)'],letters):
     #plotting the difference
     if i == 0:
-        cont = np.arange(-14,18,2)
+        cont = np.arange(-16,18,1)
         wrap_data, wrap_lon = add_cyclic_point(mon_avg['T'][t2,29,:,:] - mon_avg['T'][t1,29,:,:], coord=mon_avg['lon'], axis=1)
-        plot = ax.contourf(wrap_lon,mon_avg['lat'],wrap_data, levels=cont,cmap='bwr')
+        plot = ax.contourf(wrap_lon,mon_avg['lat'],wrap_data, levels=cont,cmap='seismic')
         #adding an = between the last two subplots
         ax.text(-0.07,.48,'=',ha='center',va='center',fontsize=40,fontweight='bold',transform=ax.transAxes)
     #plotting the two years
     else:
-        cont = np.arange(235,305,5)
+        cont = np.arange(245,310,5)
         wrap_data, wrap_lon = add_cyclic_point(mon_avg['T'][i,29,:,:], coord=mon_avg['lon'], axis=1)
         plot = ax.contourf(wrap_lon,mon_avg['lat'],wrap_data, levels=cont,cmap='magma',extend='min')
         #adding a subtraction sign between the first two subplots
@@ -56,9 +56,9 @@ for ax,i,t,L in zip(axs,[t2,t1,0],['2081 January Surface Temperature (K)','1996 
     ax.text(.03,.95,L, fontsize=30,transform=ax.transAxes,ha='left',va='top',bbox=props)
     # Set extent
     lonW = -140
-    lonE = -40
+    lonE = -50
     latS = 15
-    latN = 65
+    latN = 60
     ax.set_extent([lonW, lonE, latS, latN], crs=projPC)
     #adding title
     ax.set_title(t,fontsize=22,ha='center')
@@ -71,6 +71,4 @@ for ax,i,t,L in zip(axs,[t2,t1,0],['2081 January Surface Temperature (K)','1996 
     cb.ax.tick_params(labelsize='xx-large')
     #cb.ax.set_title('K', fontsize='xx-large')
 
-fig.show()
-
-#fig.savefig('delta_example.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('delta_example.pdf', bbox_inches='tight', pad_inches=0)
