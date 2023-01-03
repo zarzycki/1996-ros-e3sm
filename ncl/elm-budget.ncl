@@ -1,10 +1,18 @@
+load "./shapefile_utils.ncl"
+
+
+
+
 begin
   
-  minlat=39.5
-  maxlat=42.0
-  minlon=280.0-360.
-  maxlon=284.0-360.
-
+  ;minlat=39.5
+  ;maxlat=42.0
+  ;minlon=280.0-360.
+  ;maxlon=284.0-360.
+  minlat=35.5
+  maxlat=47.0
+  minlon=275.0-360.
+  maxlon=290.0-360.
 
   exps = (/"PI", "control", "plus1K", "plus2K", "plus3K", "plus4K"/)
   ;exps = (/"control"/)
@@ -72,6 +80,12 @@ begin
       nlon = fdims(2)
       nexp = dimsizes(exps)
       arr = new((/10,nexp,ntim,nlat,nlon/),typeof(BUDGET))
+      arr!2="time"
+      arr&time=f->time
+      arr!3="lat"
+      arr&lat=f->lat
+      arr!4="lon"
+      arr&lon=f->lon
     end if
   
     arr(0,ii,:,:,:) = RAIN_int
@@ -86,8 +100,39 @@ begin
   end do
 
   ; get a subdomain spatially
-  arr_sub = arr(:,:,:,{minlat:maxlat},{minlon:maxlon})
+  ;arr_sub = arr(:,:,:,{minlat:maxlat},{minlon:maxlon})
+
+  shpfilename="/storage/home/cmz5202/1996-ros-e3sm/shapes/srb.shp"
+  shp = addfile(shpfilename,"r")
+  print_shapefile_info(shpfilename)
+  plot_shapefile(shpfilename)
   
+  if (min(arr&lon) .gt. 0.0) then
+    print("Need to flip lon")
+    lon = arr&lon
+    newlon = lon - 360.0
+    arr&lon=newlon
+    delete(newlon)
+    delete(lon)
+  end if
+
+  Opt=True
+  Opt@debug=True
+  Opt@return_mask=True
+  ; get 2-D mask of 1s and 0s
+  MASK_2D = shapefile_mask_data(arr(0,0,0,:,:),shpfilename,Opt)
+  MASK = conform (arr,MASK_2D,(/3,4/))
+  
+  arr_sub = arr
+  arr_sub = where(MASK .gt. 0.5,arr_sub,arr_sub@_FillValue)
+
+ ;system("/bin/rm -f simple.nc")   ; remove any pre-existing file
+ ;ncdf = addfile("simple.nc" ,"c")  ; open output netCDF file
+ ;ncdf->MASK_2D  = MASK_2D           
+ ;ncdf->arr_sub  = arr_sub 
+ ;ncdf->arr  = arr      
+
+       
   ; time average
   basin_avg = dim_avg_n_Wrap(arr_sub,(/3,4/))
 
@@ -119,8 +164,8 @@ begin
              
     res@xyLineColors      = cmap
 
-  res@trYMinF  = -90.                   ; min value on y-axis
-  res@trYMaxF  =  90.                   ; max value on y-axis
+  res@trYMinF  = -100.                   ; min value on y-axis
+  res@trYMaxF  =  100.                   ; max value on y-axis
 
   res@tmXMajorGrid                = True          ; implement x grid 
   res@tmXMajorGridThicknessF      = 0.5           ; 2.0 is default
