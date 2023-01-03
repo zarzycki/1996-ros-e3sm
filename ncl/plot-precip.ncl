@@ -1,23 +1,30 @@
+load "rainratetodbz.ncl"
+
 begin
 
 minlat=28.5
 maxlat=47.0
 minlon=-102.0
 maxlon=-65.0
-  
+
+plot_dbz=True
 plot_CAM=True
 
 if (plot_CAM) then
   f = addfile("/storage/home/cmz5202/scratch/output000_eam_h1.nc","r")
-  timeix=30
+  timeix=33
   stride=1
   PRECT = f->PRECT_indiv(:,timeix,::stride,::stride)
 
-  PRECT = PRECT*3600000
-  PRECT@units="mm/hr"
-  PRECT@long_name = "Precipitation rate"
-  
-
+  if (.not. plot_dbz) then
+    PRECT = PRECT*3600000
+    PRECT@units="mm/hr"
+    PRECT@long_name = "Precipitation rate"
+  else
+    PRECT = rainratetodbz(PRECT,1)
+    PRECT@units="dbZ"
+    PRECT@long_name = "Simulated radar reflectivity"
+  end if
   print(cd_calendar(f->time,-3))
   time = f->time(timeix)
   print(cd_calendar(time,-3))
@@ -46,29 +53,48 @@ res@cnFillOn              = True
 res@cnLinesOn   = False
 res@cnRasterSmoothingOn = True
 
-PRECT = where(PRECT .lt. 0.08,PRECT@_FillValue,PRECT)
 
 
-cmap = read_colormap_file("prcp_1")
-cmap_dims = dimsizes(cmap)
-ncolors = cmap_dims(0)
-npairs = cmap_dims(1)
-nnewcolors = 200
-cmap_interp = new((/nnewcolors,npairs/),typeof(cmap))
-do ii = 0,npairs-1
-  ;cmap_interp(3:nnewcolors-1,ii) = linint1 (fspan(0,1,ncolors-3), cmap(3:ncolors-1,ii), False, fspan(0,1,nnewcolors-3), 0)
-  ;cmap_interp(2:nnewcolors-1,ii) = linint1 (fspan(0,1,ncolors-2), cmap(2:ncolors-1,ii), False, fspan(0,1,nnewcolors-2), 0)
-  cmap_interp(:,ii) = linint1 (fspan(0,1,ncolors), cmap(:,ii), False, fspan(0,1,nnewcolors), 0)
-end do
-cmap_interp(0,:) = cmap(0,:)
-cmap_interp(1,:) = cmap(1,:)
-;cmap_interp((nnewcolors-1),:) = cmap((ncolors-1),:)
-;cmap_interp((nnewcolors-2),:) = cmap((ncolors-2),:)
 
+
+res@cnLevelSelectionMode = "ExplicitLevels"
+if (plot_dbz) then
+  PRECT = where(PRECT .lt. 5.0,PRECT@_FillValue,PRECT)
+  res@cnLevels    = (/10,12.5,15,20,25,30,35,40,45,50,55,60,70/)
+  cmap = read_colormap_file("radar")
+  cmap_dims = dimsizes(cmap)
+  ncolors = cmap_dims(0)
+  npairs = cmap_dims(1)
+  nnewcolors = 200
+  cmap_interp = new((/nnewcolors,npairs/),typeof(cmap))
+  do ii = 0,npairs-1
+   ;cmap_interp(3:nnewcolors-1,ii) = linint1 (fspan(0,1,ncolors-3), cmap(3:ncolors-1,ii), False, fspan(0,1,nnewcolors-3), 0)
+   ;cmap_interp(2:nnewcolors-1,ii) = linint1 (fspan(0,1,ncolors-2), cmap(2:ncolors-1,ii), False, fspan(0,1,nnewcolors-2), 0)
+   cmap_interp(:,ii) = linint1 (fspan(0,1,ncolors), cmap(:,ii), False, fspan(0,1,nnewcolors), 0)
+  end do
+  cmap_interp(0,:) = cmap(0,:)
+  cmap_interp(1,:) = cmap(1,:)
+else
+  PRECT = where(PRECT .lt. 0.08,PRECT@_FillValue,PRECT)
+  res@cnLevels    = (/0.1,0.2,0.3,0.4,0.5,0.75,1.0,1.25,1.5,1.75,2.0,2.25,2.5,3.0,3.5,4.0,4.5,5.0,6.0,8.0,10.0,15.0,20.0,25.0,35.0/)
+  cmap = read_colormap_file("prcp_1")
+  cmap_dims = dimsizes(cmap)
+  ncolors = cmap_dims(0)
+  npairs = cmap_dims(1)
+  nnewcolors = 200
+  cmap_interp = new((/nnewcolors,npairs/),typeof(cmap))
+  do ii = 0,npairs-1
+   ;cmap_interp(3:nnewcolors-1,ii) = linint1 (fspan(0,1,ncolors-3), cmap(3:ncolors-1,ii), False, fspan(0,1,nnewcolors-3), 0)
+   ;cmap_interp(2:nnewcolors-1,ii) = linint1 (fspan(0,1,ncolors-2), cmap(2:ncolors-1,ii), False, fspan(0,1,nnewcolors-2), 0)
+   cmap_interp(:,ii) = linint1 (fspan(0,1,ncolors), cmap(:,ii), False, fspan(0,1,nnewcolors), 0)
+  end do
+  cmap_interp(0,:) = cmap(0,:)
+  cmap_interp(1,:) = cmap(1,:)
+  ;cmap_interp((nnewcolors-1),:) = cmap((ncolors-1),:)
+  ;cmap_interp((nnewcolors-2),:) = cmap((ncolors-2),:)
+end if
 res@cnFillPalette=cmap
-res@cnLevelSelectionMode = "ExplicitLevels"                        ; set explicit contour levels
-res@cnLevels    = (/0.1,0.2,0.3,0.4,0.5,0.75,1.0,1.25,1.5,1.75,2.0,2.25,2.5,3.0,3.5,4.0,4.5,5.0,6.0,8.0,10.0,15.0,20.0,25.0,35.0/)        ; set levels
-
+  
 res@mpMinLatF=minlat
 res@mpMaxLatF=maxlat
 res@mpMinLonF=minlon
