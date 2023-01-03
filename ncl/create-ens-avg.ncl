@@ -2,8 +2,16 @@ begin
 
 dirs = (/"1996011512","1996011600","1996011612","1996011700","1996011712"/)
 ensembles = (/"004","005","006"/)
+;experiment = "control"
 ;modelcomponent = "elm"
-;hname = "h3"
+;hname = "h0"
+print_holder_var=False
+grid = "ne0conus30x8"   ; ne30 or ne0conus30x8
+restrict_domain=False
+minlat=36.0
+maxlat=46.0
+minlon=269.0-360.
+maxlon=294.0-360.
 
 print(modelcomponent+" "+hname)
 
@@ -26,9 +34,14 @@ if (modelcomponent .eq. "eam" .and. hname .eq. "h3")
   arr_2D = True
 end if
 if (modelcomponent .eq. "elm" .and. hname .eq. "h0")
-  vars = (/"FSNO","H2OSNO","H2OSNO_TOP","QSNOMELT","QSNOFRZ","SNOW","SNOWDP","SNOWLIQ","SNOTTOPL","ERRH2OSNO","QSNWCPICE","FGR","FSM","QDRIP","ZBOT","TG","TV","TSA","SWup","SWdown","FIRA","FIRE","LWdown","LWup","TREFMNAV","TREFMXAV","Q2M","FPSN","FSH","Rnet","TLAI","FCTR","QOVER","RH","RH2M","SOILWATER_10CM","ZWT","TSOI_10CM","QSOIL","QVEGE","QVEGT","QTOPSOIL","Qstor","H2OCAN","H2OSFC","QH2OSFC","TWS","HC","SNOdTdzL","SNOW_SINKS","SNOW_SOURCES","SNOLIQFL","TH2OSFC","U10","QFLOOD","QRUNOFF","Qle","Qh","Qair","Tair","RAIN"/)
+  vars = (/"FSNO","H2OSNO","H2OSNO_TOP","QSNOMELT","QSNOFRZ","SNOW","SNOWDP","SNOWLIQ","SNOTTOPL","ERRH2OSNO","QSNWCPICE","FGR","FSM","QDRIP","ZBOT","TG","TV","TSA","SWup","SWdown","FIRA","FIRE","LWdown","LWup","TREFMNAV","TREFMXAV","Q2M","FPSN","FSH","Rnet","TLAI","FCTR","QOVER","RH","RH2M","SOILWATER_10CM","ZWT","TSOI_10CM","QSOIL","QVEGE","QVEGT","QTOPSOIL","Qstor","H2OCAN","H2OSFC","QH2OSFC","TWS","HC","SNOdTdzL","SNOW_SINKS","SNOW_SOURCES","SNOLIQFL","TH2OSFC","U10","QFLOOD","QRUNOFF","Qle","Qh","Qair","Tair","RAIN","SNO_T","SNO_Z"/)
   arr_2D = new(dimsizes(vars),"logical")
   arr_2D = True
+  ; cheat and set last two vars to 3D since they are snow T and Z of layers
+  nvarstmp = dimsizes(vars)
+  arr_2D(nvarstmp-1)=False
+  arr_2D(nvarstmp-2)=False
+  delete(nvarstmp)
 end if
 if (modelcomponent .eq. "mosart" .and. hname .eq. "h0")
   vars = (/"RIVER_DISCHARGE_OVER_LAND_LIQ","RIVER_DISCHARGE_TO_OCEAN_LIQ"/)
@@ -45,14 +58,7 @@ ndirs = dimsizes(dirs)
 nens = dimsizes(ensembles)
 nvars = dimsizes(vars)
 
-grid = "ne0conus30x8"   ; ne30 or ne0conus30x8
 
-print_holder_var=True
-restrict_domain=False
-minlat=36.0
-maxlat=46.0
-minlon=269.0-360.
-maxlon=294.0-360.
 
 do zz = 0,nvars-1
 
@@ -69,7 +75,7 @@ do ii = 0,ndirs-1
    thisdir = dirs(ii)
    thisensemble = ensembles(kk)
    
-   filedir = "/storage/home/cmz5202/group/arp5873/E3SM/RoS-F2010C5-"+grid+"-"+thisensemble+"-control/"+thisdir+"/*."+modelcomponent+"."+hname+"*.nc_regrid.nc"
+   filedir = "/storage/home/cmz5202/group/arp5873/E3SM/RoS-F2010C5-"+grid+"-"+thisensemble+"-"+experiment+"/"+thisdir+"/*."+modelcomponent+"."+hname+"*.nc_regrid.nc"
    print("loading "+filedir)
    
    fils = systemfunc ("ls "+filedir)
@@ -176,7 +182,7 @@ count_name = "count_"+varname
 setfileoption("nc","Format","LargeFile")
 
 outputdir="/storage/home/cmz5202/scratch/"
-outputname="output000_"+modelcomponent+"_"+hname+".nc"
+outputname="output_"+experiment+"_"+modelcomponent+"_"+hname+".nc"
 filename=outputdir+"/"+outputname
 if (zz .eq. 0) then
   system("/bin/rm -f "+filename)   ; remove any pre-existing file
@@ -197,10 +203,12 @@ if (print_holder_var) then
   ncdf->$varname_member$  = holderVar
 end if
 ncdf->$varname$  = ens_avg
-ncdf->$count_name$ =  count_adds
+if (zz .eq. 0) then
+  ncdf->count =  count_adds
+end if
 
 ; if this is our first file and we have a 3D var, add these to the ensemble file
-if (zz .eq. 0 .and. any( arr_2D .eq. False) ) then
+if (zz .eq. 0 .and. any( arr_2D .eq. False) .and. modelcomponent .eq. "eam" ) then
   ncdf->hyai = f[0]->hyai
   ncdf->hybi = f[0]->hybi
   ncdf->hyam = f[0]->hyam
