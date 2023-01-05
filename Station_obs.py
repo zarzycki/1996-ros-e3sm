@@ -75,7 +75,8 @@ for i in range(len(ds_elm['time'])):
 
 
 #loading reanalysis data
-path = '/gpfs/group/cmz5202/default/arp5873/JRA_sfc/'
+#path = '/gpfs/group/cmz5202/default/arp5873/JRA_sfc/'
+path = '/Users/cmz5202/NetCDF/CESMLENS/'
 temperature = xr.open_dataset(path+ 'JRA.h1.1996.T2M.nc')
 temperature = temperature.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
 u_wind = xr.open_dataset(path+ 'JRA.h1.1996.U10.nc')
@@ -403,10 +404,12 @@ else:
             if s_data == 'tmpf':
                 ax.legend(loc=0,fontsize='large', ncol=3)
                 ax.text(0.01,.87,S['station'][S.index[0]], transform=ax.transAxes,fontweight='bold', fontsize=27)
+                #CMZ put freezing line on for review
+                ax.axhline(y = 0.0, color = 'silver', linestyle = '--')                
             plt.tight_layout()
         
         thisStation=S['station'][S.index[0]]
-        fig.savefig('timeseries_'+thisStation+'.pdf', bbox_inches='tight', pad_inches=0)
+        fig.savefig('FIG_timeseries_'+thisStation+'.pdf', bbox_inches='tight', pad_inches=0)
 
 
 # ## Calculating correlation and bias of model
