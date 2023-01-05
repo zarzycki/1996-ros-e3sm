@@ -11,7 +11,7 @@ plot_dbz=True
 plot_CAM=True
 
 if (plot_CAM) then
-  f = addfile("/storage/home/cmz5202/scratch/output000_eam_h1.nc","r")
+  f = addfile("/storage/home/cmz5202/scratch/arp-precip/output000_eam_h1.nc","r")
   timeix=33
   stride=1
   PRECT = f->PRECT_indiv(:,timeix,::stride,::stride)
@@ -29,6 +29,12 @@ if (plot_CAM) then
   time = f->time(timeix)
   print(cd_calendar(time,-3))
   
+  tmp = PRECT
+  PRECT(0,:,:) = dim_median_n(tmp,0)
+  PRECT(1,:,:) = dim_avg_n_Wrap(tmp,0)
+  PRECT(2,:,:) = dim_max_n_Wrap(tmp,0)
+  PRECT(3,:,:) = dim_min_n_Wrap(tmp,0)
+
 else
 
   print("hh")
@@ -108,10 +114,10 @@ res@mpLandFillColor       = "gray50"
 res@mpOceanFillColor = "blue"
 res@mpInlandWaterFillColor = "blue"
 
-plot(0) = gsn_csm_contour_map(wks,PRECT(2,:,:), res)
-plot(1) = gsn_csm_contour_map(wks,PRECT(3,:,:), res)
-plot(2) = gsn_csm_contour_map(wks,PRECT(4,:,:), res)
-plot(3) = gsn_csm_contour_map(wks,PRECT(9,:,:), res)
+plot(0) = gsn_csm_contour_map(wks,PRECT(0,:,:), res)
+plot(1) = gsn_csm_contour_map(wks,PRECT(1,:,:), res)
+plot(2) = gsn_csm_contour_map(wks,PRECT(2,:,:), res)
+plot(3) = gsn_csm_contour_map(wks,PRECT(3,:,:), res)
 
 
 
