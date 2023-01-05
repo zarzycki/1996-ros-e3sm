@@ -2,16 +2,20 @@ begin
 
 dirs = (/"1996011512","1996011600","1996011612","1996011700","1996011712"/)
 ensembles = (/"004","005","006"/)
-;experiment = "control"
-;modelcomponent = "elm"
-;hname = "h0"
+;experiment = "PI"
+;modelcomponent = "eam"
+;hname = "h2"
 print_holder_var=False
 grid = "ne0conus30x8"   ; ne30 or ne0conus30x8
 restrict_domain=False
-minlat=36.0
-maxlat=46.0
-minlon=269.0-360.
-maxlon=294.0-360.
+;minlat=36.0
+;maxlat=46.0
+;minlon=269.0-360.
+;maxlon=294.0-360.
+minlat=27.5
+maxlat=55.0
+minlon=-105.0
+maxlon=-65.0
 
 print(modelcomponent+" "+hname)
 
@@ -223,8 +227,12 @@ delete(ens_avg)
 delete(holderVar)
 delete(count_adds)
 delete(f)
+delete(ncdf)
+
+list_vars()
 
 end do ; zz
 
-       
+exit
+   
 end

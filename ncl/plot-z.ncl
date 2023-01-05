@@ -1,36 +1,66 @@
+load "rainratetodbz.ncl"
+
 begin
 
-minlat=28.5
-maxlat=47.0
-minlon=-102.0
-maxlon=-65.0
+minlat=30.0
+maxlat=50.0
+minlon=-95.0
+maxlon=-70.0
 
 pnew = (/ 850., 500. /)       ; desired output levels 
   
-plot_CAM=False
+plot_dbz=True
 
+plot = new(8,graphic)
+
+yyyy=1996
+mm=01
+days = (/18,19,19,20/)
+hours = (/12,00,12,00/)
+bools = (/True,False/)
+
+wks   = gsn_open_wks ("x11", "coneff")        ; send graphics to PNG file
+
+do bb = 0,1
+do aa = 0,3
+
+plot_CAM=bools(bb)
+
+dd=days(aa)
+hh=hours(aa)
 
 if (plot_CAM) then
-  f = addfile("/storage/home/cmz5202/scratch/output_eam_h2.nc","r")
-  timeix=16
+  f = addfile("/storage/home/cmz5202/scratch/BAK/output_control_eam_h2.nc","r")
+  
   stride=4
-  Z3 = f->Z3(timeix,:,::stride,::stride)
-  PS = f->PS(timeix,::stride,::stride)
-  T = f->T(timeix,:,::stride,::stride)
-  Q = f->Q(timeix,:,::stride,::stride)
-  U = f->U(timeix,:,::stride,::stride)
-  V = f->V(timeix,:,::stride,::stride)
+  Z3 = f->Z3({cd_inv_calendar(yyyy,mm,dd,hh,0,0,f->time@units,-1)},:,::stride,::stride)
+  PS = f->PS({cd_inv_calendar(yyyy,mm,dd,hh,0,0,f->time@units,-1)},::stride,::stride)
+  T = f->T({cd_inv_calendar(yyyy,mm,dd,hh,0,0,f->time@units,-1)},:,::stride,::stride)
+  Q = f->Q({cd_inv_calendar(yyyy,mm,dd,hh,0,0,f->time@units,-1)},:,::stride,::stride)
+  U = f->U({cd_inv_calendar(yyyy,mm,dd,hh,0,0,f->time@units,-1)},:,::stride,::stride)
+  V = f->V({cd_inv_calendar(yyyy,mm,dd,hh,0,0,f->time@units,-1)},:,::stride,::stride)
+  
+  g = addfile("/storage/home/cmz5202/scratch/BAK/output_control_eam_h0.nc","r")
+  PRECT = g->PRECT({cd_inv_calendar(yyyy,mm,dd,hh,0,0,g->time@units,-1)},::stride,::stride)
+  if (.not. plot_dbz) then
+    PRECT = PRECT*3600000
+    PRECT@units="mm/hr"
+    PRECT@long_name = "Precipitation rate"
+  else
+    PRECT = rainratetodbz(PRECT,1)
+    PRECT@units="dbZ"
+    PRECT@long_name = "Simulated radar reflectivity"
+  end if
+  
   ;W = mixhum_convert(Q, "q", (/0,0/))
   ;copy_VarCoords(Q,W)
-
-  print(cd_calendar(f->time,-3))
-  time = f->time(timeix)
-  print(cd_calendar(time,-3))
 
   hyam = f->hyam                   ; read to memory (optional)
   hybm = f->hybm
   P0mb = 1000.      
   P0 = f->P0
+  lat = f->lat(::stride)
+  lon = f->lon(::stride)
 
   nlev = dimsizes(hyam)
 
@@ -48,7 +78,6 @@ if (plot_CAM) then
 
   copy_VarCoords(T,TD)
   copy_VarCoords(T,THETA)
-  delete(T)
 
   All  = rigrad_bruntv_atm(THETA, U, V, Z3, 3, 1 ) 
   ;RI   = All[0]     ; explicitly extract from list variable  for convenience
@@ -68,34 +97,50 @@ if (plot_CAM) then
   TDnew = vinth2p (TD,hyam,hybm,pnew,PS,1,P0mb,1,True)
   Unew = vinth2p (U,hyam,hybm,pnew,PS,1,P0mb,1,True)
   Vnew = vinth2p (V,hyam,hybm,pnew,PS,1,P0mb,1,True)
+  Tnew = vinth2p (T,hyam,hybm,pnew,PS,1,P0mb,1,True)
 
   delete(U)
   delete(V)
   delete(Z3)
   delete(TD)
+  delete(T)
+  delete(Q)
 
 else
-  day=19
+
   era5dir="/storage/home/cmz5202/group/arp5873/ERA5/"
-  zfile = addfile(era5dir+"/e5.oper.an.pl.128_129_z.ll025sc.199601"+day+"00_199601"+day+"23.nc","r")
-  tfile = addfile(era5dir+"/e5.oper.an.pl.128_130_t.ll025sc.199601"+day+"00_199601"+day+"23.nc","r")
-  ufile = addfile(era5dir+"/e5.oper.an.pl.128_131_u.ll025uv.199601"+day+"00_199601"+day+"23.nc","r")
-  vfile = addfile(era5dir+"/e5.oper.an.pl.128_132_v.ll025uv.199601"+day+"00_199601"+day+"23.nc","r")
-  qfile = addfile(era5dir+"/e5.oper.an.pl.128_133_q.ll025sc.199601"+day+"00_199601"+day+"23.nc","r")
+  zfile = addfile(era5dir+"/e5.oper.an.pl.128_129_z.ll025sc.199601"+dd+"00_199601"+dd+"23.nc","r")
+  tfile = addfile(era5dir+"/e5.oper.an.pl.128_130_t.ll025sc.199601"+dd+"00_199601"+dd+"23.nc","r")
+  ufile = addfile(era5dir+"/e5.oper.an.pl.128_131_u.ll025uv.199601"+dd+"00_199601"+dd+"23.nc","r")
+  vfile = addfile(era5dir+"/e5.oper.an.pl.128_132_v.ll025uv.199601"+dd+"00_199601"+dd+"23.nc","r")
+  qfile = addfile(era5dir+"/e5.oper.an.pl.128_133_q.ll025sc.199601"+dd+"00_199601"+dd+"23.nc","r")
 
   timeix=12
   stride=2
   
-  Z3 = zfile->Z(timeix,{pnew},::stride,::stride)
+  Z3 = zfile->Z({cd_inv_calendar(yyyy,mm,dd,hh,0,0,zfile->time@units,-1)},{pnew},::stride,::stride)
   Z3 = Z3 / 9.81
-  U = ufile->U(timeix,{pnew},::stride,::stride)
-  V = vfile->V(timeix,{pnew},::stride,::stride)
-  T = tfile->T(timeix,{pnew},::stride,::stride)
-  Q = qfile->Q(timeix,{pnew},::stride,::stride)
+  U = ufile->U({cd_inv_calendar(yyyy,mm,dd,hh,0,0,ufile->time@units,-1)},{pnew},::stride,::stride)
+  V = vfile->V({cd_inv_calendar(yyyy,mm,dd,hh,0,0,vfile->time@units,-1)},{pnew},::stride,::stride)
+  T = tfile->T({cd_inv_calendar(yyyy,mm,dd,hh,0,0,tfile->time@units,-1)},{pnew},::stride,::stride)
+  Q = qfile->Q({cd_inv_calendar(yyyy,mm,dd,hh,0,0,qfile->time@units,-1)},{pnew},::stride,::stride)
   
-  print(cd_calendar(zfile->time,-3))
-  time = zfile->time(timeix)
-  print(cd_calendar(time,-3))
+  lat = zfile->latitude(::stride)
+  lon = zfile->longitude(::stride)
+  
+  g = addfile(era5dir+"/e5.oper.fc.sfc.meanflux.235_055_mtpr.ll025sc.1996010106_1996020106.nc","r")
+  PRECT_3hr = g->MTPR({cd_inv_calendar(yyyy,mm,dd,hh+1,0,0,g->time@units,-1):cd_inv_calendar(yyyy,mm,dd,hh+4,0,0,g->time@units,-1)},::stride,::stride)
+  PRECT = dim_avg_n_Wrap(PRECT_3hr,0)
+  PRECT = PRECT / 1000.  ; convert from kg/m2/s to m/s to match CAM
+  if (.not. plot_dbz) then
+    PRECT = PRECT*3600000
+    PRECT@units="mm/hr"
+    PRECT@long_name = "Precipitation rate"
+  else
+    PRECT = rainratetodbz(PRECT,1)
+    PRECT@units="dbZ"
+    PRECT@long_name = "Simulated radar reflectivity"
+  end if
 
   RH = relhum (T, Q, conform(T,pnew*100.,0) )  ; rel humidity
   TD = dewtemp_trh(T,RH)
@@ -110,71 +155,155 @@ else
   TDnew = TD
   Unew = U
   Vnew = V
+  Tnew = T
+  
+  delete(U)
+  delete(V)
+  delete(Z3)
+  delete(TD)
+  delete(T)
+  delete(Q)
     
 end if
 
 
 
+;opt_adv = 0  ; use 1 to get gradient components
+;cyclic = True
+;long_name = "temp advection"
+;units     = "K/s"   
+;advTcfd   = advect_variable_cfd(Unew,Vnew,Tnew,lat,lon, cyclic, long_name, units, opt_adv)
+;advTcfd = -advTcfd
 
 
-; plotting
 
-wks   = gsn_open_wks ("x11", "coneff")        ; send graphics to PNG file
 
-res                 = True                    ; plot mods desired
-res@gsnDraw         = False                   ; don't draw yet
-res@gsnFrame        = False                   ; don't advance frame yet
+
+
+resbase                 = True                    ; plot mods desired
+resbase@gsnDraw         = False                   ; don't draw yet
+resbase@gsnFrame        = False                   ; don't advance frame yet
+resbase@gsnLeftString=""
+resbase@gsnCenterString=""
+resbase@gsnRightString=""
+resbase@cnInfoLabelOn     = False
+
+res = resbase
+
 res@gsnAddCyclic = False
 
-res@cnLineLabelsOn      = False        ; Turn on contour line labels
 
-;res@mpMinLatF=minlat
-;res@mpMaxLatF=maxlat
-;res@mpMinLonF=minlon
-;res@mpMaxLonF=maxlon
-res@mpProjection = "LambertConformal"
-res@mpLimitMode       = "Corners"         ; choose range of map
-res@mpLeftCornerLatF  = minlat
-res@mpLeftCornerLonF  = minlon
-res@mpRightCornerLatF = maxlat
-res@mpRightCornerLonF = maxlon
-res@mpLambertMeridianF = -96.
+res@mpMinLatF=minlat
+res@mpMaxLatF=maxlat
+res@mpMinLonF=minlon
+res@mpMaxLonF=maxlon
+
+;res@mpProjection = "LambertConformal"
+;res@mpLimitMode       = "Corners"         ; choose range of map
+;res@mpLeftCornerLatF  = minlat
+;res@mpLeftCornerLonF  = minlon
+;res@mpRightCornerLatF = maxlat
+;res@mpRightCornerLonF = maxlon
+;res@mpLambertMeridianF = -96.
 
 res@pmTickMarkDisplayMode = "Always"
 res@mpOutlineOn           = True
 res@mpOutlineBoundarySets = "GeophysicalAndUSStates"
 res@mpDataBaseVersion     = "MediumRes"   ; necessary for mpDataSetName to be effective
 res@mpLandFillColor       = "bisque2"
-  
-res@cnLevelSelectionMode = "ManualLevels"	; manually set the contour levels with the following 3 resources
-;res@cnMinLevelValF  = 5160.			; set the minimum contour level
-;res@cnMaxLevelValF  = 5760.			; set the maximum contour level
-;res@cnLevelSpacingF = 60.			; set the interval between contours
-res@cnMinLevelValF  = 1100.			; set the minimum contour level
-res@cnMaxLevelValF  = 1600.			; set the maximum contour level
-res@cnLevelSpacingF = 30.			; set the interval between contours
 
-plot = new(1,graphic)
+res@cnFillOn    = True                        ; turn on color fill
+res@cnLinesOn   = False                       ; turn off the contour lines
+res@cnLineLabelsOn = False                    ; turn the line labels off
 
-plot(0) = gsn_csm_contour_map(wks,Znew({850.},:,:), res)
+res@cnLevelSelectionMode = "ExplicitLevels"
+if (plot_dbz) then
+  PRECT = where(PRECT .lt. 2.0,PRECT@_FillValue,PRECT)
+  res@cnLevels    = (/10,12.5,15,20,25,30,35,40,45,50,55,60,70/)
+  cmap = read_colormap_file("radar")
+  cmap_dims = dimsizes(cmap)
+  ncolors = cmap_dims(0)
+  npairs = cmap_dims(1)
+  nnewcolors = 200
+  cmap_interp = new((/nnewcolors,npairs/),typeof(cmap))
+  do ii = 0,npairs-1
+   ;cmap_interp(3:nnewcolors-1,ii) = linint1 (fspan(0,1,ncolors-3), cmap(3:ncolors-1,ii), False, fspan(0,1,nnewcolors-3), 0)
+   ;cmap_interp(2:nnewcolors-1,ii) = linint1 (fspan(0,1,ncolors-2), cmap(2:ncolors-1,ii), False, fspan(0,1,nnewcolors-2), 0)
+   cmap_interp(:,ii) = linint1 (fspan(0,1,ncolors), cmap(:,ii), False, fspan(0,1,nnewcolors), 0)
+  end do
+  cmap_interp(0,:) = cmap(0,:)
+  cmap_interp(1,:) = cmap(1,:)
+else
+  PRECT = where(PRECT .lt. 0.08,PRECT@_FillValue,PRECT)
+  res@cnLevels    = (/0.1,0.2,0.3,0.4,0.5,0.75,1.0,1.25,1.5,1.75,2.0,2.25,2.5,3.0,3.5,4.0,4.5,5.0,6.0,8.0,10.0,15.0,20.0,25.0,35.0/)
+  cmap = read_colormap_file("prcp_1")
+  cmap_dims = dimsizes(cmap)
+  ncolors = cmap_dims(0)
+  npairs = cmap_dims(1)
+  nnewcolors = 200
+  cmap_interp = new((/nnewcolors,npairs/),typeof(cmap))
+  do ii = 0,npairs-1
+   ;cmap_interp(3:nnewcolors-1,ii) = linint1 (fspan(0,1,ncolors-3), cmap(3:ncolors-1,ii), False, fspan(0,1,nnewcolors-3), 0)
+   ;cmap_interp(2:nnewcolors-1,ii) = linint1 (fspan(0,1,ncolors-2), cmap(2:ncolors-1,ii), False, fspan(0,1,nnewcolors-2), 0)
+   cmap_interp(:,ii) = linint1 (fspan(0,1,ncolors), cmap(:,ii), False, fspan(0,1,nnewcolors), 0)
+  end do
+  cmap_interp(0,:) = cmap(0,:)
+  cmap_interp(1,:) = cmap(1,:)
+  ;cmap_interp((nnewcolors-1),:) = cmap((ncolors-1),:)
+  ;cmap_interp((nnewcolors-2),:) = cmap((ncolors-2),:)
+end if
+res@cnFillPalette=cmap
 
-res2 = res
-res2@cnMinLevelValF  = 273.15			; set the minimum contour level
-res2@cnMaxLevelValF  = 283.15			; set the maximum contour level
-res2@cnLevelSpacingF = 5.0			; set the interval between contours
-res2@cnLineThicknessF = 4.0
+plotix = (bb*4)+aa
+print(plotix+"")
+plot(plotix) = gsn_csm_contour_map(wks,PRECT(:,:), res)
 
+res1 = resbase
+res1@cnLevelSelectionMode = "ManualLevels"	; manually set the contour levels with the following 3 resources
+res1@cnMinLevelValF  = 5160.			; set the minimum contour level
+res1@cnMaxLevelValF  = 5760.			; set the maximum contour level
+res1@cnLevelSpacingF = 60.			; set the interval between contours
+;res1@cnMinLevelValF  = 1100.			; set the minimum contour level
+;res1@cnMaxLevelValF  = 1600.			; set the maximum contour level
+;res1@cnLevelSpacingF = 30.			; set the interval between contours
+res1@cnLineLabelsOn      = False        ; Turn on contour line labels
+res1@cnLineThicknessF = 3.0
+
+plot_z = gsn_csm_contour(wks,Znew({500.},:,:), res1)
+
+overlay(plot(plotix),plot_z)
+
+res2 = resbase
+res2@cnLevelSelectionMode = "ManualLevels"	; manually set the contour levels with the following 3 resources
+res2@cnMinLevelValF  = 273.
+res2@cnMaxLevelValF  = 400.
+res2@cnLevelSpacingF = 5.0
+res2@cnLineThicknessF = 7.0
+res2@cnLineColor = "red"
+res2@cnLineLabelsOn      = False        ; Turn on contour line labels
 plot_td = gsn_csm_contour(wks,TDnew({850.},:,:),res2)
 
-overlay(plot(0),plot_td)
+overlay(plot(plotix),plot_td)
 
+; buncha cleanup
+delete(Unew)
+delete(Vnew)
+delete(Znew)
+delete(TDnew)
+delete(Tnew)
+delete(lat)
+delete(lon)
+delete(PRECT)
+
+end do ; aa loop
+end do ; bb loop
 
 panres                     = True
-panres@gsnMaximize         = True             ; maximize the plots
+;panres@gsnMaximize         = True             ; maximize the plots
 ;panres@gsnPanelLabelBar    = True             ; turn on the panel label bar
 ;panres@gsnPaperOrientation = "portrait"       ; make sure the paper orientation is set to portrait
 ;panres@lbLabelStride       = 2                ; set the label bar label stride to 2
-gsn_panel(wks,plot,(/1,1/),panres) 
+gsn_panel(wks,plot,(/2,4/),panres) 
 
  
  exit
