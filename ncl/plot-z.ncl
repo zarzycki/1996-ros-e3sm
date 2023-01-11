@@ -29,8 +29,10 @@ plot_CAM=bools(bb)
 dd=days(aa)
 hh=hours(aa)
 
-era5dir="/Volumes/Untitled/ERA5/"
-CAMdir="/Volumes/Untitled/"
+;era5dir="/Volumes/Untitled/ERA5/"
+;CAMdir="/Volumes/Untitled/"
+era5dir="/storage/home/cmz5202/group/arp5873/ERA5/"
+CAMdir="/storage/home/cmz5202/scratch/"
 
 if (plot_CAM) then
   f = addfile(CAMdir+"/output_control_eam_h2.nc","r")
@@ -195,6 +197,7 @@ res = resbase
 
 res@gsnAddCyclic = False
 
+res@lbLabelBarOn        = False           ; turn off individual cb's
 
 res@mpMinLatF=minlat
 res@mpMaxLatF=maxlat
@@ -218,6 +221,14 @@ res@mpLandFillColor       = "bisque2"
 res@cnFillOn    = True                        ; turn on color fill
 res@cnLinesOn   = False                       ; turn off the contour lines
 res@cnLineLabelsOn = False                    ; turn the line labels off
+
+if (plot_CAM) then
+  datastr="E3SM"
+else
+  datastr="ERA5"
+end if
+
+res@gsnCenterString=datastr+": "+tostring_with_format(yyyy, "%0.4i")+"-"+tostring_with_format(mm, "%0.2i")+"-"+tostring_with_format(days(aa), "%0.2i")+" "+tostring_with_format(hours(aa), "%0.2i")+"Z"
 
 res@cnLevelSelectionMode = "ExplicitLevels"
 if (plot_dbz) then
@@ -259,6 +270,7 @@ res@cnFillPalette=cmap
 
 plotix = (bb*4)+aa
 print(plotix+"")
+
 plot(plotix) = gsn_csm_contour_map(wks,PRECT(:,:), res)
 
 res1 = resbase
@@ -303,9 +315,14 @@ end do ; bb loop
 
 panres                     = True
 ;panres@gsnMaximize         = True             ; maximize the plots
-;panres@gsnPanelLabelBar    = True             ; turn on the panel label bar
+panres@gsnPanelLabelBar    = True             ; turn on the panel label bar
 ;panres@gsnPaperOrientation = "portrait"       ; make sure the paper orientation is set to portrait
 ;panres@lbLabelStride       = 2                ; set the label bar label stride to 2
+
+panres@amJust           = "TopLeft"
+panres@gsnPanelFigureStringsFontHeightF = 0.014
+panres@gsnPanelFigureStrings= (/"a.","b.","c.","d.","e.","f.","g.","h."/)
+
 gsn_panel(wks,plot,(/2,4/),panres) 
 
  
