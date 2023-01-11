@@ -29,8 +29,11 @@ plot_CAM=bools(bb)
 dd=days(aa)
 hh=hours(aa)
 
+era5dir="/Volumes/Untitled/ERA5/"
+CAMdir="/Volumes/Untitled/"
+
 if (plot_CAM) then
-  f = addfile("/storage/home/cmz5202/scratch/BAK/output_control_eam_h2.nc","r")
+  f = addfile(CAMdir+"/output_control_eam_h2.nc","r")
   
   stride=4
   Z3 = f->Z3({cd_inv_calendar(yyyy,mm,dd,hh,0,0,f->time@units,-1)},:,::stride,::stride)
@@ -40,7 +43,7 @@ if (plot_CAM) then
   U = f->U({cd_inv_calendar(yyyy,mm,dd,hh,0,0,f->time@units,-1)},:,::stride,::stride)
   V = f->V({cd_inv_calendar(yyyy,mm,dd,hh,0,0,f->time@units,-1)},:,::stride,::stride)
   
-  g = addfile("/storage/home/cmz5202/scratch/BAK/output_control_eam_h0.nc","r")
+  g = addfile(CAMdir+"/output_control_eam_h0.nc","r")
   PRECT = g->PRECT({cd_inv_calendar(yyyy,mm,dd,hh,0,0,g->time@units,-1)},::stride,::stride)
   if (.not. plot_dbz) then
     PRECT = PRECT*3600000
@@ -108,7 +111,7 @@ if (plot_CAM) then
 
 else
 
-  era5dir="/storage/home/cmz5202/group/arp5873/ERA5/"
+
   zfile = addfile(era5dir+"/e5.oper.an.pl.128_129_z.ll025sc.199601"+dd+"00_199601"+dd+"23.nc","r")
   tfile = addfile(era5dir+"/e5.oper.an.pl.128_130_t.ll025sc.199601"+dd+"00_199601"+dd+"23.nc","r")
   ufile = addfile(era5dir+"/e5.oper.an.pl.128_131_u.ll025uv.199601"+dd+"00_199601"+dd+"23.nc","r")
