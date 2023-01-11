@@ -1,4 +1,4 @@
-load "./shapefile_utils.ncl"
+load "./utils/shapefile_utils.ncl"
 
 
 
@@ -18,7 +18,7 @@ begin
   ;exps = (/"control"/)
   
   do ii = 0,dimsizes(exps)-1
-    filename="/storage/home/cmz5202/scratch/output_"+exps(ii)+"_elm_h0.nc"
+    filename="/storage/home/cmz5202/scratch/BAK/output_"+exps(ii)+"_elm_h0.nc"
     f = addfile(filename,"r")
 
     time = f->time
