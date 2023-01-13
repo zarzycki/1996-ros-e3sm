@@ -1,0 +1,271 @@
+### mamba create -n pettett5 -c conda-forge python=3.9.7 metpy=1.0 netCDF4=1.5.8 numpy=1.20.1 xarray=0.16.2 xesmf=0.5.2 rasterio=1.2.10 cartopy=0.20.1 matplotlib=3.3.4 pandas=1.2.2 scipy=1.7.1 pint=0.16.1 gdal=3.3.3 poppler=21.09.0
+### conda activate pettett5
+
+# cmd: /opt/aci/sw/python/3.6.3_anaconda-5.0.1/bin/conda create -n base-env3 python=3 -y
+# cmd: /storage/home/arp5873/.conda/envs/base-env3/bin/conda install -c conda-forge ipykernel -y
+# cmd: /storage/home/arp5873/.conda/envs/base-env3/bin/conda install -c anaconda dask -y
+# cmd: /storage/home/arp5873/.conda/envs/base-env3/bin/conda install -c conda-forge cartopy
+# cmd: /storage/home/arp5873/.conda/envs/base-env3/bin/conda install -c anaconda xarray -y
+# cmd: /storage/home/arp5873/.conda/envs/base-env3/bin/conda install -c conda-forge netCDF4
+# cmd: /storage/home/arp5873/.conda/envs/base-env3/bin/conda install -c conda-forge xesmf
+# cmd: /storage/home/arp5873/.conda/envs/base-env3/bin/conda install -c conda-forge nc-time-axis
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c conda-forge metpy
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c anaconda numpy -y
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda remove numpy
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c anaconda numpy -y
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c anaconda xarray
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda update --all
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c conda-forge matplotlib -y
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c conda-forge cartopy -y
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c conda-forge xesmf
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c conda-forge nc-time-axis -y
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c conda-forge metpy -y
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c conda-forge netCDF4 -y
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c conda-forge dask -y
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c anaconda astropy -y
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c conda-forge scipy
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c conda-forge pyshp
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-khh/bin/conda install -c conda-forge gdal
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-bzb/bin/conda install -c conda-forge affine -y
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-bzb/bin/conda install -c conda-forge geopandas -y
+# cmd: /opt/aci/sw/anaconda3/2020.07_gcc-4.8.5-bzb/bin/conda install -c conda-forge rasterio -y
+
+# affine-2.3.0-py_0.json
+# alsa-lib-1.2.3-h516909a_0.json
+# appdirs-1.4.4-pyh9f0ad1d_0.json
+# astropy-4.2-py39h6323ea4_1.json
+# attrs-21.2.0-pyhd8ed1ab_0.json
+# backcall-0.2.0-pyhd3eb1b0_0.json
+# bokeh-2.2.3-py39hf3d152e_0.json
+# boost-cpp-1.74.0-h312852a_4.json
+# branca-0.4.2-pyhd8ed1ab_0.json
+# brotlipy-0.7.0-py39h3811e60_1001.json
+# bzip2-1.0.8-h516909a_3.json
+# ca-certificates-2021.10.8-ha878542_0.json
+# cairo-1.16.0-h6cf1ce9_1008.json
+# c-ares-1.18.1-h7f98852_0.json
+# cartopy-0.20.1-py39ha48bd0d_1.json
+# certifi-2021.10.8-py39hf3d152e_1.json
+# cffi-1.15.0-py39h4bc2ebd_0.json
+# cfitsio-3.470-hb418390_7.json
+# cftime-1.2.1-py39h1dff97c_1.json
+# cf_xarray-0.5.0-pyh44b312d_0.json
+# chardet-4.0.0-py39hf3d152e_1.json
+# click-7.1.2-pyh9f0ad1d_0.json
+# click-plugins-1.1.1-py_0.json
+# cligj-0.7.2-pyhd8ed1ab_1.json
+# cloudpickle-1.6.0-py_0.json
+# cryptography-3.4.4-py39h95dcef6_0.json
+# curl-7.78.0-h1ccaba5_0.json
+# cycler-0.10.0-py_2.json
+# cytoolz-0.11.0-py39h3811e60_3.json
+# dask-2021.2.0-pyhd8ed1ab_0.json
+# dask-core-2021.2.0-pyhd8ed1ab_0.json
+# dbus-1.13.6-he372182_0.json
+# decorator-4.4.2-pyhd3eb1b0_0.json
+# distributed-2021.2.0-py39hf3d152e_0.json
+# esmf-8.2.0-mpi_mpich_h4975321_100.json
+# esmpy-8.2.0-mpi_mpich_py39h8bb458d_101.json
+# expat-2.4.1-h9c3ff4c_0.json
+# fiona-1.8.20-py39h427c1bf_2.json
+# folium-0.12.0-pyhd8ed1ab_1.json
+# fontconfig-2.13.1-hba837de_1005.json
+# fonts-conda-ecosystem-1-0.json
+# fonts-conda-forge-1-0.json
+# font-ttf-dejavu-sans-mono-2.37-hab24e00_0.json
+# font-ttf-inconsolata-3.000-h77eed37_0.json
+# font-ttf-source-code-pro-2.038-h77eed37_0.json
+# font-ttf-ubuntu-0.83-hab24e00_0.json
+# freetype-2.10.4-h7ca028e_0.json
+# freexl-1.0.6-h7f98852_0.json
+# fsspec-0.8.7-pyhd8ed1ab_0.json
+# gdal-3.3.3-py39h0494519_0.json
+# geopandas-0.10.2-pyhd8ed1ab_0.json
+# geopandas-base-0.10.2-pyha770c72_0.json
+# geos-3.9.1-h9c3ff4c_2.json
+# geotiff-1.7.0-hcfb7246_3.json
+# gettext-0.19.8.1-h73d1719_1008.json
+# giflib-5.2.1-h36c2ea0_2.json
+# glib-2.70.0-h780b84a_1.json
+# glib-tools-2.70.0-h780b84a_1.json
+# gst-plugins-base-1.18.4-hf529b03_2.json
+# gstreamer-1.18.4-h76c114f_2.json
+# hdf4-4.2.15-h10796ff_3.json
+# hdf5-1.12.1-mpi_mpich_h9c45103_0.json
+# heapdict-1.0.1-py_0.json
+# history
+# icu-68.2-h9c3ff4c_0.json
+# idna-2.10-pyh9f0ad1d_0.json
+# importlib_metadata-3.7.0-hd8ed1ab_0.json
+# importlib-metadata-3.7.0-py39hf3d152e_0.json
+# importlib_resources-5.1.0-py39hf3d152e_0.json
+# ipykernel-5.3.4-py39hb070fc8_0.json
+# ipython-7.20.0-py39hb070fc8_1.json
+# ipython_genutils-0.2.0-pyhd3eb1b0_1.json
+# jbig-2.1-h7f98852_2003.json
+# jedi-0.17.2-py39h06a4308_1.json
+# jinja2-2.11.3-pyh44b312d_0.json
+# joblib-1.1.0-pyhd8ed1ab_0.json
+# jpeg-9d-h36c2ea0_0.json
+# json-c-0.15-h98cffda_0.json
+# jupyter_client-6.1.7-py_0.json
+# jupyter_core-4.7.1-py39h06a4308_0.json
+# kealib-1.4.14-h87e4c3c_3.json
+# kiwisolver-1.3.1-py39h081fc7a_0.json
+# krb5-1.19.2-hcc1bbae_3.json
+# lcms2-2.12-hddcbb42_0.json
+# ld_impl_linux-64-2.36.1-hea4e1c9_2.json
+# lerc-3.0-h9c3ff4c_0.json
+# libblas-3.9.0-12_linux64_openblas.json
+# libcblas-3.9.0-12_linux64_openblas.json
+# libclang-11.1.0-default_ha53f305_1.json
+# libcurl-7.78.0-h0b77cf5_0.json
+# libdap4-3.20.6-hd7c4107_1.json
+# libdeflate-1.8-h7f98852_0.json
+# libedit-3.1.20191231-h14c3975_1.json
+# libev-4.33-h516909a_1.json
+# libevent-2.1.10-hcdb4288_3.json
+# libffi-3.4.2-h9c3ff4c_4.json
+# _libgcc_mutex-0.1-conda_forge.json
+# libgcc-ng-11.2.0-h1d223b6_11.json
+# libgdal-3.3.3-h356f897_0.json
+# libgfortran5-11.2.0-h5c6108e_11.json
+# libgfortran-ng-11.2.0-h69a702a_11.json
+# libglib-2.70.0-h174f98d_1.json
+# libgomp-11.2.0-h1d223b6_11.json
+# libiconv-1.16-h516909a_0.json
+# libkml-1.3.0-h02e6976_1012.json
+# liblapack-3.9.0-12_linux64_openblas.json
+# libllvm11-11.1.0-hf817b99_2.json
+# libnetcdf-4.8.1-mpi_mpich_h319fa22_1.json
+# libnghttp2-1.43.0-h812cca2_1.json
+# libogg-1.3.4-h7f98852_1.json
+# libopenblas-0.3.18-pthreads_h8fe5266_0.json
+# libopus-1.3.1-h7f98852_1.json
+# libpng-1.6.37-h21135ba_2.json
+# libpq-13.3-hd57d9b9_3.json
+# librttopo-1.1.0-h1185371_6.json
+# libsodium-1.0.18-h7b6447c_0.json
+# libspatialindex-1.9.3-h9c3ff4c_4.json
+# libspatialite-5.0.1-h8796b1e_9.json
+# libssh2-1.9.0-hab1572f_5.json
+# libstdcxx-ng-11.2.0-he4da1e4_11.json
+# libtiff-4.3.0-h6f004c6_2.json
+# libuuid-2.32.1-h14c3975_1000.json
+# libvorbis-1.3.7-h9c3ff4c_0.json
+# libwebp-base-1.2.0-h7f98852_2.json
+# libxcb-1.13-h14c3975_1002.json
+# libxkbcommon-1.0.3-he3ba5ed_0.json
+# libxml2-2.9.12-h72842e0_0.json
+# libzip-1.8.0-h4de3113_1.json
+# libzlib-1.2.11-h36c2ea0_1013.json
+# locket-0.2.0-py_2.json
+# lz4-c-1.9.3-h9c3ff4c_0.json
+# mapclassify-2.4.3-pyhd8ed1ab_0.json
+# markupsafe-1.1.1-py39h3811e60_3.json
+# matplotlib-3.3.4-py39hf3d152e_0.json
+# matplotlib-base-3.3.4-py39h62a2d02_0.json
+# metpy-1.0-pyhd8ed1ab_0.json
+# mpi-1.0-mpich.json
+# mpi4py-3.1.2-py39h6438238_0.json
+# mpich-3.4.2-h846660c_100.json
+# msgpack-python-1.0.2-py39h1a9c180_1.json
+# munch-2.5.0-py_0.json
+# mysql-common-8.0.27-ha770c72_1.json
+# mysql-libs-8.0.27-hfa10184_1.json
+# nc-time-axis-1.2.0-py_1.json
+# ncurses-6.2-he6710b0_1.json
+# netcdf4-1.5.8-nompi_py39h64b754b_101.json
+# netcdf-fortran-4.5.3-mpi_mpich_h1364a43_6.json
+# networkx-2.6.3-pyhd8ed1ab_1.json
+# nspr-4.30-h9c3ff4c_0.json
+# nss-3.66-hb5efdd6_0.json
+# numpy-1.20.1-py39hdbf815f_0.json
+# olefile-0.46-pyh9f0ad1d_1.json
+# openjpeg-2.4.0-hb52868f_1.json
+# _openmp_mutex-4.5-1_gnu.json
+# openssl-1.1.1l-h7f98852_0.json
+# packaging-20.9-pyh44b312d_0.json
+# pandas-1.2.2-py39ha9443f7_0.json
+# parso-0.7.0-py_0.json
+# partd-1.1.0-py_0.json
+# pcre-8.45-h9c3ff4c_0.json
+# pexpect-4.8.0-pyhd3eb1b0_3.json
+# pickleshare-0.7.5-pyhd3eb1b0_1003.json
+# pillow-7.2.0-py39h6f3857e_2.json
+# pint-0.16.1-py_0.json
+# pip-21.0.1-py39h06a4308_0.json
+# pixman-0.40.0-h36c2ea0_0.json
+# pooch-1.3.0-pyhd8ed1ab_0.json
+# poppler-21.09.0-h0e1ea10_1.json
+# poppler-data-0.4.10-0.json
+# postgresql-13.3-h2510834_3.json
+# proj-8.1.1-h277dcde_1.json
+# prompt-toolkit-3.0.8-py_0.json
+# psutil-5.8.0-py39h3811e60_1.json
+# pthread-stubs-0.4-h36c2ea0_1001.json
+# ptyprocess-0.7.0-pyhd3eb1b0_2.json
+# pycparser-2.20-pyh9f0ad1d_2.json
+# pyerfa-1.7.2-py39h27cfd23_0.json
+# pygments-2.8.0-pyhd3eb1b0_0.json
+# pyopenssl-20.0.1-pyhd8ed1ab_0.json
+# pyparsing-2.4.7-pyh9f0ad1d_0.json
+# pyproj-3.2.1-py39ha81a305_2.json
+# pyqt-5.12.3-py39h03dd644_4.json
+# pyshp-2.1.3-pyh44b312d_0.json
+# pysocks-1.7.1-py39hf3d152e_3.json
+# python-3.9.7-hb7a2778_3_cpython.json
+# python_abi-3.9-1_cp39.json
+# python-dateutil-2.8.1-pyhd3eb1b0_0.json
+# pytz-2021.1-pyhd3eb1b0_0.json
+# pyyaml-5.4.1-py39h3811e60_0.json
+# pyzmq-20.0.0-py39h2531618_1.json
+# qt-5.12.9-hda022c4_4.json
+# rasterio-1.2.10-py39hb37810a_0.json
+# readline-8.1-h27cfd23_0.json
+# requests-2.25.1-pyhd3deb0d_0.json
+# rtree-0.9.7-py39hb102c33_2.json
+# scikit-learn-0.24.2-py39h4dfa638_0.json
+# scipy-1.7.1-py39hee8e79c_0.json
+# setuptools-52.0.0-py39h06a4308_0.json
+# shapely-1.7.1-py39ha61afbd_5.json
+# sip-4.19.13-py39h2531618_0.json
+# six-1.15.0-py39h06a4308_0.json
+# snuggs-1.4.7-py_0.json
+# sortedcontainers-2.3.0-pyhd8ed1ab_0.json
+# sqlite-3.36.0-h9cd32fc_2.json
+# tblib-1.6.0-py_0.json
+# threadpoolctl-3.0.0-pyh8a188c0_0.json
+# tiledb-2.3.4-he87e0bf_0.json
+# tk-8.6.11-h27826a3_1.json
+# toolz-0.11.1-py_0.json
+# tornado-6.1-py39h27cfd23_0.json
+# traitlets-5.0.5-pyhd3eb1b0_0.json
+# typing_extensions-3.7.4.3-py_0.json
+# tzcode-2021a-h7f98852_1.json
+# tzdata-2020f-h52ac0ba_0.json
+# urllib3-1.26.3-pyhd8ed1ab_0.json
+# wcwidth-0.2.5-py_0.json
+# wheel-0.36.2-pyhd3eb1b0_0.json
+# xarray-0.16.2-pyhd3eb1b0_0.json
+# xerces-c-3.2.3-h9d8b166_2.json
+# xesmf-0.5.2-pyhd8ed1ab_0.json
+# xorg-kbproto-1.0.7-h7f98852_1002.json
+# xorg-libice-1.0.10-h7f98852_0.json
+# xorg-libsm-1.2.3-hd9c2040_1000.json
+# xorg-libx11-1.7.2-h7f98852_0.json
+# xorg-libxau-1.0.9-h14c3975_0.json
+# xorg-libxdmcp-1.1.3-h516909a_0.json
+# xorg-libxext-1.3.4-h7f98852_1.json
+# xorg-libxrender-0.9.10-h7f98852_1003.json
+# xorg-renderproto-0.11.1-h7f98852_1002.json
+# xorg-xextproto-7.3.0-h7f98852_1002.json
+# xorg-xproto-7.0.31-h7f98852_1007.json
+# xyzservices-2021.11.0-pyhd8ed1ab_0.json
+# xz-5.2.5-h7b6447c_0.json
+# yaml-0.2.5-h516909a_0.json
+# zeromq-4.3.3-he6710b0_3.json
+# zict-2.0.0-py_0.json
+# zipp-3.4.0-py_0.json
+# zlib-1.2.11-h36c2ea0_1013.json
+# zstd-1.5.0-ha95c52a_0.json
