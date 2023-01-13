@@ -427,15 +427,16 @@ if SRB_AVG == True:
     color5 = 'm'
 
     ## Plot each line
+
     p1, = host1.plot(Time1, s_mean, '-', color=color1,label="SWE")
     p2, = yaxis1.plot(Time1, q_mean, '-', color=color2, label="Runoff")
     p3, = yaxis1.plot(Time2, p_mean, '-', color=color3, label="Precipitation")
     p4, = yaxis2.plot(Time2, t_mean, '-', color=color4, label="Temperature")
-    p6, = yaxis2.plot(Time2, np.zeros(len(Time2)), color='r',linestyle='--', label='0$^\circ$C line')
+    p6, = yaxis2.plot(Time2, np.zeros(len(Time2)), color='silver',linestyle='--', label='0$^\circ$C line')
     p5, = yaxis3.plot(Time_mos[:-2], ds_mos_mean['RIVER_DISCHARGE_OVER_LAND_LIQ'][:-2], color=color5,label='River Discharge')
 
     ## Add legend, specify loc with 2x tuple of bottom left corner of box in 0->1 coords
-    lns = [p1, p2, p3, p4, p5,p6]
+    lns = [p1, p2, p3, p4, p5, p6]
     host1.legend(handles=lns, fontsize='medium', ncol=2)
     host1.set_xticks(time)
     host1.set_xticklabels(time3)
@@ -447,6 +448,155 @@ if SRB_AVG == True:
     fig.tight_layout(pad=3.0)
     
 fig.savefig('event_hydrograph.pdf', bbox_inches='tight', pad_inches=0)
+
+
+
+
+
+
+
+## Fig ????
+## CMZ load some stuff
+
+swe_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/obs_swe.nc")
+swe_obs = swe_obs_ds.SWE_avg
+swe_obs_time = swe_obs_ds.time
+
+precip_mod_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/mod_precip.nc")
+precip_mod = precip_mod_ds.SWE_avg
+precip_mod_time = precip_mod_ds.time
+
+precip_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/obs_precip.nc")
+precip_obs = precip_obs_ds.SWE_avg
+precip_obs_time = precip_obs_ds.time
+
+tmax_mod_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/mod_tmax.nc")
+tmax_mod = tmax_mod_ds.SWE_avg
+tmax_mod = tmax_mod - 273.15
+tmax_mod_time = tmax_mod_ds.time
+
+tmax_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/obs_tmax.nc")
+tmax_obs = tmax_obs_ds.SWE_avg
+tmax_obs = tmax_obs - 273.15
+tmax_obs_time = tmax_obs_ds.time
+
+tmin_mod_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/mod_tmin.nc")
+tmin_mod = tmin_mod_ds.SWE_avg
+tmin_mod = tmin_mod - 273.15
+tmin_mod_time = tmin_mod_ds.time
+
+tmin_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/obs_tmin.nc")
+tmin_obs = tmin_obs_ds.SWE_avg
+tmin_obs = tmin_obs - 273.15
+tmin_obs_time = tmin_obs_ds.time
+
+#calculating the mean of each variable over the basin at each time period
+if SRB_AVG == False:
+    mask = (
+    (ds_elm_Control.coords["lat"] > x)
+    & (ds_elm_Control.coords["lat"] < x+1)
+    & (ds_elm_Control.coords["lon"] > y)
+    & (ds_elm_Control.coords["lon"] < y+1)
+        )
+
+    ds_mos1 = ds_mos_Control.where(mask)
+    q = ds_elm_Control['QRUNOFF'].where(mask)
+    p = ds_eam_Control['PRECT'].where(mask)
+    t = ds_eam_Control['TREFHT'].where(mask)
+    s = ds_elm_Control['H2OSNO'].where(mask)
+    q_mean = q.mean( dim=("lat","lon"), skipna=True )
+    p_mean = p.mean( dim=("lat","lon"), skipna=True )
+    t_mean = t.mean( dim=("lat","lon"), skipna=True )
+    s_mean = s.mean( dim=("lat","lon"), skipna=True )
+    ds_mos_mean = ds_mos1.mean( dim=("lat","lon"), skipna=True )
+    Time1 = Time_elm
+    Time2 = Time_eam
+
+if SRB_AVG == True:    
+
+    q = ds_elm_Control['QRUNOFF']
+    p = ds_eam_Control['PRECT']
+    t = ds_eam_Control['TREFHT']
+    s = ds_elm_Control['H2OSNO']
+    q_mean = q.mean( dim=("lat","lon"), skipna=True )
+    p_mean = p.mean( dim=("lat","lon"), skipna=True )
+    t_mean = t.mean( dim=("lat","lon"), skipna=True )
+    s_mean = s.mean( dim=("lat","lon"), skipna=True )
+    ds_mos_mean = ds_mos_Control.mean( dim=("lat","lon"), skipna=True )
+    Time1 = Time_elm
+    Time2 = Time_eam
+            
+    ## Setup plot
+    fig = plt.figure(figsize=(11,5))
+    host1 = fig.add_subplot(111)
+
+    ## Create extra y-axes that shares x-axis with "host"
+    yaxis1 = host1.twinx()
+    yaxis2 = host1.twinx()
+
+    ## Set axis limits
+    host1.set_ylim([-5, 160])
+    yaxis1.set_ylim([-5, 40])
+    yaxis2.set_ylim([-25,25])
+    
+    host1.set_xlim([datetime.datetime(1996, 1, 15), datetime.datetime(1996, 1, 22)])
+    yaxis1.set_xlim([datetime.datetime(1996, 1, 15), datetime.datetime(1996, 1, 22)])
+    yaxis2.set_xlim([datetime.datetime(1996, 1, 15), datetime.datetime(1996, 1, 22)])
+    
+    # Offset the right spine and show it
+    yaxis2.spines["right"].set_position(("axes", 1.1))
+    yaxis2.spines["right"].set_visible(True)
+
+    ## Set labels for axes
+    host1.set_ylabel("Snow Water Equivalent (mm)", color='c', fontsize='x-large')
+    yaxis1.set_ylabel("Precipitation (mm day$^{-1}$)", color='g',fontsize='x-large')
+    yaxis2.set_ylabel("2-m Temperature ($^\circ$C)", color='r',fontsize='x-large')
+
+    ## Select colors
+    color1 = 'c'
+    color2 = 'b'
+    color3 = 'g'
+    color4 = 'r'
+    color5 = 'm'
+    color6 = 'darkred' # added for tmin
+
+    ## Plot each line
+    
+    p1, = host1.plot(Time1, s_mean, '-', color=color1,label="E3SM SWE")
+    p2, = host1.plot(swe_obs_time, swe_obs, '--', color=color1,label="UAZ SWE")
+
+    # temps
+    p3, = yaxis2.plot(tmax_obs_time, tmax_obs, '--', color=color4,label="CPC Max. Temp.")
+    p4, = yaxis2.plot(tmax_mod_time, tmax_mod, '-', color=color4,label="E3SM Max. Temp.")
+    p5, = yaxis2.plot(tmin_obs_time, tmin_obs, '--', color=color6,label="CPC Min. Temp.")
+    p6, = yaxis2.plot(tmin_mod_time, tmin_mod, '-', color=color6,label="E3SM Min. Temp.")
+        
+    p7, = yaxis1.plot(precip_obs_time, precip_obs, '--', color=color3,label="CPC Precip.")
+    p8, = yaxis1.plot(precip_mod_time, precip_mod, '-', color=color3,label="E3SM Precip.")
+    
+    p9, = yaxis2.plot(Time2, np.zeros(len(Time2)), color='silver',linestyle=':', label='0$^\circ$C line')
+
+    ## Add legend, specify loc with 2x tuple of bottom left corner of box in 0->1 coords
+    lns = [p5, p6, p3, p4, p1, p2, p7, p8]
+    host1.legend(handles=lns, fontsize='medium', ncol=2)
+    host1.set_xticks(time)
+    host1.set_xticklabels(time3)
+    host1.margins(x=0)
+    host1.tick_params('both', labelsize='large')
+    yaxis1.tick_params('y', labelsize='large')
+    yaxis2.tick_params('y', labelsize='large')
+    fig.tight_layout(pad=3.0)
+    
+    #fig.xlim(xmin=datetime.datetime(1996, 1, 15),xmax=datetime.datetime(1996, 1, 22))
+    
+fig.savefig('comp_event_hydrograph.pdf', bbox_inches='tight', pad_inches=0)
+
+
+
+
+
+
+
 
 
 # ## Figure 8
