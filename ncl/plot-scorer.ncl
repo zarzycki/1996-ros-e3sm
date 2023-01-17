@@ -9,9 +9,12 @@ pnew = (/ 850., 500. /)       ; desired output levels
   
 plot_CAM=False
 
+era5dir="/Volumes/Untitled/arp5873/ERA5/"
+CAMdir="/Volumes/Untitled/"
+  
 
 if (plot_CAM) then
-  f = addfile("/storage/home/cmz5202/scratch/output_eam_h2.nc","r")
+  f = addfile(CAMdir+"/output_eam_h2.nc","r")
   timeix=17
   stride=1
   Z3 = f->Z3(timeix,:,::stride,::stride)
@@ -74,7 +77,7 @@ if (plot_CAM) then
 
 else
 
-  era5dir="/storage/home/cmz5202/group/arp5873/ERA5/"
+
   zfile = addfile(era5dir+"/e5.oper.an.pl.128_129_z.ll025sc.1996011900_1996011923.nc","r")
   tfile = addfile(era5dir+"/e5.oper.an.pl.128_130_t.ll025sc.1996011900_1996011923.nc","r")
   ufile = addfile(era5dir+"/e5.oper.an.pl.128_131_u.ll025uv.1996011900_1996011923.nc","r")
