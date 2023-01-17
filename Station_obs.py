@@ -76,16 +76,34 @@ for i in range(len(ds_elm['time'])):
 
 #loading reanalysis data
 #path = '/gpfs/group/cmz5202/default/arp5873/JRA_sfc/'
-path = '/Users/cmz5202/NetCDF/CESMLENS/'
-temperature = xr.open_dataset(path+ 'JRA.h1.1996.T2M.nc')
-temperature = temperature.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
-u_wind = xr.open_dataset(path+ 'JRA.h1.1996.U10.nc')
-u_wind = u_wind.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
-v_wind = xr.open_dataset(path+ 'JRA.h1.1996.V10.nc')
-v_wind = v_wind.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
-humidity = xr.open_dataset(path+ 'JRA.h1.1996.RHREFHT.nc')
-humidity = humidity.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
-windspeed = metpy.calc.wind_speed(u_wind['U10'], v_wind['V10'])
+# path = '/Users/cmz5202/NetCDF/CESMLENS/'
+# temperature = xr.open_dataset(path+ 'JRA.h1.1996.T2M.nc')
+# temperature = temperature.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
+# u_wind = xr.open_dataset(path+ 'JRA.h1.1996.U10.nc')
+# u_wind = u_wind.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
+# v_wind = xr.open_dataset(path+ 'JRA.h1.1996.V10.nc')
+# v_wind = v_wind.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
+# humidity = xr.open_dataset(path+ 'JRA.h1.1996.RHREFHT.nc')
+# humidity = humidity.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
+# windspeed = metpy.calc.wind_speed(u_wind['U10'], v_wind['V10'])
+
+path = '/Volumes/Untitled/arp5873/ERA5/'
+temperature = xr.open_dataset(path+ 'e5.oper.an.sfc.128_167_2t.ll025sc.1996010100_1996013123.nc')
+temperature = temperature.reindex(latitude=temperature.latitude[::-1])
+print(temperature)
+temperature = temperature.sel(time=slice('1996-01-15', '1996-01-22'), latitude=slice(30.,50.), longitude=slice(265.,300.))
+u_wind = xr.open_dataset(path+ 'e5.oper.an.sfc.128_165_10u.ll025sc.1996010100_1996013123.nc')
+u_wind = u_wind.reindex(latitude=u_wind.latitude[::-1])
+u_wind = u_wind.sel(time=slice('1996-01-15', '1996-01-22'), latitude=slice(30.,50.), longitude=slice(265.,300.))
+v_wind = xr.open_dataset(path+ 'e5.oper.an.sfc.128_166_10v.ll025sc.1996010100_1996013123.nc')
+v_wind = v_wind.reindex(latitude=v_wind.latitude[::-1])
+v_wind = v_wind.sel(time=slice('1996-01-15', '1996-01-22'), latitude=slice(30.,50.), longitude=slice(265.,300.))
+humidity = xr.open_dataset(path+ 'e5.oper.an.sfc.128_999_rh.ll025sc.1996010100_1996013123.nc')
+humidity = humidity.reindex(latitude=humidity.latitude[::-1])
+humidity = humidity.sel(time=slice('1996-01-15', '1996-01-22'), latitude=slice(30.,50.), longitude=slice(265.,300.))
+windspeed = metpy.calc.wind_speed(u_wind['VAR_10U'], v_wind['VAR_10V'])
+
+print(temperature)
 
 #regriddiing reanalysis data to match the model grid
 ds_out = xr.Dataset({'lat': (['lat'], np.arange(35, 45.1, 0.125)),
@@ -94,10 +112,10 @@ ds_out = xr.Dataset({'lat': (['lat'], np.arange(35, 45.1, 0.125)),
 regridder_temp = xe.Regridder(temperature, ds_out, 'bilinear')
 regridder_climate = xe.Regridder(Ds_eam_lr, ds_out, 'bilinear')
 
-Temp = temperature['T2M'] - 273  #change to C
+Temp = temperature['VAR_2T'] - 273  #change to C
 TREFHT = regridder_temp(Temp)
 WSPD = regridder_temp(windspeed)
-hum = humidity['RHREFHT']
+hum = humidity['RH']
 RH = regridder_temp(hum)
 DP = mpcalc.dewpoint_from_relative_humidity(TREFHT*units('degC'), RH)  #calculating dew point
 
@@ -402,7 +420,7 @@ else:
             ax.tick_params('x', labelsize='large')
             #only putting the legend on the first subplot
             if s_data == 'tmpf':
-                ax.legend(loc=0,fontsize='large', ncol=3)
+                ax.legend(loc=4,fontsize='large', ncol=3)
                 ax.text(0.01,.87,S['station'][S.index[0]], transform=ax.transAxes,fontweight='bold', fontsize=27)
                 #CMZ put freezing line on for review
                 ax.axhline(y = 0.0, color = 'silver', linestyle = '--')                
@@ -507,15 +525,22 @@ for s,t,r,w,d,ss in zip([avp_mt,bgm_mt,ipt_mt,unv_mt,cxy_mt], [Mavp_temp2,Mbgm_t
     model_dp  = d
 
     for ax, s_data, m_data,S in zip(axs,['tmpf','relh','sknt', 'dwpt'],[model_temp, model_rh, model_wsp, model_dp], station):
-        x = S[s_data].interpolate(method='linear')
-        
+    
         #appending that station name before the data
         if s_data == 'tmpf':
             Bias.append(str(ss))
             R_val.append(str(ss))
-            
+        
+        ### ARP (interpolate)
+        #x = S[s_data].interpolate(method='linear')
         #calculating r and p value for data
-        r_val,p_val = stats.pearsonr(x, m_data)
+        #r_val,p_val = stats.pearsonr(x, m_data)
+        
+        ### CMZ (don't interpolate)
+        c = np.vstack([S[s_data],m_data])
+        d = c[:,~np.any(np.isnan(c), axis=0)]
+        r_val,p_val = stats.pearsonr(d[0], d[1])
+        
         R_val.append(round(r_val,5))
         
         #calculating bias
