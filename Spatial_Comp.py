@@ -458,34 +458,46 @@ fig.savefig('event_hydrograph.pdf', bbox_inches='tight', pad_inches=0)
 ## Fig ????
 ## CMZ load some stuff
 
-swe_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/obs_swe.nc")
+swe_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/obs_swe.nc")
 swe_obs = swe_obs_ds.SWE_avg
 swe_obs_time = swe_obs_ds.time
 
-precip_mod_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/mod_precip.nc")
+swe_obs2_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/ERA5_swe.nc")
+swe_obs2 = swe_obs2_ds.SWE_avg
+swe_obs2_time = swe_obs2_ds.time
+
+swe_obs3_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/JRA_swe.nc")
+swe_obs3 = swe_obs3_ds.SWE_avg
+swe_obs3_time = swe_obs3_ds.time
+
+swe_obs4_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/NLDAS_swe.nc")
+swe_obs4 = swe_obs4_ds.SWE_avg
+swe_obs4_time = swe_obs4_ds.time
+
+precip_mod_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/mod_precip.nc")
 precip_mod = precip_mod_ds.SWE_avg
 precip_mod_time = precip_mod_ds.time
 
-precip_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/obs_precip.nc")
+precip_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/obs_precip.nc")
 precip_obs = precip_obs_ds.SWE_avg
 precip_obs_time = precip_obs_ds.time
 
-tmax_mod_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/mod_tmax.nc")
+tmax_mod_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/mod_tmax.nc")
 tmax_mod = tmax_mod_ds.SWE_avg
 tmax_mod = tmax_mod - 273.15
 tmax_mod_time = tmax_mod_ds.time
 
-tmax_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/obs_tmax.nc")
+tmax_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/obs_tmax.nc")
 tmax_obs = tmax_obs_ds.SWE_avg
 tmax_obs = tmax_obs - 273.15
 tmax_obs_time = tmax_obs_ds.time
 
-tmin_mod_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/mod_tmin.nc")
+tmin_mod_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/mod_tmin.nc")
 tmin_mod = tmin_mod_ds.SWE_avg
 tmin_mod = tmin_mod - 273.15
 tmin_mod_time = tmin_mod_ds.time
 
-tmin_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/obs_tmin.nc")
+tmin_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/obs_tmin.nc")
 tmin_obs = tmin_obs_ds.SWE_avg
 tmin_obs = tmin_obs - 273.15
 tmin_obs_time = tmin_obs_ds.time
@@ -527,7 +539,7 @@ if SRB_AVG == True:
     Time2 = Time_eam
             
     ## Setup plot
-    fig = plt.figure(figsize=(11,5))
+    fig = plt.figure(figsize=(10.75,5))
     host1 = fig.add_subplot(111)
 
     ## Create extra y-axes that shares x-axis with "host"
@@ -556,29 +568,32 @@ if SRB_AVG == True:
     color1 = 'c'
     color2 = 'b'
     color3 = 'g'
-    color4 = 'r'
+    color4 = 'darksalmon'
     color5 = 'm'
     color6 = 'darkred' # added for tmin
 
     ## Plot each line
     
-    p1, = host1.plot(Time1, s_mean, '-', color=color1,label="E3SM SWE")
-    p2, = host1.plot(swe_obs_time, swe_obs, '--', color=color1,label="UAZ SWE")
+    p1, = host1.plot(Time1, s_mean, '-', color=color1,label="E3SM SWE", linewidth=2.7)
+    p2, = host1.plot(swe_obs_time, swe_obs, '--', color=color1,label="UA SWE", linewidth=2)
+    p10, = host1.plot(swe_obs2_time, swe_obs2, '-.', color=color1,label="ERA5 SWE", linewidth=2)
+    p11, = host1.plot(swe_obs3_time, swe_obs3, ':', color=color1,label="JRA SWE", linewidth=2)
+    p12, = host1.plot(swe_obs4_time, swe_obs4, linestyle=(0, (3, 1, 1, 1, 1, 1)), color=color1,label="NLDAS SWE", linewidth=2.5)
 
     # temps
-    p3, = yaxis2.plot(tmax_obs_time, tmax_obs, '--', color=color4,label="CPC Max. Temp.")
-    p4, = yaxis2.plot(tmax_mod_time, tmax_mod, '-', color=color4,label="E3SM Max. Temp.")
-    p5, = yaxis2.plot(tmin_obs_time, tmin_obs, '--', color=color6,label="CPC Min. Temp.")
-    p6, = yaxis2.plot(tmin_mod_time, tmin_mod, '-', color=color6,label="E3SM Min. Temp.")
+    p3, = yaxis2.plot(tmax_obs_time, tmax_obs, '--', color=color4,label="CPC Max. Temp.", linewidth=2.0)
+    p4, = yaxis2.plot(tmax_mod_time, tmax_mod, '-', color=color4,label="E3SM Max. Temp.", linewidth=2.7)
+    p5, = yaxis2.plot(tmin_obs_time, tmin_obs, '--', color=color6,label="CPC Min. Temp.", linewidth=1.5)
+    p6, = yaxis2.plot(tmin_mod_time, tmin_mod, '-', color=color6,label="E3SM Min. Temp.", linewidth=2.2)
         
-    p7, = yaxis1.plot(precip_obs_time, precip_obs, '--', color=color3,label="CPC Precip.")
-    p8, = yaxis1.plot(precip_mod_time, precip_mod, '-', color=color3,label="E3SM Precip.")
+    p7, = yaxis1.plot(precip_obs_time, precip_obs, '--', color=color3,label="CPC Precip.", linewidth=1.5)
+    p8, = yaxis1.plot(precip_mod_time, precip_mod, '-', color=color3,label="E3SM Precip.", linewidth=2.2)
     
     p9, = yaxis2.plot(Time2, np.zeros(len(Time2)), color='silver',linestyle=':', label='0$^\circ$C line')
 
     ## Add legend, specify loc with 2x tuple of bottom left corner of box in 0->1 coords
-    lns = [p5, p6, p3, p4, p1, p2, p7, p8]
-    host1.legend(handles=lns, fontsize='medium', ncol=2)
+    lns = [p6, p5, p4, p3, p8, p7, p1, p2, p10, p11, p12 ]
+    host1.legend(handles=lns, fontsize='small', ncol=2,handlelength=3)
     host1.set_xticks(time)
     host1.set_xticklabels(time3)
     host1.margins(x=0)
