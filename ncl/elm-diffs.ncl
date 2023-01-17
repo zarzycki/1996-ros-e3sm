@@ -1,10 +1,13 @@
+load "$NCARG_ROOT/lib/ncarg/nclscripts/contrib/time_axis_labels.ncl"
+
 begin
 
+;ncl elm-diffs.ncl 'singlevar="TSOI_10CM"'
 
 ;vars = (/"FSNO","H2OSNO","H2OSNO_TOP","QSNOMELT","QSNOFRZ","SNOW","SNOWDP","SNOWLIQ","SNOTTOPL","ERRH2OSNO","QSNWCPICE","FGR","FSM","QDRIP","ZBOT","TG","TV","TSA","SWup","SWdown","FIRA","FIRE","LWdown","LWup","TREFMNAV","TREFMXAV","Q2M","FPSN","FSH","Rnet","TLAI","FCTR","QOVER","RH","RH2M","SOILWATER_10CM","ZWT","TSOI_10CM","QSOIL","QVEGE","QVEGT","QTOPSOIL","Qstor","H2OCAN","H2OSFC","QH2OSFC","TWS","HC","SNOdTdzL","SNOW_SINKS","SNOW_SOURCES","SNOLIQFL","TH2OSFC","U10","QFLOOD","QRUNOFF","Qle","Qh","Qair","Tair","RAIN","SNO_T","SNO_Z"/)
 TVARLIST = (/"Tair","TSOI_10CM","SNOTTOPL","TG","TV","TSA","TREFMNAV","TREFMXAV","TH2OSFC"/)
 ZEROLIST = (/"SNOLIQFL","SNOW_SOURCES","SNOW_SINKS","H2OSFC","H2OCAN","FSNO","H2OSNO","H2OSNO_TOP","SNOWLIQ","SNOWDP","SNOW","RAIN","QSNOMELT","SNOWLIQ"/)
-out_type = "x11"
+out_type = "pdf"
 
 ;debug
 ;vars := (/"TWS"/)
@@ -28,7 +31,7 @@ do zz = 0,dimsizes(vars)-1
   exps = (/"PI", "control", "plus1K", "plus2K", "plus3K", "plus4K"/)
 
   do ii = 0,dimsizes(exps)-1
-    filename="/storage/home/cmz5202/scratch/output_"+exps(ii)+"_elm_h0.nc"
+    filename="/Volumes/Untitled/BAK/output_"+exps(ii)+"_elm_h0.nc"
     f = addfile(filename,"r")
     v = f->$var$
 
@@ -78,11 +81,36 @@ do zz = 0,dimsizes(vars)-1
     wks1   = gsn_open_wks (out_type, "./img/elm_timeseries_"+var)        ; send graphics to PNG file
   
     res                   = True                      ; plot mods desired
-    res@tiMainString      = "Two curve XY plot"       ; add title
+    res@tiMainString      = "Soil temperature (basin avg.), top 10cm"       ; add title
 
     res@xyMonoDashPattern = True
     res@xyLineThicknessF = 5.0
-    res@xyLineColors      = (/"blue","green","yellow","orange","red","black"/)          ; change line color
+    
+    ; abby's colors
+    cmap = (/ (/000, 183, 182/), \
+            (/026, 000, 248/), \
+            (/000, 117, 022/), \
+            (/255, 000, 028/), \
+            (/190, 000, 179/), \
+            (/182, 185, 041/) /)/255.
+            
+  res@xyExplicitLegendLabels = (/"Pre_Ind", "Control", "Plus_1K", "Plus_2K", "Plus_3K", "Plus_4K"/)
+  res@lgItemOrder  = (/ 5,4,3,2,1,0 /)   ; Reorder the legends
+
+  res@pmLegendDisplayMode    = "Always"   ; Display a legend.
+  res@lgPerimOn              = True      ; No legend perimeter.
+
+  res@pmLegendOrthogonalPosF = -1.15            ; Move legend inside plot
+  res@pmLegendParallelPosF   = 0.83            ; Move legend to right
+  res@pmLegendWidthF         = 0.18             ; Change width and height
+  res@pmLegendHeightF        = 0.14
+  ;res@tiMainString = "Reverse legend ordering"    ; Title
+  ;res@lgItemOrder  = (/ 3,2,1,0 /)   ; Reorder the legends
+  
+  res@tiYAxisString     = "Temperature (K)"
+   res@tiXAxisString     = "Date (1996)"
+   res@xyLineColors      = cmap
+    ;res@xyLineColors      = (/"blue","green","yellow","orange","red","black"/)          ; change line color
 
     if (any(TVARLIST .eq. var)) then
       res@gsnYRefLine = 273.15
@@ -90,6 +118,11 @@ do zz = 0,dimsizes(vars)-1
       res@gsnYRefLineThicknessF = 3.0
     end if
 
+   restick = True
+   restick@ttmFormat = "%n/%d"
+   restick@ttmAxis = "XB"
+   restick@ttmMajorStride = 4
+   time_axis_labels(time,res,restick)
     plot  = gsn_csm_xy (wks1,time,basin_avg,res) ; create plot
   
     delete(res)
@@ -98,7 +131,7 @@ do zz = 0,dimsizes(vars)-1
   end if
   
   
-  if (1 .eq. 1) then
+  if (1 .eq. 0) then
 
     wks   = gsn_open_wks (out_type, "./img/elm_panels_"+var)        ; send graphics to PNG file
 

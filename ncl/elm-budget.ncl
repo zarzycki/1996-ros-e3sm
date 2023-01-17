@@ -4,6 +4,7 @@ load "./utils/shapefile_utils.ncl"
 
 
 begin
+  out_type = "pdf"
   
   ;minlat=39.5
   ;maxlat=42.0
@@ -18,7 +19,7 @@ begin
   ;exps = (/"control"/)
   
   do ii = 0,dimsizes(exps)-1
-    filename="/storage/home/cmz5202/scratch/BAK/output_"+exps(ii)+"_elm_h0.nc"
+    filename="/Volumes/Untitled/BAK/output_"+exps(ii)+"_elm_h0.nc"
     f = addfile(filename,"r")
 
     time = f->time
@@ -88,21 +89,21 @@ begin
       arr&lon=f->lon
     end if
   
-    arr(0,ii,:,:,:) = RAIN_int
-    arr(1,ii,:,:,:) = SNOW_int
-    arr(2,ii,:,:,:) = -EvEg_int
-    arr(3,ii,:,:,:) = -qh2osfc_int
-    arr(4,ii,:,:,:) = -qover_int
-    arr(5,ii,:,:,:) = -qrunoff_int
-    arr(6,ii,:,:,:) = h2osno_int
-    arr(7,ii,:,:,:) = h2osfc_int    
-    arr(8,ii,:,:,:) = (BUDGET_int - h2osfc_int - h2osno_int)
+    arr(3,ii,:,:,:) = RAIN_int
+    arr(4,ii,:,:,:) = SNOW_int
+    arr(5,ii,:,:,:) = -EvEg_int
+    arr(7,ii,:,:,:) = -qh2osfc_int
+    arr(6,ii,:,:,:) = -qover_int
+    arr(8,ii,:,:,:) = -qrunoff_int
+    arr(0,ii,:,:,:) = h2osno_int
+    arr(1,ii,:,:,:) = h2osfc_int    
+    arr(2,ii,:,:,:) = (BUDGET_int - h2osfc_int - h2osno_int)
   end do
 
   ; get a subdomain spatially
   ;arr_sub = arr(:,:,:,{minlat:maxlat},{minlon:maxlon})
 
-  shpfilename="/storage/home/cmz5202/1996-ros-e3sm/shapes/srb.shp"
+  shpfilename="/Users/cmz5202/Software/1996-ros-e3sm/shapes/srb.shp"
   shp = addfile(shpfilename,"r")
   print_shapefile_info(shpfilename)
   plot_shapefile(shpfilename)
@@ -139,7 +140,7 @@ begin
 
 
   
-    wks   = gsn_open_wks ("x11", "./img/elm_timeseries_BUDGET")        ; send graphics to PNG file
+    wks   = gsn_open_wks (out_type, "./img/elm_timeseries_BUDGET")        ; send graphics to PNG file
   
     plot = new(9,graphic)
   
@@ -176,6 +177,7 @@ begin
   res@tmXMajorGridLineColor = "gray50"
   res@tmYMajorGridLineColor = "gray50"
   res@tiXAxisString     = "" 
+  res@tmGridDrawOrder        = "Draw" 
   
   res@tmXBMode          = "Explicit"              ; explicit labels
   res@tmXBValues        = (/0.5,1.5,2.5,3.5,4.5,5.5,6.5/)
@@ -183,29 +185,42 @@ begin
   
   ; turn off top tick marks
   res@tmXTOn           = False
-
-    res@tiYAxisString     = "~F14~q~B~rain~N~~F8~D~F14~t"  
+  
+    res@tiYAxisString     = "~F8~D~F14~Q~B~snow~N~"
     plot(0)  = gsn_csm_xy (wks,time,basin_avg(0,:,:),res) ; create plot
-    res@tiYAxisString     = "~F14~q~B~snow~N~~F8~D~F14~t"  
+    res@tiYAxisString     = "~F8~D~F14~Q~B~sfc~N~"  
     plot(1)  = gsn_csm_xy (wks,time,basin_avg(1,:,:),res) ; create plot
-    res@tiYAxisString     = "~F14~(E~B~v~N~+E~B~g~N~)"
+    res@tiYAxisString     = "~F34~;~F8~D~F14~Q~B~soil~N~"  
     plot(2)  = gsn_csm_xy (wks,time,basin_avg(2,:,:),res) ; create plot
     
     ; middle row
-    res@tiYAxisString     = "~F14~q~B~over~N~~F8~D~F14~t"  
+    res@tiYAxisString     = "~F14~q~B~rain~N~~F8~D~F14~t"  
     plot(3)  = gsn_csm_xy (wks,time,basin_avg(3,:,:),res) ; create plot
-    res@tiYAxisString     = "~F14~q~B~h2osfc~N~~F8~D~F14~t"  
+    res@tiYAxisString     = "~F14~q~B~snow~N~~F8~D~F14~t"  
     plot(4)  = gsn_csm_xy (wks,time,basin_avg(4,:,:),res) ; create plot
-    res@tiYAxisString     = "~F14~q~B~other~N~~F8~D~F14~t"
+    res@tiYAxisString     = "~F14~(E~B~v~N~+E~B~g~N~)"
     plot(5)  = gsn_csm_xy (wks,time,basin_avg(5,:,:),res) ; create plot
     
     ;bottom row
     res@tiXAxisString     = "Date (00Z, 1996)"
-    res@tiYAxisString     = "~F8~D~F14~Q~B~snow~N~"
+    res@tiYAxisString     = "~F14~q~B~over~N~~F8~D~F14~t"  
     plot(6)  = gsn_csm_xy (wks,time,basin_avg(6,:,:),res) ; create plot
-    res@tiYAxisString     = "~F8~D~F14~Q~B~sfc~N~"  
+    res@tiYAxisString     = "~F14~q~B~h2osfc~N~~F8~D~F14~t"
     plot(7)  = gsn_csm_xy (wks,time,basin_avg(7,:,:),res) ; create plot
-    res@tiYAxisString     = "~F34~;~F8~D~F14~Q~B~soil~N~"  
+    
+    
+    res@xyExplicitLegendLabels = (/"Pre_Ind", "Control", "Plus_1K", "Plus_2K", "Plus_3K", "Plus_4K"/)
+    res@lgItemOrder  = (/ 5,4,3,2,1,0 /)   ; Reorder the legends
+    res@pmLegendDisplayMode    = "Always"   ; Display a legend.
+    res@lgPerimOn              = True      ; No legend perimeter.
+    res@pmLegendOrthogonalPosF = -0.61            ; Move legend inside plot
+    res@pmLegendParallelPosF   = 0.76            ; Move legend to right
+    res@pmLegendWidthF         = 0.24             ; Change width and height
+    res@pmLegendHeightF        = 0.24
+    res@lgBoxMinorExtentF      = 0.4       ; Shorten the legend lines
+    res@lgPerimFill            = "SolidFill"      ; Fill legend box w/white
+    res@lgPerimFillColor       = "White"          ; so it masks XY curves
+    res@tiYAxisString     = "~F14~q~B~other~N~~F8~D~F14~t"
     plot(8)  = gsn_csm_xy (wks,time,basin_avg(8,:,:),res) ; create plot
     
     ; uncomment to debug budget
@@ -215,10 +230,12 @@ begin
     ;basin_avg(8,:,:) = -basin_avg(8,:,:)
     ;check_sum = dim_sum_n_Wrap(basin_avg,0)
     ;plot(8)  = gsn_csm_xy (wks,time,check_sum,res) ; create plot
+    
 
+  
       resP                     = True
       letters=(/"a.","b.","c.","d.","e.","f.","g.","h.","i.","j.","k.","l.","m.","n.","o.","p.","q.","r.", "s.", "t.","u.","v.","w.","x.","y.","z.","aa.","bb."/)
-      resP@gsnPanelFigureStringsFontHeightF = 0.018
+      resP@gsnPanelFigureStringsFontHeightF = 0.02
       resP@gsnPanelFigureStrings=letters
       resP@amJust           = "TopLeft"
       ;panres@gsnMaximize         = True             ; maximize the plots
