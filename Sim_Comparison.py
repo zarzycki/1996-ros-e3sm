@@ -101,7 +101,7 @@ ds_elm_Pre_Indi = xr.open_dataset('ds_elm_Pre_Indi_ens.nc')
 ds_mos_Pre_Indi = xr.open_dataset('ds_mos_Pre_Indi_ens.nc')
 
 #Loading reanalysis data
-path = '/gpfs/group/cmz5202/default/arp5873/JRA_sfc/'
+path = '/Volumes/Untitled/arp5873/JRA_sfc/'
 runoff = xr.open_dataset(path+ 'JRA.h1.1996.ROF.nc')
 runoff = runoff.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
 precip = xr.open_dataset(path+ 'JRA.h1.1996.PRECT.nc')
@@ -110,7 +110,7 @@ temperature = xr.open_dataset(path+ 'JRA.h1.1996.T2M.nc')
 temperature = temperature.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
 swe = xr.open_dataset(path+ 'JRA.h1.1996.SWE.nc')
 swe = swe.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
-rean_dis = xr.open_dataset('/gpfs/group/cmz5202/default/arp5873/hydro/dis_1980_2018.nc')
+rean_dis = xr.open_dataset('/Volumes/Untitled/arp5873/hydro/dis_1980_2018.nc')
 rean_dis = rean_dis.sel(time=slice('1996-01-15', '1996-01-25'),lat=slice(45.,35.),lon=slice(-85.,-70.))
 
 #regridding data to match model grid

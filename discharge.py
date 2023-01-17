@@ -32,7 +32,7 @@ Reanalysis = True
 letters = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)']
 
 #loading reanalysis discharge data
-rean_dis = xr.open_dataset('/gpfs/group/cmz5202/default/arp5873/hydro/dis_1980_2018.nc')
+rean_dis = xr.open_dataset('/Volumes/Untitled/arp5873/hydro/1996_sub.nc')
 rean_dis = rean_dis.sel(time=slice('1996-01-15', '1996-01-25'),lat=slice(45.,35.),lon=slice(-85.,-70.))
 
 #regridding the reanalysis data to match the model data
