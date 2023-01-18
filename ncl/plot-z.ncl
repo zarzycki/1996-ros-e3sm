@@ -33,8 +33,8 @@ plot_CAM=bools(bb)
 dd=days(aa)
 hh=hours(aa)
 
-era5dir="/Volumes/Untitled/arp5873/ERA5/"
-CAMdir="/Volumes/Untitled/"
+era5dir="/Volumes/ZARZYCKI_FLASH/arp5873/ERA5/"
+CAMdir="/Volumes/ZARZYCKI_FLASH/arp5873/ens_means/"
 ;era5dir="/storage/home/cmz5202/group/arp5873/ERA5/"
 ;CAMdir="/storage/home/cmz5202/scratch/"
 

@@ -17,9 +17,10 @@ begin
 
   exps = (/"PI", "control", "plus1K", "plus2K", "plus3K", "plus4K"/)
   ;exps = (/"control"/)
+  filedir="/Volumes/ZARZYCKI_FLASH/arp5873/ens_means/"
   
   do ii = 0,dimsizes(exps)-1
-    filename="/Volumes/Untitled/BAK/output_"+exps(ii)+"_elm_h0.nc"
+    filename=filedir+"/output_"+exps(ii)+"_elm_h0.nc"
     f = addfile(filename,"r")
 
     time = f->time

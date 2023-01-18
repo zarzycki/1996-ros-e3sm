@@ -7,15 +7,15 @@ maxlon=-65.0
 
 pnew = (/ 850., 500. /)       ; desired output levels 
   
-plot_CAM=False
+plot_CAM=True
 
-era5dir="/Volumes/Untitled/arp5873/ERA5/"
-CAMdir="/Volumes/Untitled/"
+era5dir="/Volumes/ZARZYCKI_FLASH/arp5873/ERA5/"
+CAMdir="/Volumes/ZARZYCKI_FLASH/arp5873/ens_means/"
   
 
 if (plot_CAM) then
-  f = addfile(CAMdir+"/output_eam_h2.nc","r")
-  timeix=17
+  f = addfile(CAMdir+"/output_control_eam_h2.nc","r")
+  timeix=16
   stride=1
   Z3 = f->Z3(timeix,:,::stride,::stride)
   PS = f->PS(timeix,::stride,::stride)
@@ -138,7 +138,7 @@ end if
 
 ; convert L2 units
 L2 = L2 * 1e7
-L2 = where(L2 .lt. -3.0,L2@_FillValue,L2)
+L2 = where(L2 .lt. -10.0,L2@_FillValue,L2)
 
 ; pittsburgh
 chooseLat=40.4406

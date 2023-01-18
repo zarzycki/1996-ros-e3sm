@@ -3,11 +3,12 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/contrib/time_axis_labels.ncl"
 begin
 
 ;ncl elm-diffs.ncl 'singlevar="TSOI_10CM"'
+;ncl elm-diffs.ncl 'singlevar="FSNO"'
 
 ;vars = (/"FSNO","H2OSNO","H2OSNO_TOP","QSNOMELT","QSNOFRZ","SNOW","SNOWDP","SNOWLIQ","SNOTTOPL","ERRH2OSNO","QSNWCPICE","FGR","FSM","QDRIP","ZBOT","TG","TV","TSA","SWup","SWdown","FIRA","FIRE","LWdown","LWup","TREFMNAV","TREFMXAV","Q2M","FPSN","FSH","Rnet","TLAI","FCTR","QOVER","RH","RH2M","SOILWATER_10CM","ZWT","TSOI_10CM","QSOIL","QVEGE","QVEGT","QTOPSOIL","Qstor","H2OCAN","H2OSFC","QH2OSFC","TWS","HC","SNOdTdzL","SNOW_SINKS","SNOW_SOURCES","SNOLIQFL","TH2OSFC","U10","QFLOOD","QRUNOFF","Qle","Qh","Qair","Tair","RAIN","SNO_T","SNO_Z"/)
 TVARLIST = (/"Tair","TSOI_10CM","SNOTTOPL","TG","TV","TSA","TREFMNAV","TREFMXAV","TH2OSFC"/)
 ZEROLIST = (/"SNOLIQFL","SNOW_SOURCES","SNOW_SINKS","H2OSFC","H2OCAN","FSNO","H2OSNO","H2OSNO_TOP","SNOWLIQ","SNOWDP","SNOW","RAIN","QSNOMELT","SNOWLIQ"/)
-out_type = "pdf"
+out_type = "x11"
 
 ;debug
 ;vars := (/"TWS"/)
@@ -31,7 +32,7 @@ do zz = 0,dimsizes(vars)-1
   exps = (/"PI", "control", "plus1K", "plus2K", "plus3K", "plus4K"/)
 
   do ii = 0,dimsizes(exps)-1
-    filename="/Volumes/Untitled/BAK/output_"+exps(ii)+"_elm_h0.nc"
+    filename="/Volumes/ZARZYCKI_FLASH/arp5873/ens_means/output_"+exps(ii)+"_elm_h0.nc"
     f = addfile(filename,"r")
     v = f->$var$
 
@@ -81,8 +82,27 @@ do zz = 0,dimsizes(vars)-1
     wks1   = gsn_open_wks (out_type, "./img/elm_timeseries_"+var)        ; send graphics to PNG file
   
     res                   = True                      ; plot mods desired
-    res@tiMainString      = "Soil temperature (basin avg.), top 10cm"       ; add title
-
+    res@gsnDraw         = False                   ; don't draw yet
+    res@gsnFrame        = False            
+    
+    if (var .eq. "FSNO") then
+      res@tiMainString      = "Fractional snow cover" 
+    else if (var .eq. "TSOI_10CM") then
+      res@tiMainString      = "Soil temperature, top 10cm"
+    else
+      res@tiMainString      = "" 
+    end if
+    end if
+    
+    if (var .eq. "FSNO") then
+      res@tiYAxisString     = "Snow cover fraction"
+    else if (var .eq. "TSOI_10CM") then
+      res@tiYAxisString     = "Temperature (K)"
+    else
+      res@tiYAxisString      = ""
+    end if
+    end if
+    
     res@xyMonoDashPattern = True
     res@xyLineThicknessF = 5.0
     
@@ -97,18 +117,21 @@ do zz = 0,dimsizes(vars)-1
   res@xyExplicitLegendLabels = (/"Pre_Ind", "Control", "Plus_1K", "Plus_2K", "Plus_3K", "Plus_4K"/)
   res@lgItemOrder  = (/ 5,4,3,2,1,0 /)   ; Reorder the legends
 
-  res@pmLegendDisplayMode    = "Always"   ; Display a legend.
-  res@lgPerimOn              = True      ; No legend perimeter.
+  if (var .eq. "TSOI_10CM") then
+    res@pmLegendDisplayMode    = "Always"   ; Display a legend.
+    res@lgPerimOn              = True      ; No legend perimeter.
 
-  res@pmLegendOrthogonalPosF = -1.15            ; Move legend inside plot
-  res@pmLegendParallelPosF   = 0.83            ; Move legend to right
-  res@pmLegendWidthF         = 0.18             ; Change width and height
-  res@pmLegendHeightF        = 0.14
-  ;res@tiMainString = "Reverse legend ordering"    ; Title
-  ;res@lgItemOrder  = (/ 3,2,1,0 /)   ; Reorder the legends
+    res@pmLegendOrthogonalPosF = -1.15            ; Move legend inside plot
+    res@pmLegendParallelPosF   = 0.83            ; Move legend to right
+    res@pmLegendWidthF         = 0.18             ; Change width and height
+    res@pmLegendHeightF        = 0.16
+    ;res@tiMainString = "Reverse legend ordering"    ; Title
+    ;res@lgItemOrder  = (/ 3,2,1,0 /)   ; Reorder the legends
+  end if
   
-  res@tiYAxisString     = "Temperature (K)"
-   res@tiXAxisString     = "Date (1996)"
+
+    
+   res@tiXAxisString     = "Date (00Z, 1996)"
    res@xyLineColors      = cmap
     ;res@xyLineColors      = (/"blue","green","yellow","orange","red","black"/)          ; change line color
 
@@ -124,7 +147,32 @@ do zz = 0,dimsizes(vars)-1
    restick@ttmMajorStride = 4
    time_axis_labels(time,res,restick)
     plot  = gsn_csm_xy (wks1,time,basin_avg,res) ; create plot
-  
+
+  ; panel labels
+  txres                       = True
+  txres@txPerimOn             = True
+  txres@txBackgroundFillColor = "white"
+  txres@txFontHeightF         = 0.03
+  amres = True
+  amres@amParallelPosF   = -0.5 
+  amres@amOrthogonalPosF = 0.5
+  amres@amJust           = "BottomLeft"  
+  if (var .eq. "FSNO") then
+    txid = gsn_create_text(wks1, "b.", txres)
+    annoid = gsn_add_annotation(plot, txid, amres)  
+  else if (var .eq. "TSOI_10CM") then
+    txid = gsn_create_text(wks1, "a.", txres)
+    annoid = gsn_add_annotation(plot, txid, amres)  
+  else
+    print("no panel label")
+  end if
+  end if
+    
+
+
+    draw(plot)
+    frame(wks1)                                        
+                                                  
     delete(res)
     delete(plot)
   
