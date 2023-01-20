@@ -1,4 +1,4 @@
-load "./utils/shapefile_utils.ncl"
+load "../utils/shapefile_utils.ncl"
 
 
 begin
@@ -8,7 +8,10 @@ maxlat=43.5
 minlon=-79.0+360.
 maxlon=-74.0+360.
   
-f=addfile("precip.V1.0.1996.nc","r")
+dir_to_obs="/Volumes/ZARZYCKI_FLASH/arp5873/cpc-gauge/"
+dir_to_sw="/Users/cmz5202/Software/1996-ros-e3sm/"
+
+f=addfile(dir_to_obs+"/precip.V1.0.1996.nc","r")
 
 time = f->time
 
@@ -17,7 +20,7 @@ enddate = cd_inv_calendar(1996,01,23,0,0,0,time@units, 0)
 
 SWE = f->precip({startdate:enddate},{minlat:maxlat},{minlon:maxlon}) 
 
-shpfilename="/Users/cmz5202/Software/1996-ros-e3sm/shapes/srb.shp"
+shpfilename=dir_to_sw+"/shapes/srb.shp"
 shp = addfile(shpfilename,"r")
 print_shapefile_info(shpfilename)
 plot_shapefile(shpfilename)
@@ -43,9 +46,9 @@ SWE_sub = where(MASK .gt. 0.5,SWE_sub,SWE_sub@_FillValue)
 
 SWE_avg = dim_avg_n_Wrap(SWE_sub,(/1,2/))
 
-print(SWE_avg+" "+SWE_avg&time)
+print(SWE_avg+" "+SWE_avg&time+" "+cd_calendar(SWE_avg&time,-3))
 newtime = SWE_avg&time
-newtime = newtime + 0.5
+newtime = newtime - 12
 SWE_avg&time = newtime
 
 system("/bin/rm -f obs_precip.nc")   ; remove any pre-existing file
@@ -71,5 +74,6 @@ filedimdef(ncdf,"time",-1,True)
 ; to write the meta data associated with each variable
 ;===================================================================
 ncdf->SWE_avg = SWE_avg
+ncdf->SWE_sub = SWE_sub
 
 end

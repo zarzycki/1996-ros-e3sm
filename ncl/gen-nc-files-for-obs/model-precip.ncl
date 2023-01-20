@@ -1,4 +1,4 @@
-load "./utils/shapefile_utils.ncl"
+load "../utils/shapefile_utils.ncl"
 
 
 begin
@@ -7,8 +7,11 @@ minlat=39.0
 maxlat=43.5
 minlon=-79.0
 maxlon=-74.0
-  
-f=addfile("/Volumes/Untitled/output_control_eam_h0.nc","r")
+
+dir_to_model="/Volumes/ZARZYCKI_FLASH/arp5873/ens_means/"
+dir_to_sw="/Users/cmz5202/Software/1996-ros-e3sm/"
+
+f=addfile(dir_to_model+"/output_control_eam_h0.nc","r")
 
 time = f->time
 
@@ -26,7 +29,7 @@ opt@nval_crit = 4    ; require at least 4 values per day for a daily mean to be 
 SWE = calculate_daily_values (var, "avg", 0, opt)
 SWE = 8.64e7 * SWE
 
-shpfilename="/Users/cmz5202/Software/1996-ros-e3sm/shapes/srb.shp"
+shpfilename=dir_to_sw+"/shapes/srb.shp"
 shp = addfile(shpfilename,"r")
 print_shapefile_info(shpfilename)
 plot_shapefile(shpfilename)
