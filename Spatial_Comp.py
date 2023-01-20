@@ -551,9 +551,9 @@ if SRB_AVG == True:
     yaxis1.set_ylim([-5, 40])
     yaxis2.set_ylim([-25,25])
     
-    host1.set_xlim([datetime.datetime(1996, 1, 15), datetime.datetime(1996, 1, 22)])
-    yaxis1.set_xlim([datetime.datetime(1996, 1, 15), datetime.datetime(1996, 1, 22)])
-    yaxis2.set_xlim([datetime.datetime(1996, 1, 15), datetime.datetime(1996, 1, 22)])
+    #host1.set_xlim([datetime.datetime(1996, 1, 15), datetime.datetime(1996, 1, 22)])
+    #yaxis1.set_xlim([datetime.datetime(1996, 1, 15), datetime.datetime(1996, 1, 22)])
+    #yaxis2.set_xlim([datetime.datetime(1996, 1, 15), datetime.datetime(1996, 1, 22)])
     
     # Offset the right spine and show it
     yaxis2.spines["right"].set_position(("axes", 1.1))
