@@ -5,14 +5,20 @@ maxlat=47.0
 minlon=-102.0
 maxlon=-65.0
 
-pnew = (/ 850., 500. /)       ; desired output levels 
+range=2.5   ; area average around sounding point of interest
   
 plot_CAM=True
+
+; pittsburgh
+chooseLat=40.4406
+chooseLon=-79.9959
+;sterling
+;chooseLat=39.0067
+;chooseLon=-77.4291
 
 era5dir="/Volumes/ZARZYCKI_FLASH/arp5873/ERA5/"
 CAMdir="/Volumes/ZARZYCKI_FLASH/arp5873/ens_means/"
   
-
 if (plot_CAM) then
   f = addfile(CAMdir+"/output_control_eam_h2.nc","r")
   timeix=16
@@ -23,8 +29,6 @@ if (plot_CAM) then
   Q = f->Q(timeix,:,::stride,::stride)
   U = f->U(timeix,:,::stride,::stride)
   V = f->V(timeix,:,::stride,::stride)
-  ;W = mixhum_convert(Q, "q", (/0,0/))
-  ;copy_VarCoords(Q,W)
 
   time = f->time(timeix)
   print(cd_calendar(time,-3))
@@ -76,7 +80,6 @@ if (plot_CAM) then
   ;L2 = BV / (WIND*WIND) - DDUDZ / WIND
 
 else
-
 
   zfile = addfile(era5dir+"/e5.oper.an.pl.128_129_z.ll025sc.1996011900_1996011923.nc","r")
   tfile = addfile(era5dir+"/e5.oper.an.pl.128_130_t.ll025sc.1996011900_1996011923.nc","r")
@@ -140,60 +143,52 @@ end if
 L2 = L2 * 1e7
 L2 = where(L2 .lt. -10.0,L2@_FillValue,L2)
 
-; pittsburgh
-chooseLat=40.4406
-chooseLon=-79.9959
-
-;sterling
-;chooseLat=39.0067
-;chooseLon=-77.4291
-
 if (plot_CAM .eq. False)
   chooseLon = chooseLon + 360.0
 end if
 
-Z3prof=Z3(:,{chooseLat},{chooseLon})
-L2prof=L2(:,{chooseLat},{chooseLon})
+; extract Z3 and L2 in a range around the point
+Z3prof=Z3(:,{chooseLat-range:chooseLat+range},{chooseLon-range:chooseLon+range})
+L2prof=L2(:,{chooseLat-range:chooseLat+range},{chooseLon-range:chooseLon+range})
+
+; average over lat/lon in "region" pulled
+Z3prof := dim_avg_n_Wrap(Z3prof,(/1,2/))
+L2prof := dim_avg_n_Wrap(L2prof,(/1,2/))
 print(Z3prof+" "+L2prof)
 
-system("/bin/rm -f simple.nc")   ; remove any pre-existing file
-ncdf = addfile("simple.nc" ,"c")  ; open output netCDF file
+if (0 .eq. 1) then
 
-;===================================================================
-; create global attributes of the file (optional)
-;===================================================================
-fAtt               = True            ; assign file attributes
-fAtt@title         = "NCL Simple Approach to netCDF Creation"
-fAtt@source_file   =  "original-file.nc"
-fAtt@Conventions   = "None"
-fAtt@creation_date = systemfunc ("date")
-fileattdef( ncdf, fAtt )            ; copy file attributes
+  system("/bin/rm -f simple.nc")   ; remove any pre-existing file
+  ncdf = addfile("simple.nc" ,"c")  ; open output netCDF file
 
-;===================================================================
-; make time an UNLIMITED dimension; recommended  for most applications
-;===================================================================
-filedimdef(ncdf,"time",-1,True) 
+  ;===================================================================
+  ; create global attributes of the file (optional)
+  ;===================================================================
+  fAtt               = True            ; assign file attributes
+  fAtt@creation_date = systemfunc ("date")
+  fileattdef( ncdf, fAtt )            ; copy file attributes
 
-;===================================================================
-; output variables directly; NCL will call appropriate functions
-; to write the meta data associated with each variable
-;===================================================================
-ncdf->BV = BV
-ncdf->DUDZ = DUDZ
-ncdf->SHR2 = SHR2
+  filedimdef(ncdf,"time",-1,True) 
 
+  ncdf->BV = BV
+  ncdf->DUDZ = DUDZ
+  ncdf->SHR2 = SHR2
 
-wks   = gsn_open_wks ("x11","xy")               ; send graphics to PNG file
+end if
+
+wks   = gsn_open_wks ("pdf","RFIG_scorer")               ; send graphics to PNG file
 
 res                  = True                     ; plot mods desired
-res@tiMainString     = "Basic XY plot"          ; add title
+res@tiMainString     = "12Z KPIT E3SM Scorer"          ; add title
+
+res@tiXAxisString     = "Scorer L2 (x 10^7) (m^-2)"  
 
 res@trYMinF  = 0.0
-res@trYMaxF  = 14000.0                  ; max value on y-axis
+res@trYMaxF  = 14000.0
 
-res@trXMinF  = -20.                ; min value on y-axis
-res@trXMaxF  = 60.                  ; max value on y-axis
+res@trXMinF  = -20. 
+res@trXMaxF  = 60.
+
 plot  = gsn_csm_xy (wks,L2prof,Z3prof,res) ; create plot
-
 
 end
