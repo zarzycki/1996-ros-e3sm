@@ -19,19 +19,23 @@ import metpy.calc as mpcalc
 from metpy.units import units
 from scipy import stats
 import pandas as pd
+import sys
 
+### CMZ Command line args
+basepath = sys.argv[1]
 
 #creating an array of letters to put in corner of figure panels
 letters = ['(a)','(b)','(c)','(d)','(e)']
 
 
 #loading high res model data
-ds_eam = xr.open_dataset('ds_eam_Control_ens.nc')
-ds_elm = xr.open_dataset('ds_elm_Control_ens.nc')
+procpath = basepath+'/arp-proc/'
+ds_eam = xr.open_dataset(procpath+'/ds_eam_Control_ens.nc')
+ds_elm = xr.open_dataset(procpath+'/ds_elm_Control_ens.nc')
 
 #loading low res model data
-Ds_eam_lr = xr.open_dataset('Low_Res_eam_slice.nc')
-Ds_elm_lr = xr.open_dataset('Low_Res_elm_slice.nc')
+Ds_eam_lr = xr.open_dataset(procpath+'/Low_Res_eam_slice.nc')
+Ds_elm_lr = xr.open_dataset(procpath+'/Low_Res_elm_slice.nc')
 
 
 #set Low_Res = True if want to plot low res lines on plots
@@ -87,7 +91,9 @@ for i in range(len(ds_elm['time'])):
 # humidity = humidity.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
 # windspeed = metpy.calc.wind_speed(u_wind['U10'], v_wind['V10'])
 
-path = '/Volumes/Untitled/arp5873/ERA5/'
+### CMZ comment out to make CLI option
+#path = '/Volumes/Untitled/arp5873/ERA5/'
+path = basepath+'/rean_ERA5/'
 temperature = xr.open_dataset(path+ 'e5.oper.an.sfc.128_167_2t.ll025sc.1996010100_1996013123.nc')
 temperature = temperature.reindex(latitude=temperature.latitude[::-1])
 print(temperature)

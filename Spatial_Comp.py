@@ -16,6 +16,11 @@ import datetime
 from datetime import timedelta
 import shapefile as shp
 import geopandas as gpd
+import sys
+
+### CMZ Command line args
+basepath = sys.argv[1]
+softpath = sys.argv[2]
 
 #set to true to use shapefile to average over SRB set to false to use rough basin average
 SRB_AVG = True
@@ -28,55 +33,57 @@ shift_MOSART = True
 #creating letter array to label subplots
 letters = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)']
 
-#loading ensemble files
-ds_eam_Control = xr.open_dataset('ds_eam_Control_ens.nc')
-ds_elm_Control = xr.open_dataset('ds_elm_Control_ens.nc')
-ds_mos_Control = xr.open_dataset('ds_mos_Control_ens.nc')
-
-ds_eam_Plus_1K = xr.open_dataset('ds_eam_Plus_1K_ens.nc')
-ds_elm_Plus_1K = xr.open_dataset('ds_elm_Plus_1K_ens.nc')
-ds_mos_Plus_1K = xr.open_dataset('ds_mos_Plus_1K_ens.nc')
-
-ds_eam_Plus_2K = xr.open_dataset('ds_eam_Plus_2K_ens.nc')
-ds_elm_Plus_2K = xr.open_dataset('ds_elm_Plus_2K_ens.nc')
-ds_mos_Plus_2K = xr.open_dataset('ds_mos_Plus_2K_ens.nc')
-
-ds_eam_Plus_3K = xr.open_dataset('ds_eam_Plus_3K_ens.nc')
-ds_elm_Plus_3K = xr.open_dataset('ds_elm_Plus_3K_ens.nc')
-ds_mos_Plus_3K = xr.open_dataset('ds_mos_Plus_3K_ens.nc')
-
-ds_eam_Plus_4K = xr.open_dataset('ds_eam_Plus_4K_ens.nc')
-ds_elm_Plus_4K = xr.open_dataset('ds_elm_Plus_4K_ens.nc')
-ds_mos_Plus_4K = xr.open_dataset('ds_mos_Plus_4K_ens.nc')
-
-ds_eam_Pre_Ind = xr.open_dataset('ds_eam_Pre_Ind_ens.nc')
-ds_elm_Pre_Ind = xr.open_dataset('ds_elm_Pre_Ind_ens.nc')
-ds_mos_Pre_Ind = xr.open_dataset('ds_mos_Pre_Ind_ens.nc')
+procpath = basepath+'/arp-proc/'
 
 #loading ensemble files
-ds_eam_Controli = xr.open_dataset('ds_eam_Controli_ens.nc')
-ds_elm_Controli = xr.open_dataset('ds_elm_Controli_ens.nc')
-ds_mos_Controli = xr.open_dataset('ds_mos_Controli_ens.nc')
+ds_eam_Control = xr.open_dataset(procpath+'/ds_eam_Control_ens.nc')
+ds_elm_Control = xr.open_dataset(procpath+'/ds_elm_Control_ens.nc')
+ds_mos_Control = xr.open_dataset(procpath+'/ds_mos_Control_ens.nc')
 
-ds_eam_Plus_1Ki = xr.open_dataset('ds_eam_Plus_1Ki_ens.nc')
-ds_elm_Plus_1Ki = xr.open_dataset('ds_elm_Plus_1Ki_ens.nc')
-ds_mos_Plus_1Ki = xr.open_dataset('ds_mos_Plus_1Ki_ens.nc')
+ds_eam_Plus_1K = xr.open_dataset(procpath+'/ds_eam_Plus_1K_ens.nc')
+ds_elm_Plus_1K = xr.open_dataset(procpath+'/ds_elm_Plus_1K_ens.nc')
+ds_mos_Plus_1K = xr.open_dataset(procpath+'/ds_mos_Plus_1K_ens.nc')
 
-ds_eam_Plus_2Ki = xr.open_dataset('ds_eam_Plus_2Ki_ens.nc')
-ds_elm_Plus_2Ki = xr.open_dataset('ds_elm_Plus_2Ki_ens.nc')
-ds_mos_Plus_2Ki = xr.open_dataset('ds_mos_Plus_2Ki_ens.nc')
+ds_eam_Plus_2K = xr.open_dataset(procpath+'/ds_eam_Plus_2K_ens.nc')
+ds_elm_Plus_2K = xr.open_dataset(procpath+'/ds_elm_Plus_2K_ens.nc')
+ds_mos_Plus_2K = xr.open_dataset(procpath+'/ds_mos_Plus_2K_ens.nc')
 
-ds_eam_Plus_3Ki = xr.open_dataset('ds_eam_Plus_3Ki_ens.nc')
-ds_elm_Plus_3Ki = xr.open_dataset('ds_elm_Plus_3Ki_ens.nc')
-ds_mos_Plus_3Ki = xr.open_dataset('ds_mos_Plus_3Ki_ens.nc')
+ds_eam_Plus_3K = xr.open_dataset(procpath+'/ds_eam_Plus_3K_ens.nc')
+ds_elm_Plus_3K = xr.open_dataset(procpath+'/ds_elm_Plus_3K_ens.nc')
+ds_mos_Plus_3K = xr.open_dataset(procpath+'/ds_mos_Plus_3K_ens.nc')
 
-ds_eam_Plus_4Ki = xr.open_dataset('ds_eam_Plus_4Ki_ens.nc')
-ds_elm_Plus_4Ki = xr.open_dataset('ds_elm_Plus_4Ki_ens.nc')
-ds_mos_Plus_4Ki = xr.open_dataset('ds_mos_Plus_4Ki_ens.nc')
+ds_eam_Plus_4K = xr.open_dataset(procpath+'/ds_eam_Plus_4K_ens.nc')
+ds_elm_Plus_4K = xr.open_dataset(procpath+'/ds_elm_Plus_4K_ens.nc')
+ds_mos_Plus_4K = xr.open_dataset(procpath+'/ds_mos_Plus_4K_ens.nc')
 
-ds_eam_Pre_Indi = xr.open_dataset('ds_eam_Pre_Indi_ens.nc')
-ds_elm_Pre_Indi = xr.open_dataset('ds_elm_Pre_Indi_ens.nc')
-ds_mos_Pre_Indi = xr.open_dataset('ds_mos_Pre_Indi_ens.nc')
+ds_eam_Pre_Ind = xr.open_dataset(procpath+'/ds_eam_Pre_Ind_ens.nc')
+ds_elm_Pre_Ind = xr.open_dataset(procpath+'/ds_elm_Pre_Ind_ens.nc')
+ds_mos_Pre_Ind = xr.open_dataset(procpath+'/ds_mos_Pre_Ind_ens.nc')
+
+#loading ensemble files
+ds_eam_Controli = xr.open_dataset(procpath+'/ds_eam_Controli_ens.nc')
+ds_elm_Controli = xr.open_dataset(procpath+'/ds_elm_Controli_ens.nc')
+ds_mos_Controli = xr.open_dataset(procpath+'/ds_mos_Controli_ens.nc')
+
+ds_eam_Plus_1Ki = xr.open_dataset(procpath+'/ds_eam_Plus_1Ki_ens.nc')
+ds_elm_Plus_1Ki = xr.open_dataset(procpath+'/ds_elm_Plus_1Ki_ens.nc')
+ds_mos_Plus_1Ki = xr.open_dataset(procpath+'/ds_mos_Plus_1Ki_ens.nc')
+
+ds_eam_Plus_2Ki = xr.open_dataset(procpath+'/ds_eam_Plus_2Ki_ens.nc')
+ds_elm_Plus_2Ki = xr.open_dataset(procpath+'/ds_elm_Plus_2Ki_ens.nc')
+ds_mos_Plus_2Ki = xr.open_dataset(procpath+'/ds_mos_Plus_2Ki_ens.nc')
+
+ds_eam_Plus_3Ki = xr.open_dataset(procpath+'/ds_eam_Plus_3Ki_ens.nc')
+ds_elm_Plus_3Ki = xr.open_dataset(procpath+'/ds_elm_Plus_3Ki_ens.nc')
+ds_mos_Plus_3Ki = xr.open_dataset(procpath+'/ds_mos_Plus_3Ki_ens.nc')
+
+ds_eam_Plus_4Ki = xr.open_dataset(procpath+'/ds_eam_Plus_4Ki_ens.nc')
+ds_elm_Plus_4Ki = xr.open_dataset(procpath+'/ds_elm_Plus_4Ki_ens.nc')
+ds_mos_Plus_4Ki = xr.open_dataset(procpath+'/ds_mos_Plus_4Ki_ens.nc')
+
+ds_eam_Pre_Indi = xr.open_dataset(procpath+'/ds_eam_Pre_Indi_ens.nc')
+ds_elm_Pre_Indi = xr.open_dataset(procpath+'/ds_elm_Pre_Indi_ens.nc')
+ds_mos_Pre_Indi = xr.open_dataset(procpath+'/ds_mos_Pre_Indi_ens.nc')
 
 #function that creates an array of time values given a start date, end date, and timestep
 def datetime_range(start, end, delta):
@@ -238,90 +245,91 @@ def add_shape_coord_from_data_array(xr_da, shp_path, coord_name):
 
     return xr_da
 
+
 #masking out all data outside of SRB if set to TRUE
 if SRB_AVG == True:
-    ds_eam_Control = add_shape_coord_from_data_array(ds_eam_Control, "./shapes/srb.shp", 'coord' )
+    ds_eam_Control = add_shape_coord_from_data_array(ds_eam_Control, softpath+"/shapes/srb.shp", 'coord' )
     ds_eam_Control = ds_eam_Control.where(ds_eam_Control.coord==0, other=np.nan)
-    ds_elm_Control = add_shape_coord_from_data_array(ds_elm_Control, "./shapes/srb.shp", 'coord' )
+    ds_elm_Control = add_shape_coord_from_data_array(ds_elm_Control, softpath+"/shapes/srb.shp", 'coord' )
     ds_elm_Control = ds_elm_Control.where(ds_elm_Control.coord==0, other=np.nan)
-    ds_mos_Control = add_shape_coord_from_data_array(ds_mos_Control, "./shapes/srb.shp", 'coord' )
+    ds_mos_Control = add_shape_coord_from_data_array(ds_mos_Control, softpath+"/shapes/srb.shp", 'coord' )
     ds_mos_Control = ds_mos_Control.where(ds_mos_Control.coord==0, other=np.nan)
 
-    ds_eam_Plus_1K = add_shape_coord_from_data_array(ds_eam_Plus_1K, "./shapes/srb.shp", 'coord' )
+    ds_eam_Plus_1K = add_shape_coord_from_data_array(ds_eam_Plus_1K, softpath+"/shapes/srb.shp", 'coord' )
     ds_eam_Plus_1K = ds_eam_Plus_1K.where(ds_eam_Plus_1K.coord==0, other=np.nan)
-    ds_elm_Plus_1K = add_shape_coord_from_data_array(ds_elm_Plus_1K, "./shapes/srb.shp", 'coord' )
+    ds_elm_Plus_1K = add_shape_coord_from_data_array(ds_elm_Plus_1K, softpath+"/shapes/srb.shp", 'coord' )
     ds_elm_Plus_1K = ds_elm_Plus_1K.where(ds_elm_Plus_1K.coord==0, other=np.nan)
-    ds_mos_Plus_1K = add_shape_coord_from_data_array(ds_mos_Plus_1K, "./shapes/srb.shp", 'coord' )
+    ds_mos_Plus_1K = add_shape_coord_from_data_array(ds_mos_Plus_1K, softpath+"/shapes/srb.shp", 'coord' )
     ds_mos_Plus_1K = ds_mos_Plus_1K.where(ds_mos_Plus_1K.coord==0, other=np.nan)
 
-    ds_eam_Plus_2K = add_shape_coord_from_data_array(ds_eam_Plus_2K, "./shapes/srb.shp", 'coord' )
+    ds_eam_Plus_2K = add_shape_coord_from_data_array(ds_eam_Plus_2K, softpath+"/shapes/srb.shp", 'coord' )
     ds_eam_Plus_2K = ds_eam_Plus_2K.where(ds_eam_Plus_2K.coord==0, other=np.nan)
-    ds_elm_Plus_2K = add_shape_coord_from_data_array(ds_elm_Plus_2K, "./shapes/srb.shp", 'coord' )
+    ds_elm_Plus_2K = add_shape_coord_from_data_array(ds_elm_Plus_2K, softpath+"/shapes/srb.shp", 'coord' )
     ds_elm_Plus_2K = ds_elm_Plus_2K.where(ds_elm_Plus_2K.coord==0, other=np.nan)
-    ds_mos_Plus_2K = add_shape_coord_from_data_array(ds_mos_Plus_2K, "./shapes/srb.shp", 'coord' )
+    ds_mos_Plus_2K = add_shape_coord_from_data_array(ds_mos_Plus_2K, softpath+"/shapes/srb.shp", 'coord' )
     ds_mos_Plus_2K = ds_mos_Plus_2K.where(ds_mos_Plus_2K.coord==0, other=np.nan)
 
-    ds_eam_Plus_3K = add_shape_coord_from_data_array(ds_eam_Plus_3K, "./shapes/srb.shp", 'coord' )
+    ds_eam_Plus_3K = add_shape_coord_from_data_array(ds_eam_Plus_3K, softpath+"/shapes/srb.shp", 'coord' )
     ds_eam_Plus_3K = ds_eam_Plus_3K.where(ds_eam_Plus_3K.coord==0, other=np.nan)
-    ds_elm_Plus_3K = add_shape_coord_from_data_array(ds_elm_Plus_3K, "./shapes/srb.shp", 'coord' )
+    ds_elm_Plus_3K = add_shape_coord_from_data_array(ds_elm_Plus_3K, softpath+"/shapes/srb.shp", 'coord' )
     ds_elm_Plus_3K = ds_elm_Plus_3K.where(ds_elm_Plus_3K.coord==0, other=np.nan)
-    ds_mos_Plus_3K = add_shape_coord_from_data_array(ds_mos_Plus_3K, "./shapes/srb.shp", 'coord' )
+    ds_mos_Plus_3K = add_shape_coord_from_data_array(ds_mos_Plus_3K, softpath+"/shapes/srb.shp", 'coord' )
     ds_mos_Plus_3K = ds_mos_Plus_3K.where(ds_mos_Plus_3K.coord==0, other=np.nan)
 
-    ds_eam_Plus_4K = add_shape_coord_from_data_array(ds_eam_Plus_4K, "./shapes/srb.shp", 'coord' )
+    ds_eam_Plus_4K = add_shape_coord_from_data_array(ds_eam_Plus_4K, softpath+"/shapes/srb.shp", 'coord' )
     ds_eam_Plus_4K = ds_eam_Plus_4K.where(ds_eam_Plus_4K.coord==0, other=np.nan)
-    ds_elm_Plus_4K = add_shape_coord_from_data_array(ds_elm_Plus_4K, "./shapes/srb.shp", 'coord' )
+    ds_elm_Plus_4K = add_shape_coord_from_data_array(ds_elm_Plus_4K, softpath+"/shapes/srb.shp", 'coord' )
     ds_elm_Plus_4K = ds_elm_Plus_4K.where(ds_elm_Plus_4K.coord==0, other=np.nan)
-    ds_mos_Plus_4K = add_shape_coord_from_data_array(ds_mos_Plus_4K, "./shapes/srb.shp", 'coord' )
+    ds_mos_Plus_4K = add_shape_coord_from_data_array(ds_mos_Plus_4K, softpath+"/shapes/srb.shp", 'coord' )
     ds_mos_Plus_4K = ds_mos_Plus_4K.where(ds_mos_Plus_4K.coord==0, other=np.nan)
 
-    ds_eam_Pre_Ind = add_shape_coord_from_data_array(ds_eam_Pre_Ind, "./shapes/srb.shp", 'coord' )
+    ds_eam_Pre_Ind = add_shape_coord_from_data_array(ds_eam_Pre_Ind, softpath+"/shapes/srb.shp", 'coord' )
     ds_eam_Pre_Ind = ds_eam_Pre_Ind.where(ds_eam_Pre_Ind.coord==0, other=np.nan)
-    ds_elm_Pre_Ind = add_shape_coord_from_data_array(ds_elm_Pre_Ind, "./shapes/srb.shp", 'coord' )
+    ds_elm_Pre_Ind = add_shape_coord_from_data_array(ds_elm_Pre_Ind, softpath+"/shapes/srb.shp", 'coord' )
     ds_elm_Pre_Ind = ds_elm_Pre_Ind.where(ds_elm_Pre_Ind.coord==0, other=np.nan)
-    ds_mos_Pre_Ind = add_shape_coord_from_data_array(ds_mos_Pre_Ind, "./shapes/srb.shp", 'coord' )
+    ds_mos_Pre_Ind = add_shape_coord_from_data_array(ds_mos_Pre_Ind, softpath+"/shapes/srb.shp", 'coord' )
     ds_mos_Pre_Ind = ds_mos_Pre_Ind.where(ds_mos_Pre_Ind.coord==0, other=np.nan)
 
-    ds_eam_Controli = add_shape_coord_from_data_array(ds_eam_Controli, "./shapes/srb.shp", 'coord' )
+    ds_eam_Controli = add_shape_coord_from_data_array(ds_eam_Controli, softpath+"/shapes/srb.shp", 'coord' )
     ds_eam_Controli = ds_eam_Controli.where(ds_eam_Controli.coord==0, other=np.nan)
-    ds_elm_Controli = add_shape_coord_from_data_array(ds_elm_Controli, "./shapes/srb.shp", 'coord' )
+    ds_elm_Controli = add_shape_coord_from_data_array(ds_elm_Controli, softpath+"/shapes/srb.shp", 'coord' )
     ds_elm_Controli = ds_elm_Controli.where(ds_elm_Controli.coord==0, other=np.nan)
-    ds_mos_Controli = add_shape_coord_from_data_array(ds_mos_Controli, "./shapes/srb.shp", 'coord' )
+    ds_mos_Controli = add_shape_coord_from_data_array(ds_mos_Controli, softpath+"/shapes/srb.shp", 'coord' )
     ds_mos_Controli = ds_mos_Controli.where(ds_mos_Controli.coord==0, other=np.nan)
 
-    ds_eam_Plus_1Ki = add_shape_coord_from_data_array(ds_eam_Plus_1Ki, "./shapes/srb.shp", 'coord' )
+    ds_eam_Plus_1Ki = add_shape_coord_from_data_array(ds_eam_Plus_1Ki, softpath+"/shapes/srb.shp", 'coord' )
     ds_eam_Plus_1Ki = ds_eam_Plus_1Ki.where(ds_eam_Plus_1Ki.coord==0, other=np.nan)
-    ds_elm_Plus_1Ki = add_shape_coord_from_data_array(ds_elm_Plus_1Ki, "./shapes/srb.shp", 'coord' )
+    ds_elm_Plus_1Ki = add_shape_coord_from_data_array(ds_elm_Plus_1Ki, softpath+"/shapes/srb.shp", 'coord' )
     ds_elm_Plus_1Ki = ds_elm_Plus_1Ki.where(ds_elm_Plus_1Ki.coord==0, other=np.nan)
-    ds_mos_Plus_1Ki = add_shape_coord_from_data_array(ds_mos_Plus_1Ki, "./shapes/srb.shp", 'coord' )
+    ds_mos_Plus_1Ki = add_shape_coord_from_data_array(ds_mos_Plus_1Ki, softpath+"/shapes/srb.shp", 'coord' )
     ds_mos_Plus_1Ki = ds_mos_Plus_1Ki.where(ds_mos_Plus_1Ki.coord==0, other=np.nan)
 
-    ds_eam_Plus_2Ki = add_shape_coord_from_data_array(ds_eam_Plus_2Ki, "./shapes/srb.shp", 'coord' )
+    ds_eam_Plus_2Ki = add_shape_coord_from_data_array(ds_eam_Plus_2Ki, softpath+"/shapes/srb.shp", 'coord' )
     ds_eam_Plus_2Ki = ds_eam_Plus_2Ki.where(ds_eam_Plus_2Ki.coord==0, other=np.nan)
-    ds_elm_Plus_2Ki = add_shape_coord_from_data_array(ds_elm_Plus_2Ki, "./shapes/srb.shp", 'coord' )
+    ds_elm_Plus_2Ki = add_shape_coord_from_data_array(ds_elm_Plus_2Ki, softpath+"/shapes/srb.shp", 'coord' )
     ds_elm_Plus_2Ki = ds_elm_Plus_2Ki.where(ds_elm_Plus_2Ki.coord==0, other=np.nan)
-    ds_mos_Plus_2Ki = add_shape_coord_from_data_array(ds_mos_Plus_2Ki, "./shapes/srb.shp", 'coord' )
+    ds_mos_Plus_2Ki = add_shape_coord_from_data_array(ds_mos_Plus_2Ki, softpath+"/shapes/srb.shp", 'coord' )
     ds_mos_Plus_2Ki = ds_mos_Plus_2Ki.where(ds_mos_Plus_2Ki.coord==0, other=np.nan)
 
-    ds_eam_Plus_3Ki = add_shape_coord_from_data_array(ds_eam_Plus_3Ki, "./shapes/srb.shp", 'coord' )
+    ds_eam_Plus_3Ki = add_shape_coord_from_data_array(ds_eam_Plus_3Ki, softpath+"/shapes/srb.shp", 'coord' )
     ds_eam_Plus_3Ki = ds_eam_Plus_3Ki.where(ds_eam_Plus_3Ki.coord==0, other=np.nan)
-    ds_elm_Plus_3Ki = add_shape_coord_from_data_array(ds_elm_Plus_3Ki, "./shapes/srb.shp", 'coord' )
+    ds_elm_Plus_3Ki = add_shape_coord_from_data_array(ds_elm_Plus_3Ki, softpath+"/shapes/srb.shp", 'coord' )
     ds_elm_Plus_3Ki = ds_elm_Plus_3Ki.where(ds_elm_Plus_3Ki.coord==0, other=np.nan)
-    ds_mos_Plus_3Ki = add_shape_coord_from_data_array(ds_mos_Plus_3Ki, "./shapes/srb.shp", 'coord' )
+    ds_mos_Plus_3Ki = add_shape_coord_from_data_array(ds_mos_Plus_3Ki, softpath+"/shapes/srb.shp", 'coord' )
     ds_mos_Plus_3Ki = ds_mos_Plus_3Ki.where(ds_mos_Plus_3Ki.coord==0, other=np.nan)
 
-    ds_eam_Plus_4Ki = add_shape_coord_from_data_array(ds_eam_Plus_4Ki, "./shapes/srb.shp", 'coord' )
+    ds_eam_Plus_4Ki = add_shape_coord_from_data_array(ds_eam_Plus_4Ki, softpath+"/shapes/srb.shp", 'coord' )
     ds_eam_Plus_4Ki = ds_eam_Plus_4Ki.where(ds_eam_Plus_4Ki.coord==0, other=np.nan)
-    ds_elm_Plus_4Ki = add_shape_coord_from_data_array(ds_elm_Plus_4Ki, "./shapes/srb.shp", 'coord' )
+    ds_elm_Plus_4Ki = add_shape_coord_from_data_array(ds_elm_Plus_4Ki, softpath+"/shapes/srb.shp", 'coord' )
     ds_elm_Plus_4Ki = ds_elm_Plus_4Ki.where(ds_elm_Plus_4Ki.coord==0, other=np.nan)
-    ds_mos_Plus_4Ki = add_shape_coord_from_data_array(ds_mos_Plus_4Ki, "./shapes/srb.shp", 'coord' )
+    ds_mos_Plus_4Ki = add_shape_coord_from_data_array(ds_mos_Plus_4Ki, softpath+"/shapes/srb.shp", 'coord' )
     ds_mos_Plus_4Ki = ds_mos_Plus_4Ki.where(ds_mos_Plus_4Ki.coord==0, other=np.nan)
 
-    ds_eam_Pre_Indi = add_shape_coord_from_data_array(ds_eam_Pre_Indi, "./shapes/srb.shp", 'coord' )
+    ds_eam_Pre_Indi = add_shape_coord_from_data_array(ds_eam_Pre_Indi, softpath+"/shapes/srb.shp", 'coord' )
     ds_eam_Pre_Indi = ds_eam_Pre_Indi.where(ds_eam_Pre_Indi.coord==0, other=np.nan)
-    ds_elm_Pre_Indi = add_shape_coord_from_data_array(ds_elm_Pre_Indi, "./shapes/srb.shp", 'coord' )
+    ds_elm_Pre_Indi = add_shape_coord_from_data_array(ds_elm_Pre_Indi, softpath+"/shapes/srb.shp", 'coord' )
     ds_elm_Pre_Indi = ds_elm_Pre_Indi.where(ds_elm_Pre_Indi.coord==0, other=np.nan)
-    ds_mos_Pre_Indi = add_shape_coord_from_data_array(ds_mos_Pre_Indi, "./shapes/srb.shp", 'coord' )
+    ds_mos_Pre_Indi = add_shape_coord_from_data_array(ds_mos_Pre_Indi, softpath+"/shapes/srb.shp", 'coord' )
     ds_mos_Pre_Indi = ds_mos_Pre_Indi.where(ds_mos_Pre_Indi.coord==0, other=np.nan)
 
 #creating an array of time values for the xtick labels in the graphs
@@ -458,46 +466,48 @@ fig.savefig('event_hydrograph.pdf', bbox_inches='tight', pad_inches=0)
 ## Fig ????
 ## CMZ load some stuff
 
-swe_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/obs_swe.nc")
+obspath = softpath+'/ncl/gen-nc-files-for-obs/'
+
+swe_obs_ds = xr.open_dataset(obspath+"/obs_swe.nc")
 swe_obs = swe_obs_ds.SWE_avg
 swe_obs_time = swe_obs_ds.time
 
-swe_obs2_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/ERA5_swe.nc")
+swe_obs2_ds = xr.open_dataset(obspath+"/ERA5_swe.nc")
 swe_obs2 = swe_obs2_ds.SWE_avg
 swe_obs2_time = swe_obs2_ds.time
 
-swe_obs3_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/JRA_swe.nc")
+swe_obs3_ds = xr.open_dataset(obspath+"/JRA_swe.nc")
 swe_obs3 = swe_obs3_ds.SWE_avg
 swe_obs3_time = swe_obs3_ds.time
 
-swe_obs4_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/NLDAS_swe.nc")
+swe_obs4_ds = xr.open_dataset(obspath+"/NLDAS_swe.nc")
 swe_obs4 = swe_obs4_ds.SWE_avg
 swe_obs4_time = swe_obs4_ds.time
 
-precip_mod_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/mod_precip.nc")
+precip_mod_ds = xr.open_dataset(obspath+"/mod_precip.nc")
 precip_mod = precip_mod_ds.SWE_avg
 precip_mod_time = precip_mod_ds.time
 
-precip_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/obs_precip.nc")
+precip_obs_ds = xr.open_dataset(obspath+"/obs_precip.nc")
 precip_obs = precip_obs_ds.SWE_avg
 precip_obs_time = precip_obs_ds.time
 
-tmax_mod_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/mod_tmax.nc")
+tmax_mod_ds = xr.open_dataset(obspath+"/mod_tmax.nc")
 tmax_mod = tmax_mod_ds.SWE_avg
 tmax_mod = tmax_mod - 273.15
 tmax_mod_time = tmax_mod_ds.time
 
-tmax_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/obs_tmax.nc")
+tmax_obs_ds = xr.open_dataset(obspath+"/obs_tmax.nc")
 tmax_obs = tmax_obs_ds.SWE_avg
 tmax_obs = tmax_obs - 273.15
 tmax_obs_time = tmax_obs_ds.time
 
-tmin_mod_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/mod_tmin.nc")
+tmin_mod_ds = xr.open_dataset(obspath+"/mod_tmin.nc")
 tmin_mod = tmin_mod_ds.SWE_avg
 tmin_mod = tmin_mod - 273.15
 tmin_mod_time = tmin_mod_ds.time
 
-tmin_obs_ds = xr.open_dataset("/Users/cmz5202/Software/1996-ros-e3sm/ncl/gen-nc-files-for-obs/obs_tmin.nc")
+tmin_obs_ds = xr.open_dataset(obspath+"/obs_tmin.nc")
 tmin_obs = tmin_obs_ds.SWE_avg
 tmin_obs = tmin_obs - 273.15
 tmin_obs_time = tmin_obs_ds.time

@@ -20,6 +20,11 @@ import matplotlib.pyplot as plt
 import cartopy
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import sys
+
+### CMZ Command line args
+basepath = sys.argv[1]
+softpath = sys.argv[2]
 
 #shifting mosart to be in the middle of the time period
 shift_MOSART = True
@@ -32,7 +37,7 @@ Reanalysis = True
 letters = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)']
 
 #loading reanalysis discharge data
-rean_dis = xr.open_dataset('/Volumes/Untitled/arp5873/hydro/1996_sub.nc')
+rean_dis = xr.open_dataset(basepath+'/rean_glofas/1996_sub.nc')
 rean_dis = rean_dis.sel(time=slice('1996-01-15', '1996-01-25'),lat=slice(45.,35.),lon=slice(-85.,-70.))
 
 #regridding the reanalysis data to match the model data
@@ -45,8 +50,9 @@ rean_dis = regridder_dis(rean_dis)
 
 
 #loading model data
-ds_mos = xr.open_dataset('ds_mos_Control_ens.nc')
-ds_mos_lr =  xr.open_dataset('Low_Res_mos_slice.nc')
+procpath = basepath+'/arp-proc/'
+ds_mos = xr.open_dataset(procpath+'/ds_mos_Control_ens.nc')
+ds_mos_lr =  xr.open_dataset(procpath+'/Low_Res_mos_slice.nc')
 
 
 #function that creates an array of time values given a start date, end date, and timestep
@@ -113,13 +119,13 @@ for i in np.arange(0,len(Time_mos),2):
 
 
 #loading USGS station data
-cono = pd.read_csv("./River_obs/Cono_dis.txt", sep='\t')
-mar = pd.read_csv("./River_obs/mar_dis.txt", sep='\t')
-una = pd.read_csv("./River_obs/una_dis.txt", sep='\t')
-sun = pd.read_csv("./River_obs/sun_dis.txt", sep='\t')
-wil = pd.read_csv("./River_obs/wil_dis.txt", sep='\t')
-che = pd.read_csv("./River_obs/che_dis.txt", sep='\t')
-tio = pd.read_csv("./River_obs/tio_dis.txt", sep='\t')
+cono = pd.read_csv(softpath+"/River_obs/Cono_dis.txt", sep='\t')
+mar = pd.read_csv(softpath+"/River_obs/mar_dis.txt", sep='\t')
+una = pd.read_csv(softpath+"/River_obs/una_dis.txt", sep='\t')
+sun = pd.read_csv(softpath+"/River_obs/sun_dis.txt", sep='\t')
+wil = pd.read_csv(softpath+"/River_obs/wil_dis.txt", sep='\t')
+che = pd.read_csv(softpath+"/River_obs/che_dis.txt", sep='\t')
+tio = pd.read_csv(softpath+"/River_obs/tio_dis.txt", sep='\t')
 
 
 #changing the time format to be more managable (string to datetime)
@@ -374,7 +380,7 @@ stat_lons = [-76.174444+360 , -76.531111+360 , -75.316389+360,-76.826944+360, -7
 #labels for stations
 stat_lab = ['1','2','7','3','4','6','5']
 #getting shapefile to plot Susq. river
-shpfilename = './shapes/ne_10m_rivers_lake_centerlines.shp'
+shpfilename = softpath+'/shapes/ne_10m_rivers_lake_centerlines.shp'
 shpfile = shpreader.Reader(shpfilename)
 
 #This loop iterates over each river within the dataset

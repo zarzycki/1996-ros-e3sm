@@ -16,6 +16,11 @@ import datetime
 from datetime import timedelta
 import shapefile as shp
 import geopandas as gpd
+import sys
+
+### CMZ Command line args
+basepath = sys.argv[1]
+
 
 #set to true to use shapefile to average over SRB only, set to false to use rough basin average
 SRB_AVG = True
@@ -35,73 +40,74 @@ shift_MOSART = True
 letters = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)','(h)','(i)','(j)','(k)','(l)','(m)','(n)','(o)','(p)','(q)','(r)','(s)','(t)','(u)',
           '(v)','(w)','(x)','(y)']
 
+procpath = basepath+'/arp-proc/'
 #loading low res files
-ds_eamLR = xr.open_dataset('Low_Res_eam_slice.nc')
-ds_elmLR = xr.open_dataset('Low_Res_elm_slice.nc')
-ds_mosLR = xr.open_dataset('Low_Res_mos_slice.nc')
+ds_eamLR = xr.open_dataset(procpath+'Low_Res_eam_slice.nc')
+ds_elmLR = xr.open_dataset(procpath+'Low_Res_elm_slice.nc')
+ds_mosLR = xr.open_dataset(procpath+'Low_Res_mos_slice.nc')
 #loading the non ensemble Control file
-ds_eam6 = xr.open_dataset('Control-6_eam_slice.nc')
-ds_elm6 = xr.open_dataset('Control-6_elm_slice.nc')
-ds_mos6 = xr.open_dataset('Control-6_mos_slice.nc')
+ds_eam6 = xr.open_dataset(procpath+'Control-6_eam_slice.nc')
+ds_elm6 = xr.open_dataset(procpath+'Control-6_elm_slice.nc')
+ds_mos6 = xr.open_dataset(procpath+'Control-6_mos_slice.nc')
 
 #loading ensemble files
-ds_eam_Control = xr.open_dataset('ds_eam_Control_ens.nc')
-ds_elm_Control = xr.open_dataset('ds_elm_Control_ens.nc')
-ds_mos_Control = xr.open_dataset('ds_mos_Control_ens.nc')
-Control_h1 = xr.open_dataset('ds_eam_Control_h1_ens.nc')
+ds_eam_Control = xr.open_dataset(procpath+'ds_eam_Control_ens.nc')
+ds_elm_Control = xr.open_dataset(procpath+'ds_elm_Control_ens.nc')
+ds_mos_Control = xr.open_dataset(procpath+'ds_mos_Control_ens.nc')
+Control_h1 = xr.open_dataset(procpath+'ds_eam_Control_h1_ens.nc')
 
-ds_eam_Plus_1K = xr.open_dataset('ds_eam_Plus_1K_ens.nc')
-ds_elm_Plus_1K = xr.open_dataset('ds_elm_Plus_1K_ens.nc')
-ds_mos_Plus_1K = xr.open_dataset('ds_mos_Plus_1K_ens.nc')
-Plus_1K_h1 = xr.open_dataset('ds_eam_Plus_1K_h1_ens.nc')
+ds_eam_Plus_1K = xr.open_dataset(procpath+'ds_eam_Plus_1K_ens.nc')
+ds_elm_Plus_1K = xr.open_dataset(procpath+'ds_elm_Plus_1K_ens.nc')
+ds_mos_Plus_1K = xr.open_dataset(procpath+'ds_mos_Plus_1K_ens.nc')
+Plus_1K_h1 = xr.open_dataset(procpath+'ds_eam_Plus_1K_h1_ens.nc')
 
-ds_eam_Plus_2K = xr.open_dataset('ds_eam_Plus_2K_ens.nc')
-ds_elm_Plus_2K = xr.open_dataset('ds_elm_Plus_2K_ens.nc')
-ds_mos_Plus_2K = xr.open_dataset('ds_mos_Plus_2K_ens.nc')
-Plus_2K_h1 = xr.open_dataset('ds_eam_Plus_2K_h1_ens.nc')
+ds_eam_Plus_2K = xr.open_dataset(procpath+'ds_eam_Plus_2K_ens.nc')
+ds_elm_Plus_2K = xr.open_dataset(procpath+'ds_elm_Plus_2K_ens.nc')
+ds_mos_Plus_2K = xr.open_dataset(procpath+'ds_mos_Plus_2K_ens.nc')
+Plus_2K_h1 = xr.open_dataset(procpath+'ds_eam_Plus_2K_h1_ens.nc')
 
-ds_eam_Plus_3K = xr.open_dataset('ds_eam_Plus_3K_ens.nc')
-ds_elm_Plus_3K = xr.open_dataset('ds_elm_Plus_3K_ens.nc')
-ds_mos_Plus_3K = xr.open_dataset('ds_mos_Plus_3K_ens.nc')
-Plus_3K_h1 = xr.open_dataset('ds_eam_Plus_3K_h1_ens.nc')
+ds_eam_Plus_3K = xr.open_dataset(procpath+'ds_eam_Plus_3K_ens.nc')
+ds_elm_Plus_3K = xr.open_dataset(procpath+'ds_elm_Plus_3K_ens.nc')
+ds_mos_Plus_3K = xr.open_dataset(procpath+'ds_mos_Plus_3K_ens.nc')
+Plus_3K_h1 = xr.open_dataset(procpath+'ds_eam_Plus_3K_h1_ens.nc')
 
-ds_eam_Plus_4K = xr.open_dataset('ds_eam_Plus_4K_ens.nc')
-ds_elm_Plus_4K = xr.open_dataset('ds_elm_Plus_4K_ens.nc')
-ds_mos_Plus_4K = xr.open_dataset('ds_mos_Plus_4K_ens.nc')
-Plus_4K_h1 = xr.open_dataset('ds_eam_Plus_4K_h1_ens.nc')
+ds_eam_Plus_4K = xr.open_dataset(procpath+'ds_eam_Plus_4K_ens.nc')
+ds_elm_Plus_4K = xr.open_dataset(procpath+'ds_elm_Plus_4K_ens.nc')
+ds_mos_Plus_4K = xr.open_dataset(procpath+'ds_mos_Plus_4K_ens.nc')
+Plus_4K_h1 = xr.open_dataset(procpath+'ds_eam_Plus_4K_h1_ens.nc')
 
-ds_eam_Pre_Ind = xr.open_dataset('ds_eam_Pre_Ind_ens.nc')
-ds_elm_Pre_Ind = xr.open_dataset('ds_elm_Pre_Ind_ens.nc')
-ds_mos_Pre_Ind = xr.open_dataset('ds_mos_Pre_Ind_ens.nc')
-Pre_Ind_h1 = xr.open_dataset('ds_eam_Pre_Ind_h1_ens.nc')
+ds_eam_Pre_Ind = xr.open_dataset(procpath+'ds_eam_Pre_Ind_ens.nc')
+ds_elm_Pre_Ind = xr.open_dataset(procpath+'ds_elm_Pre_Ind_ens.nc')
+ds_mos_Pre_Ind = xr.open_dataset(procpath+'ds_mos_Pre_Ind_ens.nc')
+Pre_Ind_h1 = xr.open_dataset(procpath+'ds_eam_Pre_Ind_h1_ens.nc')
 
 #loading ensemble files not averaged over initializatioin times
-ds_eam_Controli = xr.open_dataset('ds_eam_Controli_ens.nc')
-ds_elm_Controli = xr.open_dataset('ds_elm_Controli_ens.nc')
-ds_mos_Controli = xr.open_dataset('ds_mos_Controli_ens.nc')
+ds_eam_Controli = xr.open_dataset(procpath+'ds_eam_Controli_ens.nc')
+ds_elm_Controli = xr.open_dataset(procpath+'ds_elm_Controli_ens.nc')
+ds_mos_Controli = xr.open_dataset(procpath+'ds_mos_Controli_ens.nc')
 
-ds_eam_Plus_1Ki = xr.open_dataset('ds_eam_Plus_1Ki_ens.nc')
-ds_elm_Plus_1Ki = xr.open_dataset('ds_elm_Plus_1Ki_ens.nc')
-ds_mos_Plus_1Ki = xr.open_dataset('ds_mos_Plus_1Ki_ens.nc')
+ds_eam_Plus_1Ki = xr.open_dataset(procpath+'ds_eam_Plus_1Ki_ens.nc')
+ds_elm_Plus_1Ki = xr.open_dataset(procpath+'ds_elm_Plus_1Ki_ens.nc')
+ds_mos_Plus_1Ki = xr.open_dataset(procpath+'ds_mos_Plus_1Ki_ens.nc')
 
-ds_eam_Plus_2Ki = xr.open_dataset('ds_eam_Plus_2Ki_ens.nc')
-ds_elm_Plus_2Ki = xr.open_dataset('ds_elm_Plus_2Ki_ens.nc')
-ds_mos_Plus_2Ki = xr.open_dataset('ds_mos_Plus_2Ki_ens.nc')
+ds_eam_Plus_2Ki = xr.open_dataset(procpath+'ds_eam_Plus_2Ki_ens.nc')
+ds_elm_Plus_2Ki = xr.open_dataset(procpath+'ds_elm_Plus_2Ki_ens.nc')
+ds_mos_Plus_2Ki = xr.open_dataset(procpath+'ds_mos_Plus_2Ki_ens.nc')
 
-ds_eam_Plus_3Ki = xr.open_dataset('ds_eam_Plus_3Ki_ens.nc')
-ds_elm_Plus_3Ki = xr.open_dataset('ds_elm_Plus_3Ki_ens.nc')
-ds_mos_Plus_3Ki = xr.open_dataset('ds_mos_Plus_3Ki_ens.nc')
+ds_eam_Plus_3Ki = xr.open_dataset(procpath+'ds_eam_Plus_3Ki_ens.nc')
+ds_elm_Plus_3Ki = xr.open_dataset(procpath+'ds_elm_Plus_3Ki_ens.nc')
+ds_mos_Plus_3Ki = xr.open_dataset(procpath+'ds_mos_Plus_3Ki_ens.nc')
 
-ds_eam_Plus_4Ki = xr.open_dataset('ds_eam_Plus_4Ki_ens.nc')
-ds_elm_Plus_4Ki = xr.open_dataset('ds_elm_Plus_4Ki_ens.nc')
-ds_mos_Plus_4Ki = xr.open_dataset('ds_mos_Plus_4Ki_ens.nc')
+ds_eam_Plus_4Ki = xr.open_dataset(procpath+'ds_eam_Plus_4Ki_ens.nc')
+ds_elm_Plus_4Ki = xr.open_dataset(procpath+'ds_elm_Plus_4Ki_ens.nc')
+ds_mos_Plus_4Ki = xr.open_dataset(procpath+'ds_mos_Plus_4Ki_ens.nc')
 
-ds_eam_Pre_Indi = xr.open_dataset('ds_eam_Pre_Indi_ens.nc')
-ds_elm_Pre_Indi = xr.open_dataset('ds_elm_Pre_Indi_ens.nc')
-ds_mos_Pre_Indi = xr.open_dataset('ds_mos_Pre_Indi_ens.nc')
+ds_eam_Pre_Indi = xr.open_dataset(procpath+'ds_eam_Pre_Indi_ens.nc')
+ds_elm_Pre_Indi = xr.open_dataset(procpath+'ds_elm_Pre_Indi_ens.nc')
+ds_mos_Pre_Indi = xr.open_dataset(procpath+'ds_mos_Pre_Indi_ens.nc')
 
 #Loading reanalysis data
-path = '/Volumes/Untitled/arp5873/JRA_sfc/'
+path = basepath+'/rean_JRA/'
 runoff = xr.open_dataset(path+ 'JRA.h1.1996.ROF.nc')
 runoff = runoff.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
 precip = xr.open_dataset(path+ 'JRA.h1.1996.PRECT.nc')
@@ -110,7 +116,9 @@ temperature = xr.open_dataset(path+ 'JRA.h1.1996.T2M.nc')
 temperature = temperature.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
 swe = xr.open_dataset(path+ 'JRA.h1.1996.SWE.nc')
 swe = swe.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
-rean_dis = xr.open_dataset('/Volumes/Untitled/arp5873/hydro/dis_1980_2018.nc')
+
+hydropath = basepath+'/rean_glofas/'
+rean_dis = xr.open_dataset(hydropath+'/dis_1980_2018.nc')
 rean_dis = rean_dis.sel(time=slice('1996-01-15', '1996-01-25'),lat=slice(45.,35.),lon=slice(-85.,-70.))
 
 #regridding data to match model grid
