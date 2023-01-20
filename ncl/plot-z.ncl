@@ -13,13 +13,15 @@ plot_dbz=True
 
 panel_vertical=False
 
+out_type="pdf"
+
 yyyy=1996
 mm=01
 days = (/18,19,19,20/)
 hours = (/12,00,12,00/)
 bools = (/True,False/)
 
-wks   = gsn_open_wks ("pdf", "synoptic_comparison")        ; send graphics to PNG file
+wks   = gsn_open_wks (out_type, "FIG_synoptic_comparison")        ; send graphics to PNG file
 
 nmodels = 2
 npanels = dimsizes(days)
@@ -33,7 +35,7 @@ plot_CAM=bools(bb)
 dd=days(aa)
 hh=hours(aa)
 
-era5dir="/Volumes/ZARZYCKI_FLASH/arp5873/ERA5/"
+era5dir="/Volumes/ZARZYCKI_FLASH/arp5873/rean_ERA5/"
 CAMdir="/Volumes/ZARZYCKI_FLASH/arp5873/ens_means/"
 ;era5dir="/storage/home/cmz5202/group/arp5873/ERA5/"
 ;CAMdir="/storage/home/cmz5202/scratch/"

@@ -16,7 +16,7 @@ chooseLon=-79.9959
 ;chooseLat=39.0067
 ;chooseLon=-77.4291
 
-era5dir="/Volumes/ZARZYCKI_FLASH/arp5873/ERA5/"
+era5dir="/Volumes/ZARZYCKI_FLASH/arp5873/rean_era5/"
 CAMdir="/Volumes/ZARZYCKI_FLASH/arp5873/ens_means/"
   
 if (plot_CAM) then

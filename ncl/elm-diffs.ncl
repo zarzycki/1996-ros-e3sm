@@ -8,7 +8,7 @@ begin
 ;vars = (/"FSNO","H2OSNO","H2OSNO_TOP","QSNOMELT","QSNOFRZ","SNOW","SNOWDP","SNOWLIQ","SNOTTOPL","ERRH2OSNO","QSNWCPICE","FGR","FSM","QDRIP","ZBOT","TG","TV","TSA","SWup","SWdown","FIRA","FIRE","LWdown","LWup","TREFMNAV","TREFMXAV","Q2M","FPSN","FSH","Rnet","TLAI","FCTR","QOVER","RH","RH2M","SOILWATER_10CM","ZWT","TSOI_10CM","QSOIL","QVEGE","QVEGT","QTOPSOIL","Qstor","H2OCAN","H2OSFC","QH2OSFC","TWS","HC","SNOdTdzL","SNOW_SINKS","SNOW_SOURCES","SNOLIQFL","TH2OSFC","U10","QFLOOD","QRUNOFF","Qle","Qh","Qair","Tair","RAIN","SNO_T","SNO_Z"/)
 TVARLIST = (/"Tair","TSOI_10CM","SNOTTOPL","TG","TV","TSA","TREFMNAV","TREFMXAV","TH2OSFC"/)
 ZEROLIST = (/"SNOLIQFL","SNOW_SOURCES","SNOW_SINKS","H2OSFC","H2OCAN","FSNO","H2OSNO","H2OSNO_TOP","SNOWLIQ","SNOWDP","SNOW","RAIN","QSNOMELT","SNOWLIQ"/)
-out_type = "x11"
+out_type = "pdf"
 
 ;debug
 ;vars := (/"TWS"/)
@@ -79,7 +79,8 @@ do zz = 0,dimsizes(vars)-1
 
   if (1 .eq. 1) then
   
-    wks1   = gsn_open_wks (out_type, "./img/elm_timeseries_"+var)        ; send graphics to PNG file
+    system("mkdir -p ./img/")
+    wks1   = gsn_open_wks (out_type, "./img/FIG_elm_timeseries_"+var)        ; send graphics to PNG file
   
     res                   = True                      ; plot mods desired
     res@gsnDraw         = False                   ; don't draw yet

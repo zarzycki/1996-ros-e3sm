@@ -1,8 +1,5 @@
 load "./utils/shapefile_utils.ncl"
 
-
-
-
 begin
   out_type = "pdf"
   
@@ -18,7 +15,8 @@ begin
   exps = (/"PI", "control", "plus1K", "plus2K", "plus3K", "plus4K"/)
   ;exps = (/"control"/)
   filedir="/Volumes/ZARZYCKI_FLASH/arp5873/ens_means/"
-  
+  shpfilename="/Users/cmz5202/Software/1996-ros-e3sm/shapes/srb.shp"
+
   do ii = 0,dimsizes(exps)-1
     filename=filedir+"/output_"+exps(ii)+"_elm_h0.nc"
     f = addfile(filename,"r")
@@ -104,7 +102,6 @@ begin
   ; get a subdomain spatially
   ;arr_sub = arr(:,:,:,{minlat:maxlat},{minlon:maxlon})
 
-  shpfilename="/Users/cmz5202/Software/1996-ros-e3sm/shapes/srb.shp"
   shp = addfile(shpfilename,"r")
   print_shapefile_info(shpfilename)
   plot_shapefile(shpfilename)
@@ -140,8 +137,8 @@ begin
 
 
 
-  
-    wks   = gsn_open_wks (out_type, "./img/elm_timeseries_BUDGET")        ; send graphics to PNG file
+    system("mkdir -p ./img/")
+    wks   = gsn_open_wks (out_type, "./img/FIG_elm_timeseries_BUDGET")        ; send graphics to PNG file
   
     plot = new(9,graphic)
   
