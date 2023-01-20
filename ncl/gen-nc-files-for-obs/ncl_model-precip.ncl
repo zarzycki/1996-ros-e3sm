@@ -1,6 +1,5 @@
 load "../utils/shapefile_utils.ncl"
 
-
 begin
 
 minlat=39.0
@@ -8,8 +7,11 @@ maxlat=43.5
 minlon=-79.0
 maxlon=-74.0
 
-dir_to_model="/Volumes/ZARZYCKI_FLASH/arp5873/ens_means/"
-dir_to_sw="/Users/cmz5202/Software/1996-ros-e3sm/"
+BASEPATH=getenv("BASEPATH")
+SOFTPATH=getenv("SOFTPATH")
+
+dir_to_model=BASEPATH+"/ens_means/"
+dir_to_sw=SOFTPATH
 
 f=addfile(dir_to_model+"/output_control_eam_h0.nc","r")
 

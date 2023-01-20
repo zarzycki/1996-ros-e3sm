@@ -1,26 +1,35 @@
 load "../utils/shapefile_utils.ncl"
 
-
 begin
 
 minlat=39.0
 maxlat=43.5
-minlon=-79.0+360.
-maxlon=-74.0+360.
-  
-dir_to_obs="/Volumes/ZARZYCKI_FLASH/arp5873/cpc-gauge/"
-dir_to_sw="/Users/cmz5202/Software/1996-ros-e3sm/"
+minlon=-79.0
+maxlon=-74.0
 
-f=addfile(dir_to_obs+"/precip.V1.0.1996.nc","r")
+;minmax="min"
+
+BASEPATH=getenv("BASEPATH")
+SOFTPATH=getenv("SOFTPATH")
+  
+f=addfile(BASEPATH+"/ens_means/output_control_eam_h0.nc","r")
 
 time = f->time
 
 startdate = cd_inv_calendar(1996,01,15,0,0,0,time@units, 0)
 enddate = cd_inv_calendar(1996,01,23,0,0,0,time@units, 0)
 
-SWE = f->precip({startdate:enddate},{minlat:maxlat},{minlon:maxlon}) 
+var = f->TREFHT({startdate:enddate},{minlat:maxlat},{minlon:maxlon})
 
-shpfilename=dir_to_sw+"/shapes/srb.shp"
+newtime = var&time
+newtime = newtime - 0.25
+var&time = newtime
+
+opt = True
+opt@nval_crit = 4    ; require at least 4 values per day for a daily mean to be calculated.
+SWE = calculate_daily_values (var, minmax, 0, opt)
+
+shpfilename=SOFTPATH+"/shapes/srb.shp"
 shp = addfile(shpfilename,"r")
 print_shapefile_info(shpfilename)
 plot_shapefile(shpfilename)
@@ -46,13 +55,10 @@ SWE_sub = where(MASK .gt. 0.5,SWE_sub,SWE_sub@_FillValue)
 
 SWE_avg = dim_avg_n_Wrap(SWE_sub,(/1,2/))
 
-print(SWE_avg+" "+SWE_avg&time+" "+cd_calendar(SWE_avg&time,-3))
-newtime = SWE_avg&time
-newtime = newtime - 12
-SWE_avg&time = newtime
+print(SWE_avg+" "+cd_calendar(SWE_avg&time,-3))
 
-system("/bin/rm -f obs_precip.nc")   ; remove any pre-existing file
-ncdf = addfile("obs_precip.nc" ,"c")  ; open output netCDF file
+system("/bin/rm -f mod_t"+minmax+".nc")   ; remove any pre-existing file
+ncdf = addfile("mod_t"+minmax+".nc" ,"c")  ; open output netCDF file
 
 ;===================================================================
 ; create global attributes of the file (optional)
@@ -74,6 +80,5 @@ filedimdef(ncdf,"time",-1,True)
 ; to write the meta data associated with each variable
 ;===================================================================
 ncdf->SWE_avg = SWE_avg
-ncdf->SWE_sub = SWE_sub
 
 end
