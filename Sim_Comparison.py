@@ -40,7 +40,7 @@ shift_MOSART = True
 letters = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)','(h)','(i)','(j)','(k)','(l)','(m)','(n)','(o)','(p)','(q)','(r)','(s)','(t)','(u)',
           '(v)','(w)','(x)','(y)']
 
-procpath = basepath+'/arp-proc/'
+procpath = basepath+'/proc_arp/'
 #loading low res files
 ds_eamLR = xr.open_dataset(procpath+'Low_Res_eam_slice.nc')
 ds_elmLR = xr.open_dataset(procpath+'Low_Res_elm_slice.nc')
@@ -118,7 +118,7 @@ swe = xr.open_dataset(path+ 'JRA.h1.1996.SWE.nc')
 swe = swe.sel(time=slice('1996-01-15', '1996-01-22'), lat=slice(30.,50.), lon=slice(265.,300.))
 
 hydropath = basepath+'/rean_glofas/'
-rean_dis = xr.open_dataset(hydropath+'/dis_1980_2018.nc')
+rean_dis = xr.open_dataset(hydropath+'/1996_sub.nc')
 rean_dis = rean_dis.sel(time=slice('1996-01-15', '1996-01-25'),lat=slice(45.,35.),lon=slice(-85.,-70.))
 
 #regridding data to match model grid

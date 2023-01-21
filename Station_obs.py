@@ -29,7 +29,7 @@ letters = ['(a)','(b)','(c)','(d)','(e)']
 
 
 #loading high res model data
-procpath = basepath+'/arp-proc/'
+procpath = basepath+'/proc_arp/'
 ds_eam = xr.open_dataset(procpath+'/ds_eam_Control_ens.nc')
 ds_elm = xr.open_dataset(procpath+'/ds_elm_Control_ens.nc')
 

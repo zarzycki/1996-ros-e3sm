@@ -50,7 +50,7 @@ rean_dis = regridder_dis(rean_dis)
 
 
 #loading model data
-procpath = basepath+'/arp-proc/'
+procpath = basepath+'/proc_arp/'
 ds_mos = xr.open_dataset(procpath+'/ds_mos_Control_ens.nc')
 ds_mos_lr =  xr.open_dataset(procpath+'/Low_Res_mos_slice.nc')
 

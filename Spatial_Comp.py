@@ -33,7 +33,7 @@ shift_MOSART = True
 #creating letter array to label subplots
 letters = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)']
 
-procpath = basepath+'/arp-proc/'
+procpath = basepath+'/proc_arp/'
 
 #loading ensemble files
 ds_eam_Control = xr.open_dataset(procpath+'/ds_eam_Control_ens.nc')
