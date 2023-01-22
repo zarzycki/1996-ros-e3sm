@@ -6,6 +6,12 @@ import numpy as np
 import xarray as xr
 from datetime import datetime
 from datetime import timedelta
+import sys
+import os
+
+### CMZ Command line args
+basepath = sys.argv[1]
+
 
 #defining a function which creates an array of time values which is used for the dates in the new files
 def datetime_range(start, end, delta):
@@ -61,7 +67,11 @@ TITLES = ['Control-4', \
 #choose the initialization times
 date = ["1996011512","1996011600","1996011612","1996011700","1996011712"]
 
-PATH_TO_E3SM_FILES="/gpfs/group/cmz5202/default/arp5873/E3SM/"
+PATH_TO_E3SM_FILES=basepath+"/E3SM/"
+PATH_TO_WRITE_PROC=basepath+"/proc_arp/"
+
+if not os.path.exists(PATH_TO_WRITE_PROC):
+    os.makedirs(PATH_TO_WRITE_PROC)
 
 counter = 0
 for thisconfig in CONFIGS:
@@ -122,7 +132,7 @@ for thisconfig in CONFIGS:
         Time.append(time[x].strftime('%Y-%m-%d-%H'))
 
     #creating file name
-    file = title + '_init_soil.nc'
+    file = PATH_TO_WRITE_PROC + title + '_init_soil.nc'
     #opening a file
     ds = nc.Dataset(file,'w', format='NETCDF4')
 
@@ -211,7 +221,7 @@ for thisconfig in CONFIGS:
         Time.append(time[x].strftime('%Y-%m-%d-%H'))
 
     #creating file name and opening file
-    file = title + '_eam_h1_slice.nc'
+    file = PATH_TO_WRITE_PROC + title + '_eam_h1_slice.nc'
     ds = nc.Dataset(file,'w', format='NETCDF4')
 
     #creating the files dimensions
@@ -264,7 +274,7 @@ for thisconfig in CONFIGS:
         Time.append(time[x].strftime('%Y-%m-%d-%H'))
 
     #creating file name and opening file
-    file = title + '_eam_slice.nc'
+    file = PATH_TO_WRITE_PROC + title + '_eam_slice.nc'
     ds = nc.Dataset(file,'w', format='NETCDF4')
 
     #creating the files dimensions
@@ -337,7 +347,7 @@ for thisconfig in CONFIGS:
         Time.append(time[x].strftime('%Y-%m-%d-%H'))
 
     #creating file name and opening file
-    file = title + '_init_eam_slice.nc'
+    file = PATH_TO_WRITE_PROC + title + '_init_eam_slice.nc'
     ds = nc.Dataset(file,'w', format='NETCDF4')
     
     #creating the files dimensions
@@ -426,7 +436,7 @@ for thisconfig in CONFIGS:
         Time.append(time[x].strftime('%Y-%m-%d-%H'))
 
     #creating file name and opening file
-    file = title + '_elm_slice.nc'
+    file = PATH_TO_WRITE_PROC + title + '_elm_slice.nc'
     ds = nc.Dataset(file,'w', format='NETCDF4')
 
     #creating dimensions of file
@@ -544,7 +554,7 @@ for thisconfig in CONFIGS:
         Time.append(time[x].strftime('%Y-%m-%d-%H'))
 
     #creating file name and opening file
-    file = title + '_init_elm_slice.nc'
+    file = PATH_TO_WRITE_PROC + title + '_init_elm_slice.nc'
     ds = nc.Dataset(file,'w', format='NETCDF4')
 
     #creating dimensions of file
@@ -648,7 +658,7 @@ for thisconfig in CONFIGS:
         Time.append(time[x].strftime('%Y-%m-%d-%H'))
 
     #creating file name and opening it
-    file = title + '_mos_slice.nc'
+    file = PATH_TO_WRITE_PROC + title + '_mos_slice.nc'
     ds = nc.Dataset(file,'w', format='NETCDF4')
 
     #creating dimensions of file
@@ -694,7 +704,7 @@ for thisconfig in CONFIGS:
         Time.append(time[x].strftime('%Y-%m-%d-%H'))
 
     #creating file name and opening it
-    file = title + '_init_mos_slice.nc'
+    file = PATH_TO_WRITE_PROC + title + '_init_mos_slice.nc'
     ds = nc.Dataset(file,'w', format='NETCDF4')
 
     #creating dimensions of file
