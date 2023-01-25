@@ -18,3 +18,4 @@ dependencies:
   - poppler=21.09.0
   - geopandas=0.10.2
   - dask=2021.2.0
+  - ncl=6.6.2
