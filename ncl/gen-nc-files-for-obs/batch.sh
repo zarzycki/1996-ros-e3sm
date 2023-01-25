@@ -2,8 +2,10 @@
 
 #export BASEPATH=/Volumes/ZARZYCKI_FLASH/arp5873/
 #export SOFTPATH=/Users/cmz5202/Software/1996-ros-e3sm/
-export BASEPATH=/storage/home/cmz5202/group/arp5873_NEW/
-export SOFTPATH=/storage/home/cmz5202/scratch/1996-ros-e3sm/
+#export BASEPATH=/storage/home/cmz5202/group/arp5873_NEW/
+#export SOFTPATH=/storage/home/cmz5202/scratch/1996-ros-e3sm/
+export BASEPATH=/glade/u/home/zarzycki/scratch/arp5873_NEW/
+export SOFTPATH=/glade/u/home/zarzycki/work/sw/1996-ros-e3sm/
 
 ncl ncl_model-precip.ncl
 ncl ncl_model-tmax.ncl 'minmax="min"'
