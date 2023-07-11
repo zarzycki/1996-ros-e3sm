@@ -9,4 +9,6 @@ done
 
 cd $DATADIR
 ncrcat ds_simple_*.nc gage_ds_catted.nc
+ncks -4 -L 1 gage_ds_catted.nc gage_ds_catted.nc
+rm -v ds_simple_*.nc
 

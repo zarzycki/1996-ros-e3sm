@@ -13,6 +13,8 @@ plot_dbz=True
 
 panel_vertical=False
 
+;DATADIR="/Users/cmz5202/NetCDF/arp5873_NEW/"
+
 out_type="pdf"
 
 yyyy=1996
@@ -35,10 +37,8 @@ plot_CAM=bools(bb)
 dd=days(aa)
 hh=hours(aa)
 
-era5dir="/Users/cmz5202/NetCDF/arp5873_NEW/rean_ERA5/"
-CAMdir="/Users/cmz5202/NetCDF/arp5873_NEW/ens_means/"
-;era5dir="/storage/home/cmz5202/group/arp5873/ERA5/"
-;CAMdir="/storage/home/cmz5202/scratch/"
+era5dir=DATADIR+"/rean_ERA5/"
+CAMdir=DATADIR+"/ens_means/"
 
 if (plot_CAM) then
   f = addfile(CAMdir+"/output_control_eam_h2.nc","r")
@@ -404,8 +404,10 @@ else
 end if
 
 
- exit
+exit
 
+
+;debugging stuff
 
 system("/bin/rm -f simple.nc")   ; remove any pre-existing file
 ncdf = addfile("simple.nc" ,"c")  ; open output netCDF file

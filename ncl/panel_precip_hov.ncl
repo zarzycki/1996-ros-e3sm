@@ -11,7 +11,7 @@ maxLon= -74.8
 ; 18-21
 stday=18
 enday=21
-DATADIR="/Users/cmz5202/NetCDF/arp5873_NEW/"
+;DATADIR="/Users/cmz5202/NetCDF/arp5873_NEW/"
 
 ; start npanels counter
 npanels=0
