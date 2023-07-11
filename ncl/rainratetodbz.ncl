@@ -1,16 +1,16 @@
 function rainratetodbz(rainrate,units)
 
-;========================================================
+;==========================================================
 ; This function takes in rainfall rate (here in mm/hr)
 ; and converts it to DbZ for plotting as simulated
-; radar reflectivity
+; radar reflectivity based on the Marshall-Palmer relation
 ;
 ; rainrate = 2D (or 3D in time) array of integrated
 ; rainfall rate
 ; units, 0 = mm/hr, 1 = m/s, 2 cm/s
 ;
 ; Colin Zarzycki, zarzycki@umich.edu, 11/14/2012
-;========================================================
+;==========================================================
 
 begin
 
@@ -25,10 +25,16 @@ end if
 
 dbz = rainrate
 eps = 10^-25        ; very small number to prevent log from = 0
+
+; Z = a*R^b
+; where Z is the reflectivity factor (mm6 m-3)
+; R is rain rate (mm h-1)
+; a and b are adjustable parameters
+
 ; Uses common NWS NEXRAD published conversion formula
 ;dbz = 10*log10(eps + (200 * rainrate^(1.6) ) )
 
-; Z = 250 R^1.2
+; Z = 250 R^1.2 --> WSR-88D tropical Z-R relationship
 dbz = 10*log10(eps + (250*rainrate^(1.2)))
 
 ; if any NaN crop up in array
