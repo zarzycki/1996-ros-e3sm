@@ -7,8 +7,8 @@ maxlat=50.0
 minlon=-95.0
 maxlon=-70.0
 
-pnew = (/ 850., 500. /)       ; desired output levels 
-  
+pnew = (/ 850., 500. /)       ; desired output levels
+
 plot_dbz=True
 
 panel_vertical=False
@@ -35,14 +35,14 @@ plot_CAM=bools(bb)
 dd=days(aa)
 hh=hours(aa)
 
-era5dir="/Volumes/ZARZYCKI_FLASH/arp5873/rean_ERA5/"
-CAMdir="/Volumes/ZARZYCKI_FLASH/arp5873/ens_means/"
+era5dir="/Users/cmz5202/NetCDF/arp5873_NEW/rean_ERA5/"
+CAMdir="/Users/cmz5202/NetCDF/arp5873_NEW/ens_means/"
 ;era5dir="/storage/home/cmz5202/group/arp5873/ERA5/"
 ;CAMdir="/storage/home/cmz5202/scratch/"
 
 if (plot_CAM) then
   f = addfile(CAMdir+"/output_control_eam_h2.nc","r")
-    
+
   stride=4
   Z3 = f->Z3({cd_inv_calendar(yyyy,mm,dd,hh,0,0,f->time@units,-1)},:,::stride,::stride)
   PS = f->PS({cd_inv_calendar(yyyy,mm,dd,hh,0,0,f->time@units,-1)},::stride,::stride)
@@ -63,13 +63,13 @@ if (plot_CAM) then
     PRECT@long_name = "Simulated radar reflectivity"
   end if
   PSL = g->PSL({cd_inv_calendar(yyyy,mm,dd,hh,0,0,f->time@units,-1)},::stride,::stride)
-  
+
   ;W = mixhum_convert(Q, "q", (/0,0/))
   ;copy_VarCoords(Q,W)
 
   hyam = f->hyam                   ; read to memory (optional)
   hybm = f->hybm
-  P0mb = 1000.      
+  P0mb = 1000.
   P0 = f->P0
   lat = f->lat(::stride)
   lon = f->lon(::stride)
@@ -91,7 +91,7 @@ if (plot_CAM) then
   copy_VarCoords(T,TD)
   copy_VarCoords(T,THETA)
 
-  All  = rigrad_bruntv_atm(THETA, U, V, Z3, 3, 1 ) 
+  All  = rigrad_bruntv_atm(THETA, U, V, Z3, 3, 1 )
   ;RI   = All[0]     ; explicitly extract from list variable  for convenience
   BV   = All[1]     ; must use 'list' syntax  [...]
   ;BUOY = All[2]
@@ -103,7 +103,7 @@ if (plot_CAM) then
   delete(All)
 
   ;L2 = BV
-  ;L2 = BV / SHR2 
+  ;L2 = BV / SHR2
 
   Znew = vinth2p (Z3,hyam,hybm,pnew,PS,1,P0mb,1,True)
   TDnew = vinth2p (TD,hyam,hybm,pnew,PS,1,P0mb,1,True)
@@ -131,17 +131,17 @@ else
 
   timeix=12
   stride=2
-  
+
   Z3 = zfile->Z({cd_inv_calendar(yyyy,mm,dd,hh,0,0,zfile->time@units,-1)},{pnew},::stride,::stride)
   Z3 = Z3 / 9.81
   U = ufile->U({cd_inv_calendar(yyyy,mm,dd,hh,0,0,ufile->time@units,-1)},{pnew},::stride,::stride)
   V = vfile->V({cd_inv_calendar(yyyy,mm,dd,hh,0,0,vfile->time@units,-1)},{pnew},::stride,::stride)
   T = tfile->T({cd_inv_calendar(yyyy,mm,dd,hh,0,0,tfile->time@units,-1)},{pnew},::stride,::stride)
   Q = qfile->Q({cd_inv_calendar(yyyy,mm,dd,hh,0,0,qfile->time@units,-1)},{pnew},::stride,::stride)
-  
+
   lat = zfile->latitude(::stride)
   lon = zfile->longitude(::stride)
-  
+
   g = addfile(era5dir+"/e5.oper.fc.sfc.meanflux.235_055_mtpr.ll025sc.1996010106_1996020106.nc","r")
   PRECT_3hr = g->MTPR({cd_inv_calendar(yyyy,mm,dd,hh+1,0,0,g->time@units,-1):cd_inv_calendar(yyyy,mm,dd,hh+4,0,0,g->time@units,-1)},::stride,::stride)
   PRECT = dim_avg_n_Wrap(PRECT_3hr,0)
@@ -155,26 +155,26 @@ else
     PRECT@units="dbZ"
     PRECT@long_name = "Simulated radar reflectivity"
   end if
-  
+
   hfile = addfile(era5dir+"/e5.oper.an.sfc.128_151_msl.ll025sc.1996010100_1996013123.nc","r")
   PSL = hfile->MSL({cd_inv_calendar(yyyy,mm,dd,hh,0,0,hfile->time@units,-1)},::stride,::stride)
 
   RH = relhum (T, Q, conform(T,pnew*100.,0) )  ; rel humidity
   TD = dewtemp_trh(T,RH)
   copy_VarCoords(T,TD)
-  
+
   print("T:  "+max(T)+" "+min(T))
   print("Q:  "+max(Q)+" "+min(Q))
   print("TD: "+max(TD)+" "+min(TD))
   print("RH: "+max(RH)+" "+min(RH))
-  
+
   Znew = Z3
   TDnew = TD
   Unew = U
   Vnew = V
   Tnew = T
   PSLnew = PSL
-  
+
   delete(U)
   delete(V)
   delete(Z3)
@@ -182,7 +182,7 @@ else
   delete(T)
   delete(Q)
   delete(PSL)
-    
+
 end if
 
 
@@ -190,7 +190,7 @@ end if
 ;opt_adv = 0  ; use 1 to get gradient components
 ;cyclic = True
 ;long_name = "temp advection"
-;units     = "K/s"   
+;units     = "K/s"
 ;advTcfd   = advect_variable_cfd(Unew,Vnew,Tnew,lat,lon, cyclic, long_name, units, opt_adv)
 ;advTcfd = -advTcfd
 
@@ -251,8 +251,9 @@ res@gsnCenterString=datastr+": "+tostring_with_format(yyyy, "%0.4i")+"-"+tostrin
 res@cnLevelSelectionMode = "ExplicitLevels"
 if (plot_dbz) then
   PRECT = where(PRECT .lt. 2.0,PRECT@_FillValue,PRECT)
-  res@cnLevels    = (/10,12.5,15,20,25,30,35,40,45,50,55,60,70/)
-  cmap = read_colormap_file("radar")
+  ;res@cnLevels    = (/10,12.5,15,20,25,30,35,40,45,50,60,70/)
+  res@cnLevels    = (/5,7.5,10,12.5,15,20,25,30,35,40,45,50,60/)
+  cmap = read_colormap_file("prcp_1")
   cmap_dims = dimsizes(cmap)
   ncolors = cmap_dims(0)
   npairs = cmap_dims(1)
@@ -323,7 +324,17 @@ res1@cnMinLevelValF  = 5160.			; set the minimum contour level
 res1@cnMaxLevelValF  = 5760.			; set the maximum contour level
 res1@cnLevelSpacingF = 60.			; set the interval between contours
 res1@cnLineColor = "black"
-res1@cnLineLabelsOn      = False        ; Turn on contour line labels
+res1@cnLabelDrawOrder  ="PostDraw"
+res1@cnLineLabelsOn      = True        ; Turn on contour line labels
+res1@cnLabelMasking        = True
+res1@cnLineLabelBackgroundColor  = -1
+res1@cnLineLabelFont  = "helvetica-bold"
+res1@cnLineLabelPlacementMode  = "Computed"
+res1@cnLineLabelFontThicknessF = 5.0
+res1@cnLineLabelDensityF  = 0.45
+res1@cnLineLabelFontHeightF = 0.020
+res1@cnLineLabelInterval = 2
+
 res1@cnLineThicknessF = 3.0
 plot_z = gsn_csm_contour(wks,Znew({500.},:,:), res1)
 overlay(plot(plotix),plot_z)
@@ -331,17 +342,31 @@ overlay(plot(plotix),plot_z)
 res2 = resbase
 res2@cnLineDrawOrder ="PostDraw"
 res2@cnLevelSelectionMode = "ManualLevels"	; manually set the contour levels with the following 3 resources
-res2@cnMinLevelValF  = 273.
-res2@cnMaxLevelValF  = 400.
+res2@cnMinLevelValF  = 0.
+res2@cnMaxLevelValF  = 50.
 res2@cnLevelSpacingF = 5.0
 res2@cnLineThicknessF = 4.0
 res2@cnLineColor = "red"
-res2@cnLineLabelsOn      = False        ; Turn on contour line labels
+
+res2@cnLabelDrawOrder  ="PostDraw"
+res2@cnLineLabelsOn      = True        ; Turn on contour line labels
+res2@cnLabelMasking        = True
+res2@cnLineLabelBackgroundColor  = -1
+res2@cnLineLabelFontColor = "red"
+res2@cnLineLabelFont  = "helvetica-bold"
+res2@cnLineLabelPlacementMode  = "Computed"
+res2@cnLineLabelFontThicknessF = 5.0
+res2@cnLineLabelDensityF  = 0.45
+res2@cnLineLabelFontHeightF = 0.028
+res2@cnLineLabelInterval = 1
+
 res2@cnMonoLineDashPattern =True
 res2@cnLineDashPattern = 15
-do ii = 0,19
+nsmooth=19  ; was 19
+do ii = 0,nsmooth
   TDnew({850.},:,:) = smth9_Wrap(TDnew({850.},:,:), 0.50,  0.25, False)
 end do
+TDnew = TDnew - 273.15
 plot_td = gsn_csm_contour(wks,TDnew({850.},:,:),res2)
 
 overlay(plot(plotix),plot_td)
@@ -373,14 +398,14 @@ panres@gsnPanelFigureStringsFontHeightF = 0.014
 panres@gsnPanelFigureStrings= (/"a.","b.","c.","d.","e.","f.","g.","h.","i.","j."/)
 
 if (panel_vertical) then
-  gsn_panel(wks,plot,(/npanels,nmodels/),panres) 
+  gsn_panel(wks,plot,(/npanels,nmodels/),panres)
 else
-  gsn_panel(wks,plot,(/nmodels,npanels/),panres) 
+  gsn_panel(wks,plot,(/nmodels,npanels/),panres)
 end if
 
- 
+
  exit
- 
+
 
 system("/bin/rm -f simple.nc")   ; remove any pre-existing file
 ncdf = addfile("simple.nc" ,"c")  ; open output netCDF file
@@ -398,13 +423,13 @@ fileattdef( ncdf, fAtt )            ; copy file attributes
 ;===================================================================
 ; make time an UNLIMITED dimension; recommended  for most applications
 ;===================================================================
-filedimdef(ncdf,"time",-1,True) 
+filedimdef(ncdf,"time",-1,True)
 
 ;===================================================================
 ; output variables directly; NCL will call appropriate functions
 ; to write the meta data associated with each variable
 ;===================================================================
-ncdf->Z = Znew      
+ncdf->Z = Znew
 ncdf->TD = TDnew
-       
+
 end
