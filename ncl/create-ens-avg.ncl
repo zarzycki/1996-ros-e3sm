@@ -75,17 +75,17 @@ do ii = 0,ndirs-1
 
    thisMember = (kk*ndirs) + ii
    print(""+thisMember)
-   
+
    thisdir = dirs(ii)
    thisensemble = ensembles(kk)
-   
-   filedir = "/storage/home/cmz5202/group/arp5873/E3SM/RoS-F2010C5-"+grid+"-"+thisensemble+"-"+experiment+"/"+thisdir+"/*."+modelcomponent+"."+hname+"*.nc_regrid.nc"
+
+   filedir = DATADIR+"/E3SM/RoS-F2010C5-"+grid+"-"+thisensemble+"-"+experiment+"/"+thisdir+"/*."+modelcomponent+"."+hname+"*.nc_regrid.nc"
    print("loading "+filedir)
-   
+
    fils = systemfunc ("ls "+filedir)
    ;print(fils)
-   
-   f    = addfiles (fils, "r")   
+
+   f    = addfiles (fils, "r")
    ListSetType (f, "cat")
    if (restrict_domain)
      if (is_2D) then
@@ -100,7 +100,7 @@ do ii = 0,ndirs-1
        var = f[:]->$varname$(:,:,:,:)
      end if
    end if
-   
+
    if (ii .eq. 0 .and. kk .eq. 0)
      lat = var&lat
      lon = var&lon
@@ -108,12 +108,12 @@ do ii = 0,ndirs-1
      nlat = dimsizes(lat)
      nlon = dimsizes(lon)
      ntim = dimsizes(time)
-     
+
      if (.not. is_2D) then
        lev = var&lev
-       nlev = dimsizes(lev)     
+       nlev = dimsizes(lev)
      end if
-     
+
      if (.not. is_2D) then
        holderVar = new((/ndirs*nens,ntim,nlev,nlat,nlon/),typeof(var))
        holderVar!0 = "ens"
@@ -135,20 +135,20 @@ do ii = 0,ndirs-1
        holderVar&lat = lat
        holderVar&lon = lon
      end if
-     
-     copy_VarAtts(var, holderVar)   
-     
+
+     copy_VarAtts(var, holderVar)
+
      count_adds = new(ntim,"integer")
      count_adds!0 = "time"
      count_adds&time=time
      ; set to zero
      count_adds = 0
-     
+
    end if
-   
+
    thistime = var&time
    thistime_newunits = cd_convert(thistime,time@units)
-   
+
    do jj = 0,ntim-1
      test = thistime_newunits - time(jj)
      if (min(test) .lt. 0.0001) then
@@ -164,7 +164,7 @@ do ii = 0,ndirs-1
        ;print("nope!")
      end if
    end do
-      
+
    delete(fils)
    if (kk .ne. (nens-1) .or. ii .ne. (ndirs-1))
      delete(f)
@@ -185,7 +185,8 @@ count_name = "count_"+varname
 
 setfileoption("nc","Format","LargeFile")
 
-outputdir="/storage/home/cmz5202/scratch/"
+outputdir=DATADIR+"/ens_means/"
+system("mkdir -p "+outputdir)
 outputname="output_"+experiment+"_"+modelcomponent+"_"+hname+".nc"
 filename=outputdir+"/"+outputname
 if (zz .eq. 0) then
@@ -194,7 +195,7 @@ if (zz .eq. 0) then
   fAtt = True            ; assign file attributes
   fAtt@creation_date = systemfunc ("date")
   fileattdef( ncdf, fAtt )            ; copy file attributes
-  ;filedimdef(ncdf,"time",-1,True) 
+  ;filedimdef(ncdf,"time",-1,True)
 else
   ncdf = addfile(filename ,"w")  ; open output netCDF file
 end if
@@ -234,5 +235,5 @@ list_vars()
 end do ; zz
 
 exit
-   
+
 end

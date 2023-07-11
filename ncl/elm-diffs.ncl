@@ -5,6 +5,8 @@ begin
 ;ncl elm-diffs.ncl 'singlevar="TSOI_10CM"'
 ;ncl elm-diffs.ncl 'singlevar="FSNO"'
 
+;DATADIR="/Volumes/ZARZYCKI_FLASH/arp5873/"
+
 ;vars = (/"FSNO","H2OSNO","H2OSNO_TOP","QSNOMELT","QSNOFRZ","SNOW","SNOWDP","SNOWLIQ","SNOTTOPL","ERRH2OSNO","QSNWCPICE","FGR","FSM","QDRIP","ZBOT","TG","TV","TSA","SWup","SWdown","FIRA","FIRE","LWdown","LWup","TREFMNAV","TREFMXAV","Q2M","FPSN","FSH","Rnet","TLAI","FCTR","QOVER","RH","RH2M","SOILWATER_10CM","ZWT","TSOI_10CM","QSOIL","QVEGE","QVEGT","QTOPSOIL","Qstor","H2OCAN","H2OSFC","QH2OSFC","TWS","HC","SNOdTdzL","SNOW_SINKS","SNOW_SOURCES","SNOLIQFL","TH2OSFC","U10","QFLOOD","QRUNOFF","Qle","Qh","Qair","Tair","RAIN","SNO_T","SNO_Z"/)
 TVARLIST = (/"Tair","TSOI_10CM","SNOTTOPL","TG","TV","TSA","TREFMNAV","TREFMXAV","TH2OSFC"/)
 ZEROLIST = (/"SNOLIQFL","SNOW_SOURCES","SNOW_SINKS","H2OSFC","H2OCAN","FSNO","H2OSNO","H2OSNO_TOP","SNOWLIQ","SNOWDP","SNOW","RAIN","QSNOMELT","SNOWLIQ"/)
@@ -21,7 +23,7 @@ end if
 do zz = 0,dimsizes(vars)-1
 
   var = vars(zz)
-  
+
   minlat=39.5
   maxlat=42.0
   minlon=280.0-360.
@@ -32,7 +34,7 @@ do zz = 0,dimsizes(vars)-1
   exps = (/"PI", "control", "plus1K", "plus2K", "plus3K", "plus4K"/)
 
   do ii = 0,dimsizes(exps)-1
-    filename="/Volumes/ZARZYCKI_FLASH/arp5873/ens_means/output_"+exps(ii)+"_elm_h0.nc"
+    filename=DATADIR+"/ens_means/output_"+exps(ii)+"_elm_h0.nc"
     f = addfile(filename,"r")
     v = f->$var$
 
@@ -43,7 +45,7 @@ do zz = 0,dimsizes(vars)-1
     ;  end do
     ;  v(0,:,:) = 0.0
     ;end if
-  
+
     if (ii .eq. 0) then
       fdims = dimsizes(v)
       ntim = fdims(0)
@@ -53,18 +55,18 @@ do zz = 0,dimsizes(vars)-1
       arr = new((/nexp,ntim,nlat,nlon/),typeof(v))
       time = f->time
     end if
-  
+
     arr(ii,:,:,:) = v
-  
+
     delete(v)
     delete(f)
-  
+
   end do
 
   ; get a subdomain spatially
   arr_sub = arr(:,:,{minlat:maxlat},{minlon:maxlon})
   delete(arr)
-  
+
   ; time average
   basin_avg = dim_avg_n_Wrap(arr_sub,(/2,3/))
 
@@ -72,29 +74,29 @@ do zz = 0,dimsizes(vars)-1
   minvar = min(arr_sub)
   maxvar = max(arr_sub)
   vardiff = maxvar-minvar
-  
+
   minbasin = min(basin_avg)
   maxbasin = max(basin_avg)
   basdiff = maxbasin-minbasin
 
   if (1 .eq. 1) then
-  
+
     system("mkdir -p ./img/")
     wks1   = gsn_open_wks (out_type, "./img/FIG_elm_timeseries_"+var)        ; send graphics to PNG file
-  
+
     res                   = True                      ; plot mods desired
     res@gsnDraw         = False                   ; don't draw yet
-    res@gsnFrame        = False            
-    
+    res@gsnFrame        = False
+
     if (var .eq. "FSNO") then
-      res@tiMainString      = "Fractional snow cover" 
+      res@tiMainString      = "Fractional snow cover"
     else if (var .eq. "TSOI_10CM") then
       res@tiMainString      = "Soil temperature, top 10cm"
     else
-      res@tiMainString      = "" 
+      res@tiMainString      = ""
     end if
     end if
-    
+
     if (var .eq. "FSNO") then
       res@tiYAxisString     = "Snow cover fraction"
     else if (var .eq. "TSOI_10CM") then
@@ -103,10 +105,10 @@ do zz = 0,dimsizes(vars)-1
       res@tiYAxisString      = ""
     end if
     end if
-    
+
     res@xyMonoDashPattern = True
     res@xyLineThicknessF = 5.0
-    
+
     ; abby's colors
     cmap = (/ (/000, 183, 182/), \
             (/026, 000, 248/), \
@@ -114,7 +116,7 @@ do zz = 0,dimsizes(vars)-1
             (/255, 000, 028/), \
             (/190, 000, 179/), \
             (/182, 185, 041/) /)/255.
-            
+
   res@xyExplicitLegendLabels = (/"Pre_Ind", "Control", "Plus_1K", "Plus_2K", "Plus_3K", "Plus_4K"/)
   res@lgItemOrder  = (/ 5,4,3,2,1,0 /)   ; Reorder the legends
 
@@ -129,9 +131,9 @@ do zz = 0,dimsizes(vars)-1
     ;res@tiMainString = "Reverse legend ordering"    ; Title
     ;res@lgItemOrder  = (/ 3,2,1,0 /)   ; Reorder the legends
   end if
-  
 
-    
+
+
    res@tiXAxisString     = "Date (00Z, 1996)"
    res@xyLineColors      = cmap
     ;res@xyLineColors      = (/"blue","green","yellow","orange","red","black"/)          ; change line color
@@ -155,31 +157,31 @@ do zz = 0,dimsizes(vars)-1
   txres@txBackgroundFillColor = "white"
   txres@txFontHeightF         = 0.03
   amres = True
-  amres@amParallelPosF   = -0.5 
+  amres@amParallelPosF   = -0.5
   amres@amOrthogonalPosF = 0.5
-  amres@amJust           = "BottomLeft"  
+  amres@amJust           = "BottomLeft"
   if (var .eq. "FSNO") then
     txid = gsn_create_text(wks1, "b.", txres)
-    annoid = gsn_add_annotation(plot, txid, amres)  
+    annoid = gsn_add_annotation(plot, txid, amres)
   else if (var .eq. "TSOI_10CM") then
     txid = gsn_create_text(wks1, "a.", txres)
-    annoid = gsn_add_annotation(plot, txid, amres)  
+    annoid = gsn_add_annotation(plot, txid, amres)
   else
     print("no panel label")
   end if
   end if
-    
+
 
 
     draw(plot)
-    frame(wks1)                                        
-                                                  
+    frame(wks1)
+
     delete(res)
     delete(plot)
-  
+
   end if
-  
-  
+
+
   if (1 .eq. 0) then
 
     wks   = gsn_open_wks (out_type, "./img/elm_panels_"+var)        ; send graphics to PNG file
@@ -200,7 +202,7 @@ do zz = 0,dimsizes(vars)-1
 
     cmap = read_colormap_file("MPL_gnuplot2")
     res@cnFillPalette=cmap
-  
+
     res@cnLevelSelectionMode = "ManualLevels"	; manually set the contour levels with the following 3 resources
     minmaxscaling=0.05
     nlevels=20
@@ -225,7 +227,7 @@ do zz = 0,dimsizes(vars)-1
     res2@gsnFrame        = False                   ; don't advance frame yet
     res2@cnFillOn        = False
     res2@cnLevelSelectionMode = "ExplicitLevels"   ; set explicit contour levels
-    
+
     res2@cnLineThicknessF = 5.0
     res2@gsnLeftString=""
     res2@gsnRightString=""
@@ -233,7 +235,7 @@ do zz = 0,dimsizes(vars)-1
     res2@cnLineLabelsOn = False
     res2@cnInfoLabelOn     = False                   ; turn off info label
     res2@cnLineColor = "green"
-    
+
     do jj = 0,dimsizes(time)-1
       thisTime = jj
       print(""+cd_calendar(time(thisTime),-3))
@@ -253,21 +255,21 @@ do zz = 0,dimsizes(vars)-1
           delete(plotover)
         end if
       end do
-    
+
       panres                     = True
       ;panres@gsnMaximize         = True             ; maximize the plots
       panres@gsnPanelLabelBar    = True             ; turn on the panel label bar
       panres@gsnPanelMainString = tostring(arr_sub@long_name)+"  "+cd_calendar(time(thisTime),-3)
       ;panres@gsnPaperOrientation = "portrait"       ; make sure the paper orientation is set to portrait
       ;panres@lbLabelStride       = 2                ; set the label bar label stride to 2
-      gsn_panel(wks,plot,(/3,2/),panres) 
+      gsn_panel(wks,plot,(/3,2/),panres)
     end do
-    
+
     delete(panres)
     delete(res)
     delete(res2)
     delete(plot)
-    
+
   end if
 
 end do
