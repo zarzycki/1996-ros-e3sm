@@ -1,0 +1,9 @@
+First gunzip any gzipped files, then run...
+
+$> python extract.py
+
+to create processed-stations.csv which can be read by the NCL code
+
+then edit batch-gage2grid.sh to specify the Jan 1996 days. Then...
+
+$> ./batch-gage2grid.sh 
