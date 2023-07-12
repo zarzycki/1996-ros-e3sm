@@ -1,4 +1,4 @@
-load "/Users/cmz5202/Software/1996-ros-e3sm/ncl/rainratetodbz.ncl"
+load "./utils/rainratetodbz.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/contrib/time_axis_labels.ncl"
 
 begin
