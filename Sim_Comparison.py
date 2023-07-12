@@ -31,7 +31,7 @@ if SRB_AVG == False:
     minlon = -78.5
     maxlon = -76
 
-#ELM and MOSART variables are time averaged, so to shift the timeseries plots to fall at the middle 
+#ELM and MOSART variables are time averaged, so to shift the timeseries plots to fall at the middle
 #of the time period rather than the end of the time period set equal to True rather than False
 shift_ELM = True
 shift_MOSART = True
@@ -229,7 +229,7 @@ def rasterize(shapes, coords, latitude='lat', longitude='lon',
     return xr.DataArray(raster, coords=spatial_coords, dims=(latitude, longitude))
 
 def add_shape_coord_from_data_array(xr_da, shp_path, coord_name):
-    """ Create a new coord for the xr_da indicating whether or not it 
+    """ Create a new coord for the xr_da indicating whether or not it
          is inside the shapefile
 
         Creates a new coord - "coord_name" which will have integer values
@@ -238,7 +238,7 @@ def add_shape_coord_from_data_array(xr_da, shp_path, coord_name):
         Usage:
         -----
         precip_da = add_shape_coord_from_data_array(precip_da, "awash.shp", "awash")
-        awash_da = precip_da.where(precip_da.awash==0, other=np.nan) 
+        awash_da = precip_da.where(precip_da.awash==0, other=np.nan)
     """
     # 1. read in shapefile
     shp_gpd = gpd.read_file(shp_path)
@@ -250,7 +250,7 @@ def add_shape_coord_from_data_array(xr_da, shp_path, coord_name):
     shapes = [(shape, n) for n, shape in enumerate(shp_gpd.geometry)]
 
     # 3. create a new coord in the xr_da which will be set to the id in `shapes`
-    xr_da[coord_name] = rasterize(shapes, xr_da.coords, 
+    xr_da[coord_name] = rasterize(shapes, xr_da.coords,
                                longitude='lon', latitude='lat')
 
     return xr_da
@@ -265,14 +265,14 @@ if SRB_AVG == True:
     ds_mos_Control = ds_mos_Control.where(ds_mos_Control.coord==0, other=np.nan)
     Control_h1 = add_shape_coord_from_data_array(Control_h1, "./shapes/srb.shp", 'coord' )
     Control_h1 = Control_h1.where(Control_h1.coord==0, other=np.nan)
-    
+
     ds_eamLR = add_shape_coord_from_data_array(ds_eamLR, "./shapes/srb.shp", 'coord' )
     ds_eamLR = ds_eamLR.where(ds_eamLR.coord==0, other=np.nan)
     ds_elmLR = add_shape_coord_from_data_array(ds_elmLR, "./shapes/srb.shp", 'coord' )
     ds_elmLR= ds_elmLR.where(ds_elmLR.coord==0, other=np.nan)
     ds_mosLR = add_shape_coord_from_data_array(ds_mosLR, "./shapes/srb.shp", 'coord' )
     ds_mosLR = ds_mosLR.where(ds_mosLR.coord==0, other=np.nan)
-    
+
     ds_eam6 = add_shape_coord_from_data_array(ds_eam6, "./shapes/srb.shp", 'coord' )
     ds_eam6 = ds_eam6.where(ds_eam6.coord==0, other=np.nan)
     ds_elm6 = add_shape_coord_from_data_array(ds_elm6, "./shapes/srb.shp", 'coord' )
@@ -324,7 +324,7 @@ if SRB_AVG == True:
     ds_mos_Pre_Ind = ds_mos_Pre_Ind.where(ds_mos_Pre_Ind.coord==0, other=np.nan)
     Pre_Ind_h1 = add_shape_coord_from_data_array(Pre_Ind_h1, "./shapes/srb.shp", 'coord' )
     Pre_Ind_h1 = Pre_Ind_h1.where(Pre_Ind_h1.coord==0, other=np.nan)
-    
+
     ds_eam_Controli = add_shape_coord_from_data_array(ds_eam_Controli, "./shapes/srb.shp", 'coord' )
     ds_eam_Controli = ds_eam_Controli.where(ds_eam_Controli.coord==0, other=np.nan)
     ds_elm_Controli = add_shape_coord_from_data_array(ds_elm_Controli, "./shapes/srb.shp", 'coord' )
@@ -417,13 +417,13 @@ end = datetime.date(1996,1,25)
 time = []
 for dt in datetime_range(start, end, {'days':1}):
     time.append(dt)
-    
+
 start2 = datetime.datetime(1996,1,15,12)
 end2 = datetime.datetime(1996,1,24)
 time2 = []
 for dt in datetime_range(start2, end2, {'hours':12}):
     time2.append(dt)
-    
+
 start3 = datetime.date(1996,1,16)
 end3 = datetime.date(1996,1,24)
 time3 = []
@@ -519,9 +519,9 @@ for i,r,title in zip(range(6),[ds_mos_Pre_Ind,ds_mos_Control,ds_mos_Plus_1K,ds_m
         #plotting all other simulations as a difference plot
         else:
             cont = [-8000,-4000,-2000,-750,-250,-50,50,250,750,2000,4000,8000]
-            riv_dis_plot = axs[i][j].contourf(ds_mos_Control['lon'],ds_mos_Control['lat'],r['RIVER_DISCHARGE_OVER_LAND_LIQ'][t,:,:] - ds_mos_Control['RIVER_DISCHARGE_OVER_LAND_LIQ'][t,:,:] 
+            riv_dis_plot = axs[i][j].contourf(ds_mos_Control['lon'],ds_mos_Control['lat'],r['RIVER_DISCHARGE_OVER_LAND_LIQ'][t,:,:] - ds_mos_Control['RIVER_DISCHARGE_OVER_LAND_LIQ'][t,:,:]
                                         ,levels=cont, cmap='seismic', extend='both')
-        
+
         #adding extra to plot
         susq_outline(axs[i][j])
         axs[i][j].set_ylabel('+1',fontsize='x-large')
@@ -547,13 +547,13 @@ for i,r,title in zip(range(6),[ds_mos_Pre_Ind,ds_mos_Control,ds_mos_Plus_1K,ds_m
             g.xlines = False
             g.ylines = False
             g.ylabel_style = {'size': 15}
-        
-    #adding text to left of figures 
+
+    #adding text to left of figures
     if title == 'Control':
         axs[i][0].text(-.35,.5,title,transform=axs[i][0].transAxes,fontsize=27,fontweight='bold',ha='center',va='center')
     else:
         axs[i][0].text(-.35,.5,title + ' -\nControl',transform=axs[i][0].transAxes,fontsize=27,fontweight='bold',ha='center',va='center',ma='center')
-    
+
     cb = plt.colorbar(riv_dis_plot, ax=axs[i][3], aspect = 15,location='right')
     cb.ax.tick_params(labelsize='x-large')
     cb.set_label('m${^3}$ s$^{-1}$', fontsize='xx-large')
@@ -603,7 +603,7 @@ for v,t in zip(vari,titl):
             else:
                 #avergaing over basin before calculating time
                 V = d[v].mean( dim=("lat","lon"), skipna=True )
-            
+
             #finding max/min in variable
             vmax = np.nanmax(V.values)
             vmin = np.nanmin(V.values)
@@ -611,7 +611,7 @@ for v,t in zip(vari,titl):
             vmax_ll = np.where(V == vmax)
             vmax_ll = V[vmax_ll[0]]
             vmax_time = vmax_ll.coords['time'].values
-            
+
             if v == 'H2OSNO':
                 #finding time where there is still 75% snow (25% snowmelt)
                 if PERCENT == True:
@@ -625,7 +625,7 @@ for v,t in zip(vari,titl):
                     v_perct_time = v_perct_time.tolist()
                     max_time.append(v_perct_time)
                     max_s.append(v_perct)
-                
+
                 #finding time of the maximum snow amount
                 if SNOMAX == True:
                     max_s.append(vmax)
@@ -633,12 +633,12 @@ for v,t in zip(vari,titl):
                 min_s.append(vmin)
                 #calculating delta SWE
                 del_swe.append(vmax-vmin)
-                
+
             #appending values for runoff
             if v == 'QRUNOFF':
                 max_r.append(vmax)
                 max_time.append(vmax_time[0])
-    
+
     #looking at eam variables
     if v == 'PRECT' or v == 'TREFHT':
         #looping through eam simulations
@@ -653,9 +653,9 @@ for v,t in zip(vari,titl):
                 V = d[v].where(mask)
                 V = V.mean( dim=("lat","lon"), skipna=True )
             else:
-                #averaging over basin first 
+                #averaging over basin first
                 V = d[v].mean( dim=("lat","lon"), skipna=True )
-            
+
             #calculating max value
             vmax = np.nanmax(V.values)
             #finding time of max value
@@ -686,7 +686,7 @@ for v,t in zip(vari,titl):
             else:
                 #averaging over basin first
                 V = d[v].mean( dim=("lat","lon"), skipna=True )
-            
+
             #calc max value
             vmax = np.nanmax(V.values)
             #finding time of max value
@@ -732,7 +732,7 @@ for v,t in zip(vari,titl):
                 else:
                     V = d[v].mean( dim=("lat","lon"), skipna=True )
                     V = V[i,:]
-                    
+
                 vmax = np.nanmax(V.values)
                 vmax_ll = np.where(V == vmax)
                 vmax_ll = V[vmax_ll[0]]
@@ -810,7 +810,7 @@ for v,t in zip(vari,titl):
                 else:
                     V = d[v].mean( dim=("lat","lon"), skipna=True )
                     V = V[i,:]
-                    
+
                 vmax = np.nanmax(V.values)
                 vmax_ll = np.where(V == vmax)
                 vmax_ll = V[vmax_ll[0]]
@@ -829,16 +829,16 @@ def append_list_as_row(file_name, list_of_elem):
         csv_writer.writerow(list_of_elem)
 
 #creating csv of time of the maximums
-f = open('Time of Maximums.csv','w')
+f = open('Time_of_Maximums.csv','w')
 vari = ['vari','Pre Ind', 'Control', 'Plus 1K', 'Plus 2K', 'Plus 3K', 'Plus 4K']
-append_list_as_row('Time of Maximums.csv',vari)
+append_list_as_row('Time_of_Maximums.csv',vari)
 
 b_ind = np.arange(0,len(max_time),7)
 for x in b_ind:
-    append_list_as_row('Time of Maximums.csv', max_time[x:x+7])
+    append_list_as_row('Time_of_Maximums.csv', max_time[x:x+7])
 
 
-#turning the max time into a datetime object for ensemble mean 
+#turning the max time into a datetime object for ensemble mean
 max_date = []
 for i in range(len(max_time)):
     max_date.append(datetime.datetime.strptime(max_time[i], '%Y-%m-%d-%H'))
@@ -847,12 +847,12 @@ for i in range(len(max_time)):
 max_datei = []
 for i in range(len(max_time3)):
     max_datei.append(datetime.datetime.strptime(max_time3[i], '%Y-%m-%d-%H'))
-    
+
 #calculating the average max time for the individual ensemble members to get a different version of ensemble mean max time
 avgTime = []
-for x in np.arange(0,450,15): 
+for x in np.arange(0,450,15):
     avgTime.append(datetime.datetime.strftime(datetime.datetime.fromtimestamp(sum(map(datetime.datetime.timestamp,max_datei[x:x+15]))/len(max_datei[x:x+15])),'%Y-%m-%d-%H'))
-    
+
 #turning above into datetime object
 avgTimei = []
 for j in range(len(avgTime)):
@@ -865,7 +865,7 @@ end = datetime.datetime(1996,1,24)
 time_plot2 = []
 for dt in datetime_range(start, end, {'hours':6}):
     time_plot2.append(dt)
-    
+
 #creating array for xtick labels
 time_s = []
 for x in np.arange(0,len(time_plot2),4):
@@ -888,7 +888,7 @@ for ii in range(0, 2):
     AVG_2 = True
 
   print(ii, AVG_2)
-  
+
   #creating array for y axis values
   temps = [0, .3 ,1, 2, 3, 4]
   temps2 = temps*5
@@ -903,9 +903,9 @@ for ii in range(0, 2):
   for x,y,c,v,ax,L in zip(np.arange(0,len(max_datei),90),np.arange(0,30,6), colors,vari,axs,letters):
       #plotting ensemble members
       ax.scatter(max_datei[x:x+90], temps3, color=c, alpha = 0.1)
-      #plotting ensemble mean 
+      #plotting ensemble mean
       p1 = ax.plot(max_date[y:y+6], temps2[y:y+6], color=c,label='Average 1')
-    
+
       #plotting ensemble mean using average 2 technique
       if AVG_2 == True:
           p2 = ax.plot(avgTimei[y:y+6], temps2[y:y+6], color=c, linestyle='dashed', label='Average 2')
@@ -921,7 +921,7 @@ for ii in range(0, 2):
           ax.text(.99,.97,L+' Time of '+v, fontsize='x-large',transform=ax.transAxes,ha='right',va='top')
           ax.set_xticks(time_plot2[:-2])
           ax.set_xticklabels([])
-    
+
       #adding to plot
       ax.set_yticks(temps)
       ax.set_yticklabels(ytik, fontsize='medium')
@@ -960,9 +960,9 @@ for i,l,a,h,title,L in zip(range(6),[ds_elm_Pre_Ind,ds_elm_Control,ds_elm_Plus_1
     temp_max = np.amax(a['TREFHT'], axis=0)
     #calculating accumulated precip
     pre_acc = np.sum(h['PRECT']*(3/24), axis=0)   #changing mm/day to mm by multiplying each rate by the time interval (3 hrs/)
-    #calculating delta swe 
+    #calculating delta swe
     swe = np.amax(l['H2OSNO'], axis=0) - np.amin(l['H2OSNO'], axis=0)
-    
+
     #setting contour values
     cont_pacc = np.arange(25,81,5)
     cont_tmax = np.arange(0,21,2)
@@ -973,7 +973,7 @@ for i,l,a,h,title,L in zip(range(6),[ds_elm_Pre_Ind,ds_elm_Control,ds_elm_Plus_1
     tm_plot = axs[i][0].contourf(ds_elm_Control['lon'],ds_elm_Control['lat'],temp_max,levels = cont_tmax,cmap = 'YlOrRd')
     swe_plot = axs[i][2].contourf(ds_elm_Control['lon'],ds_elm_Control['lat'],swe, levels=cont_swe,cmap = 'BuPu')
     rm_plot = axs[i][3].contourf(ds_elm_Control['lon'],ds_elm_Control['lat'],run_max,levels=cont_maxr, cmap = 'inferno_r')#'GnBu')
-    #adding text to left hand side of each row 
+    #adding text to left hand side of each row
     axs[i][0].text(-.4,.5,title,transform=axs[i][0].transAxes,fontsize=20,fontweight='bold',ha='center',va='center')
     #looping through subplots and adding letter to each subplot
     for j,v in zip(range(4),var):
@@ -985,7 +985,7 @@ for i,l,a,h,title,L in zip(range(6),[ds_elm_Pre_Ind,ds_elm_Control,ds_elm_Plus_1
         #adding susquehanna river basin outline
         susq_outline(axs[i][j])
         axs[i][j].set_extent([-79.2,-74.5,39.4,43.1])
-        
+
     #adding longitude labels to last row
     if i == 5:
         for j in range(4):
@@ -1053,7 +1053,7 @@ for ax,l,title,L in zip(axs,[ds_elm_Pre_Ind,ds_elm_Control,ds_elm_Plus_1K,ds_elm
         cb1 = plt.colorbar(SWE_plot,  ax=ax,shrink=.65,aspect=60, location='right')
         cb1.ax.tick_params(labelsize='x-large')
         cb1.set_label('mm', fontsize='xx-large')
-        
+
 fig.savefig('spatial_maps_maxSWE.pdf', bbox_inches='tight', pad_inches=0)
 
 
@@ -1129,7 +1129,7 @@ for i,v,vari in zip(range(2),['QRUNOFF','RIVER_DISCHARGE_OVER_LAND_LIQ'],['Runof
     cb = plt.colorbar(plot, ax = axs[i][2], shrink=.95,aspect= 20,label = 'mm/day',location='right')
     cb.ax.tick_params(labelsize='large')
     cb.set_label('mm day$^{-1}$', fontsize='x-large')
-    
+
 fig.savefig('spatial_maps_resolution.pdf', bbox_inches='tight', pad_inches=0)
 
 
@@ -1137,7 +1137,7 @@ fig.savefig('spatial_maps_resolution.pdf', bbox_inches='tight', pad_inches=0)
 
 ##compares timeseries of the 1996 event for the high res and low res model runs
 
-#taking average of the variable over the basin 
+#taking average of the variable over the basin
 if SRB_AVG == False:
     mask = (
     (ds_elm_Control.coords["lat"] > x)
@@ -1152,7 +1152,7 @@ if SRB_AVG == False:
     ds_eam_mean = ds_eam.mean( dim=("lat","lon"), skipna=True )
     ds_elm_mean = ds_elm.mean( dim=("lat","lon"), skipna=True )
     ds_mos_mean = ds_mos.mean( dim=("lat","lon"), skipna=True )
-if SRB_AVG == True:    
+if SRB_AVG == True:
     ds_eam_mean = ds_eam_Control.mean( dim=("lat","lon"), skipna=True )
     ds_elm_mean = ds_elm_Control.mean( dim=("lat","lon"), skipna=True )
     ds_mos_mean = ds_mos_Control.mean( dim=("lat","lon"), skipna=True )
@@ -1210,5 +1210,5 @@ if SRB_AVG == True:
     yaxis1.tick_params('y', labelsize='large')
     yaxis2.tick_params('y', labelsize='large')
     fig.tight_layout(pad=3.0)
-    
+
 fig.savefig('hydrograph_resolution.pdf', bbox_inches='tight', pad_inches=0)
