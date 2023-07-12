@@ -1,10 +1,19 @@
 #!/bin/bash -l
 
-#PBS -l nodes=1:ppn=20
-#PBS -l walltime=1:00:00
-#PBS -A open
+##### ICDS ROAR
+##PBS -l nodes=1:ppn=20
+##PBS -l walltime=1:00:00
+##PBS -A open
+##PBS -j oe
+##PBS -N abby_elm
+
+##### Cheyenne
+#PBS -N arp-elm
+#PBS -A P93300642
+#PBS -l select=1:ncpus=5:mem=100GB
+#PBS -l walltime=8:00:00
+#PBS -q casper
 #PBS -j oe
-#PBS -N abby_elm
 
 BASEPATH=/glade/u/home/zarzycki/scratch/arp5873_NEW/
 SOFTPATH=/glade/u/home/zarzycki/work/sw/1996-ros-e3sm/
@@ -12,6 +21,7 @@ NUMCORES=5
 
 #----------------------------
 
+module load ncl
 module load parallel
 
 TIMESTAMP=`date +%s%N`
