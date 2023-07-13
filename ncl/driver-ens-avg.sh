@@ -1,27 +1,30 @@
 #!/bin/bash -l
 
 ##### ICDS ROAR
-##PBS -l nodes=1:ppn=6:himem
-##PBS -l pmem=18gb
-##PBS -l walltime=12:00:00
-##PBS -A open
-##PBS -j oe
-##PBS -N abby_ncl
+#PBS -l nodes=1:ppn=6:himem
+#PBS -l pmem=18gb
+#PBS -l walltime=11:00:00
+#PBS -A open
+#PBS -j oe
+#PBS -N abby_ncl
 
 ##### Cheyenne
-#PBS -N arp-ens-avg
-#PBS -A P93300642
-#PBS -l select=1:ncpus=6:mem=100GB
-#PBS -l walltime=8:00:00
-#PBS -q casper
-#PBS -j oe
+##PBS -N arp-ens-avg
+##PBS -A P93300642
+##PBS -l select=1:ncpus=6:mem=100GB
+##PBS -l walltime=8:00:00
+##PBS -q casper
+##PBS -j oe
 
-BASEPATH=/glade/u/home/zarzycki/scratch/arp5873_NEW/
-SOFTPATH=/glade/u/home/zarzycki/work/sw/1996-ros-e3sm/
 NUMCORES=6
+### ICDS
+BASEPATH=/storage/home/cmz5202/group/arp5873_NEW/
+SOFTPATH=/storage/home/cmz5202/work/sw/1996-ros-e3sm
 
 module load ncl
 module load parallel
+
+conda activate pettett
 
 TIMESTAMP=`date +%s%N`
 COMMANDFILE=commands.${TIMESTAMP}.txt
