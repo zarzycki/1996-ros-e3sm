@@ -1,4 +1,4 @@
-load "rainratetodbz.ncl"
+load "./utils/rainratetodbz.ncl"
 
 begin
 
