@@ -25,7 +25,7 @@ if (modelcomponent .eq. "eam" .and. hname .eq. "h0")
   arr_2D = True
 end if
 if (modelcomponent .eq. "eam" .and. hname .eq. "h1")
-  vars = (/"PRECT","PRECC","PRECL","PRECSL","PRECSA"/)
+  vars = (/"PRECT","PRECC","PRECL","PRECSL","PRECSC"/)
   arr_2D = (/True,True,True,True,True/)
 end if
 if (modelcomponent .eq. "eam" .and. hname .eq. "h2")
