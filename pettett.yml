@@ -19,3 +19,4 @@ dependencies:
   - geopandas=0.10.2
   - dask=2021.2.0
   - ncl=6.6.2
+  - parallel=20230522
