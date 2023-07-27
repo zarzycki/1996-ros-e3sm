@@ -1,4 +1,4 @@
-#!/bin/bash -i
+#!/bin/bash -l
 
 #PBS -l nodes=1:ppn=20
 #PBS -l walltime=11:00:00
