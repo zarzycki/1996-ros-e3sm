@@ -4,8 +4,8 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/contrib/time_axis_labels.ncl"
 begin
 
 dbzthresh=0.1
-minLat=  40.5
-maxLat=  42.
+minLat=  40.
+maxLat=  43.
 minLon= -79.2
 maxLon= -74.8
 ; 18-21
