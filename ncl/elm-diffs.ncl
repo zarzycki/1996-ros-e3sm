@@ -20,6 +20,10 @@ if (.not. isvar("vars")) then
   vars = (/singlevar/)
 end if
 
+if (.not. isvar("outdir")) then
+  outdir = "./img/"
+end if
+
 do zz = 0,dimsizes(vars)-1
 
   var = vars(zz)
@@ -81,8 +85,8 @@ do zz = 0,dimsizes(vars)-1
 
   if (1 .eq. 1) then
 
-    system("mkdir -p ./img/")
-    wks1   = gsn_open_wks (out_type, "./img/FIG_elm_timeseries_"+var)        ; send graphics to PNG file
+    system("mkdir -p "+outdir)
+    wks1   = gsn_open_wks (out_type, outdir+"/FIG_elm_timeseries_"+var)        ; send graphics to PNG file
 
     res                   = True                      ; plot mods desired
     res@gsnDraw         = False                   ; don't draw yet

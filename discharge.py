@@ -29,7 +29,7 @@ softpath = sys.argv[2]
 #shifting mosart to be in the middle of the time period
 shift_MOSART = True
 
-#set equal to True if want to plot lines on figures 
+#set equal to True if want to plot lines on figures
 LowRes = False
 Reanalysis = True
 
@@ -45,7 +45,7 @@ ds_out = xr.Dataset({'lat': (['lat'], np.arange(35, 45.1, 0.125)),
                      'lon': (['lon'], np.arange(-85, -69.9, .125)),
                     })
 regridder_dis = xe.Regridder(rean_dis, ds_out, 'bilinear')
-    
+
 rean_dis = regridder_dis(rean_dis)
 
 
@@ -65,13 +65,13 @@ def datetime_range(start, end, delta):
         current += delta
 
 #creating time arrays with datetime objects
-        
+
 start = datetime.date(1996,1,15)
 end = datetime.date(1996,1,26)
 time = []
 for dt in datetime_range(start, end, {'days':1}):
     time.append(dt)
-        
+
 if shift_MOSART == False:
     time_m = ds_mos['time'].values
     time_m = time_m.tolist()
@@ -88,11 +88,11 @@ if shift_MOSART == True:
     for i in range(len(Time_mos)):
         T_mos.append(Time_mos[i].strftime('%Y-%m-%d-%H'))
 
-#shifting time in dataset 
+#shifting time in dataset
 if shift_MOSART == True:
     for x in [ds_mos,ds_mos_lr]:
         x['time'] = T_mos
-        
+
 Time_M = []
 for i in np.arange(0,len(Time_mos),2):
     Time_M.append(Time_mos[i].strftime('%b %d'))
@@ -101,21 +101,21 @@ for i in np.arange(0,len(Time_mos),2):
 
 
 # **STATION DATA Information**
-# 
+#
 # cono = USGS 01578310 SUSQUEHANNA RIVER AT CONOWINGO, MD Latitude 39°39'28.4",   Longitude 76°10'28.0"
-# 
-# mar = USGS 01576000 Susquehanna River at Marietta, PA Latitude 40°03'16",   Longitude 76°31'52" 
-# 
+#
+# mar = USGS 01576000 Susquehanna River at Marietta, PA Latitude 40°03'16",   Longitude 76°31'52"
+#
 # una = USGS 01500500 SUSQUEHANNA RIVER AT UNADILLA NY Latitude 42°19'17.4",   Longitude 75°18'59.0"
-# 
-# sun = USGS 01554000 Susquehanna River at Sunbury, PA Latitude 40°50'04",   Longitude 76°49'37" 
-# 
+#
+# sun = USGS 01554000 Susquehanna River at Sunbury, PA Latitude 40°50'04",   Longitude 76°49'37"
+#
 # wil = USGS 01551500 WB Susquehanna River at Williamsport, PA Lat 41°14'10", long 76°59'49"
-# 
+#
 # che = USGS 01512500 CHENANGO RIVER NEAR CHENANGO FORKS NY Lat 42°13'05", long 75°50'54"
-# 
+#
 # tio = USGS 01518700 Tioga River at Tioga Junction, PA 41°57'09", long 77°06'56"
-# 
+#
 
 
 #loading USGS station data
@@ -136,7 +136,7 @@ for s in station:
         s['datetime'][i] = datetime.datetime.strptime(s['datetime'][i], '%Y-%m-%d %H:%M')
         #changing from EST to UTC
         s['datetime'][i] = s['datetime'][i].astimezone(timezone('UTC'))
-        
+
         #multiplied by .0283... to change from ft^3 to m^3/s
         s[s.columns[4]][i] = s[s.columns[4]][i]*0.0283168
 
@@ -149,7 +149,7 @@ Lon_lr = ds_mos_lr['lon']
 Lat_r = rean_dis['lat']
 Lon_r = rean_dis['lon']
 # creating function to find the closest value to a certain lat or lon
-def closest(Lat, K): 
+def closest(Lat, K):
       return Lat[min(range(len(Lat)), key = lambda i: abs(Lat[i]-K))]
 
 #station lat on lons
@@ -174,7 +174,7 @@ for x,y,yr in zip(stat_lats, stat_lons, stat_lonsR):
     M_dis = ds_mos['RIVER_DISCHARGE_OVER_LAND_LIQ'][:,stat_latn[0],stat_lonn[0]]
     M_dis = M_dis.squeeze()
     dis.append(M_dis)
-    
+
     stat_latr = np.where(Lat_r == closest(Lat_r,x))
     lats_r.append(stat_latr)
     stat_lonr = np.where(Lon_r == closest(Lon_r,yr))
@@ -182,7 +182,7 @@ for x,y,yr in zip(stat_lats, stat_lons, stat_lonsR):
     R_dis = rean_dis['dis'][:,stat_latr[0],stat_lonr[0]]
     R_dis = R_dis.squeeze()
     dis_r.append(R_dis)
-    
+
 #assigning names to the model data to the associated station name and variable
 Mcono_dis,Mmar_dis,Muna_dis,Msun_dis,Mwil_dis,Mche_dis,Mtio_dis = dis
 Rcono_dis,Rmar_dis,Runa_dis,Rsun_dis,Rwil_dis,Rche_dis,Rtio_dis = dis_r
@@ -197,7 +197,7 @@ if LowRes == True:
     Lat_r = rean_dis['lat']
     Lon_r = rean_dis['lon']
     # creating function to find the closest value to a certain lat or lon
-    def closest(Lat, K): 
+    def closest(Lat, K):
           return Lat[min(range(len(Lat)), key = lambda i: abs(Lat[i]-K))]
 
     #station lat on lons
@@ -221,8 +221,8 @@ if LowRes == True:
         LR_dis = ds_mos_lr['RIVER_DISCHARGE_OVER_LAND_LIQ'][:,stat_latlr[0],stat_lonlr[0]]
         LR_dis = LR_dis.squeeze()
         dis_lr.append(LR_dis)
-        
-        
+
+
     #assigning names to the model data to the associated station name and variable
     Lcono_dis,Lmar_dis,Luna_dis,Lsun_dis,Lwil_dis,Lche_dis,Ltio_dis = dis_lr
 
@@ -232,7 +232,7 @@ if LowRes == True:
 #plots the discharge for the reanalysis data, station data, model data, and low res data on one timeseries plot
 
 #creating lists of the model and reanalysis data for each of the stations
-s_dis = [Mcono_dis, Mmar_dis, Msun_dis,Mwil_dis,Mtio_dis,Mche_dis,Muna_dis ]  
+s_dis = [Mcono_dis, Mmar_dis, Msun_dis,Mwil_dis,Mtio_dis,Mche_dis,Muna_dis ]
 r_dis = [Rcono_dis, Rmar_dis, Rsun_dis,Rwil_dis,Rtio_dis,Rche_dis,Runa_dis]
 
 #list of station names
@@ -272,8 +272,8 @@ for s,d,r,t,ax,L in zip(station, s_dis,r_dis,str_stat,axs,letters):
     ax.set_xticks(Time_mos)
     ax.set_xticklabels(Time_M, fontsize='large')
     ax.set_title(t, fontsize='xx-large')
-    
-fig.savefig('discharge_timeseries_gauges.pdf', bbox_inches='tight', pad_inches=0)
+
+fig.savefig('FIG_discharge_timeseries_gauges.pdf', bbox_inches='tight', pad_inches=0)
 
 
 #creating empty arrays
@@ -285,7 +285,7 @@ obs_stat = [cono[cono.columns[4]], mar[mar.columns[4]], sun[sun.columns[4]],wil[
             tio[tio.columns[4]], che[che.columns[4]],una[una.columns[4]]]
 obs = [cono,mar,sun,wil,tio,che,una]
 
-#loop too find the time of maximum discharge for the station and the model 
+#loop too find the time of maximum discharge for the station and the model
 for m,o,t in zip(model_stat, obs_stat,obs):
     k = []
     V = m
@@ -303,21 +303,21 @@ for m,o,t in zip(model_stat, obs_stat,obs):
     obs_max_time.append(k)
 
 
-#changing the format of the dates so they match 
+#changing the format of the dates so they match
 Time_max = []
 Model_max_time = []
 for i in range(len(model_max_time)):
     Time_max.append(datetime.datetime.strptime(model_max_time[i], '%Y-%m-%d-%H'))
     Model_max_time.append(Time_max[i].replace(tzinfo=pytz.UTC))
 
-#taking the difference between the two time of maximums 
+#taking the difference between the two time of maximums
 time_diff = []
 Time_diff = []
 for i in range(len(Model_max_time)):
     x = Model_max_time[i] - obs_max_time[i][0]
-    
-    #changing to seconds 
-    y = x.total_seconds() 
+
+    #changing to seconds
+    y = x.total_seconds()
     #change to hours to plot
     Time_diff.append(y/3600)
 
@@ -330,17 +330,17 @@ stations = ['Cono','Mar','Sun','Wil','Tio','Che','Una']
 #setting up figure
 fig = plt.figure(figsize=(10,3.5))
 ax = fig.add_subplot(111)
-#plotting time difference 
+#plotting time difference
 ax.plot(Time_diff, linestyle='--', color='k')
 ax.plot(Time_diff, 'o', color='k')
 #plotting zero line
-ax.plot(np.zeros(len(Time_diff)), color='b',linestyle='--',) 
+ax.plot(np.zeros(len(Time_diff)), color='b',linestyle='--',)
 #setting up labels
 ax.set_xticks(range(7))
 ax.set_xticklabels(stations, fontsize='large')
 ax.set_ylabel('Time Difference (hrs)', fontsize='large')
 
-fig.savefig('discharge_err_mouth_to_head.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_discharge_err_mouth_to_head.pdf', bbox_inches='tight', pad_inches=0)
 
 
 #defining a function to create an outline of the SRB
@@ -386,7 +386,7 @@ shpfile = shpreader.Reader(shpfilename)
 #This loop iterates over each river within the dataset
 for rec in shpfile.records():
     name = rec.attributes['name']
-    
+
     #This if statement plots both 'Susquehanna' and 'W. Branch Susquehanna' as blue rivers
     try :
         if 'Susquehanna' in name:
@@ -402,11 +402,11 @@ for x,xx,y,yy,l in zip(stat_lats,lats,stat_lons,lons,stat_lab):
     else:
         ax.scatter(ds_mos['lon'][yy],ds_mos['lat'][xx], marker='*', color='k', s=60)
     ax.scatter(y-360,x, marker='*', color=c, s=60)
-    ax.annotate(l, (y-359.96,x+.08), weight='bold', size=14) 
+    ax.annotate(l, (y-359.96,x+.08), weight='bold', size=14)
 #adding to plot
 ax.set_extent([-79,-74.5,39,43])
 ax.legend(loc='lower left', fontsize=13)
 susq_outline(ax)
 
-fig.savefig('map_usgs.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_map_usgs.pdf', bbox_inches='tight', pad_inches=0)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Creates Figure 2, Figure 8, Figure 9, Figure 10, Figure 16 
+# # Creates Figure 2, Figure 8, Figure 9, Figure 10, Figure 16
 
 # importing necessary libraries
 import numpy as np
@@ -25,7 +25,7 @@ softpath = sys.argv[2]
 #set to true to use shapefile to average over SRB set to false to use rough basin average
 SRB_AVG = True
 
-#ELM and MOSART variables are time averaged, so to shift the timeseries plots to fall at the middle 
+#ELM and MOSART variables are time averaged, so to shift the timeseries plots to fall at the middle
 #of the time period rather than the end of the time period set equal to True rather than False
 shift_ELM = True
 shift_MOSART = True
@@ -121,14 +121,14 @@ if shift_ELM == True:
     Time_elm = []
     for dt in datetime_range(start_elm, end_elm, {'hours':6}):
         Time_elm.append(dt)
-    
+
 if shift_MOSART == True:
     start_mos = datetime.datetime(1996,1,16,0)
     end_mos = datetime.datetime(1996,1,24,12)
     Time_mos = []
     for dt in datetime_range(start_mos, end_mos, {'hours':12}):
         Time_mos.append(dt)
-        
+
 #Changing the time data in the files if the shift is set to True
 ELM_runs = [ds_elm_Pre_Indi, ds_elm_Controli, ds_elm_Plus_1Ki, ds_elm_Plus_2Ki, ds_elm_Plus_3Ki,ds_elm_Plus_4Ki]
 MOS_runs = [ds_mos_Pre_Indi, ds_mos_Controli, ds_mos_Plus_1Ki, ds_mos_Plus_2Ki, ds_mos_Plus_3Ki,ds_mos_Plus_4Ki]
@@ -219,7 +219,7 @@ def rasterize(shapes, coords, latitude='lat', longitude='lon',
     return xr.DataArray(raster, coords=spatial_coords, dims=(latitude, longitude))
 
 def add_shape_coord_from_data_array(xr_da, shp_path, coord_name):
-    """ Create a new coord for the xr_da indicating whether or not it 
+    """ Create a new coord for the xr_da indicating whether or not it
          is inside the shapefile
 
         Creates a new coord - "coord_name" which will have integer values
@@ -228,7 +228,7 @@ def add_shape_coord_from_data_array(xr_da, shp_path, coord_name):
         Usage:
         -----
         precip_da = add_shape_coord_from_data_array(precip_da, "awash.shp", "awash")
-        awash_da = precip_da.where(precip_da.awash==0, other=np.nan) 
+        awash_da = precip_da.where(precip_da.awash==0, other=np.nan)
     """
     # 1. read in shapefile
     shp_gpd = gpd.read_file(shp_path)
@@ -240,7 +240,7 @@ def add_shape_coord_from_data_array(xr_da, shp_path, coord_name):
     shapes = [(shape, n) for n, shape in enumerate(shp_gpd.geometry)]
 
     # 3. create a new coord in the xr_da which will be set to the id in `shapes`
-    xr_da[coord_name] = rasterize(shapes, xr_da.coords, 
+    xr_da[coord_name] = rasterize(shapes, xr_da.coords,
                                longitude='lon', latitude='lat')
 
     return xr_da
@@ -386,7 +386,7 @@ if SRB_AVG == False:
     Time1 = Time_elm
     Time2 = Time_eam
 
-if SRB_AVG == True:    
+if SRB_AVG == True:
 
     q = ds_elm_Control['QRUNOFF']
     p = ds_eam_Control['PRECT']
@@ -399,7 +399,7 @@ if SRB_AVG == True:
     ds_mos_mean = ds_mos_Control.mean( dim=("lat","lon"), skipna=True )
     Time1 = Time_elm
     Time2 = Time_eam
-            
+
     ## Setup plot
     fig = plt.figure(figsize=(14,5))
     host1 = fig.add_subplot(111)
@@ -454,8 +454,8 @@ if SRB_AVG == True:
     yaxis2.tick_params('y', labelsize='large')
     yaxis3.tick_params('y', labelsize='large')
     fig.tight_layout(pad=3.0)
-    
-fig.savefig('event_hydrograph.pdf', bbox_inches='tight', pad_inches=0)
+
+fig.savefig('FIG_event_hydrograph.pdf', bbox_inches='tight', pad_inches=0)
 
 
 
@@ -534,7 +534,7 @@ if SRB_AVG == False:
     Time1 = Time_elm
     Time2 = Time_eam
 
-if SRB_AVG == True:    
+if SRB_AVG == True:
 
     q = ds_elm_Control['QRUNOFF']
     p = ds_eam_Control['PRECT']
@@ -547,7 +547,7 @@ if SRB_AVG == True:
     ds_mos_mean = ds_mos_Control.mean( dim=("lat","lon"), skipna=True )
     Time1 = Time_elm
     Time2 = Time_eam
-            
+
     ## Setup plot
     fig = plt.figure(figsize=(10.75,5))
     host1 = fig.add_subplot(111)
@@ -560,11 +560,11 @@ if SRB_AVG == True:
     host1.set_ylim([-5, 160])
     yaxis1.set_ylim([-5, 40])
     yaxis2.set_ylim([-25,25])
-    
+
     #host1.set_xlim([datetime.datetime(1996, 1, 15), datetime.datetime(1996, 1, 22)])
     #yaxis1.set_xlim([datetime.datetime(1996, 1, 15), datetime.datetime(1996, 1, 22)])
     #yaxis2.set_xlim([datetime.datetime(1996, 1, 15), datetime.datetime(1996, 1, 22)])
-    
+
     # Offset the right spine and show it
     yaxis2.spines["right"].set_position(("axes", 1.1))
     yaxis2.spines["right"].set_visible(True)
@@ -583,7 +583,7 @@ if SRB_AVG == True:
     color6 = 'darkred' # added for tmin
 
     ## Plot each line
-    
+
     p1, = host1.plot(Time1, s_mean, '-', color=color1,label="E3SM SWE", linewidth=2.7)
     p2, = host1.plot(swe_obs_time, swe_obs, '--', color=color1,label="UA SWE", linewidth=2)
     p10, = host1.plot(swe_obs2_time, swe_obs2, '-.', color=color1,label="ERA5 SWE", linewidth=2)
@@ -595,10 +595,10 @@ if SRB_AVG == True:
     p4, = yaxis2.plot(tmax_mod_time, tmax_mod, '-', color=color4,label="E3SM Max. Temp.", linewidth=2.7)
     p5, = yaxis2.plot(tmin_obs_time, tmin_obs, '--', color=color6,label="CPC Min. Temp.", linewidth=1.5)
     p6, = yaxis2.plot(tmin_mod_time, tmin_mod, '-', color=color6,label="E3SM Min. Temp.", linewidth=2.2)
-        
+
     p7, = yaxis1.plot(precip_obs_time, precip_obs, '--', color=color3,label="CPC Precip.", linewidth=1.5)
     p8, = yaxis1.plot(precip_mod_time, precip_mod, '-', color=color3,label="E3SM Precip.", linewidth=2.2)
-    
+
     p9, = yaxis2.plot(Time2, np.zeros(len(Time2)), color='silver',linestyle=':', label='0$^\circ$C line')
 
     ## Add legend, specify loc with 2x tuple of bottom left corner of box in 0->1 coords
@@ -611,10 +611,10 @@ if SRB_AVG == True:
     yaxis1.tick_params('y', labelsize='large')
     yaxis2.tick_params('y', labelsize='large')
     fig.tight_layout(pad=3.0)
-    
+
     #fig.xlim(xmin=datetime.datetime(1996, 1, 15),xmax=datetime.datetime(1996, 1, 22))
-    
-fig.savefig('comp_event_hydrograph.pdf', bbox_inches='tight', pad_inches=0)
+
+fig.savefig('FIG_comp_event_hydrograph.pdf', bbox_inches='tight', pad_inches=0)
 
 
 
@@ -674,7 +674,7 @@ for ax,vari,L in zip(axs,variables,letters):
     if vari == 'RIVER_DISCHARGE_OVER_LAND_LIQ':
         titl = 'River Discharge'
         label = 'River Discharge (m${^3}$ s$^{-1}$)'
-        
+
     #averaging the variables over the basin and plotting it
     for a,l,m,c,r in zip(EAM_runs,ELM_runs,MOS_runs,colors,runs):
         if SRB_AVG == False:
@@ -693,7 +693,7 @@ for ax,vari,L in zip(axs,variables,letters):
             if vari in mos_var:
                 v = m[vari].where(mask)
                 Time = Time_mos
-        else: 
+        else:
             if vari in elm_var:
                 v = l[vari]
                 Time = Time_elm
@@ -706,13 +706,13 @@ for ax,vari,L in zip(axs,variables,letters):
 
         v_mean = v.mean( dim=("lat","lon"), skipna=True )
         v_mean2 = v.mean(dim=("lat","lon", 'init'),skipna=True )
-        
+
         #calculating delta SWE if vari is H2OSNO
         if vari == 'H2OSNO':
                 max_snow.append(v_mean2.max())
                 min_snow.append(v_mean2.min())
                 delta_swe.append(v_mean2.max()-v_mean2.min())
-                
+
         #creating arrays for the 25th and 75th percentiles
         if shading == True:
             twenty_fifth = []
@@ -730,7 +730,7 @@ for ax,vari,L in zip(axs,variables,letters):
         if vari == 'H2OSNO':
             ax.set_ylim([-5,150])
         ax.plot(Time[0:], v_mean2[0:], '-', color=c, label=r)
-    
+
     #adding stuff to plot
     ax.margins(x=0)
     ax.text(.02,.97,L+' Basin Averaged ' + titl , fontsize='xx-large',transform=ax.transAxes,ha='left',va='top')#,bbox=props)
@@ -739,11 +739,11 @@ for ax,vari,L in zip(axs,variables,letters):
     ax.tick_params('x',direction='inout',length=18)
     ax.set_ylabel(label, fontsize='x-large')
     ax.grid(color='gainsboro',linewidth=.5)
-    
+
     #adding legend to precip subplot
     if vari == 'PRECT':
         ax.legend(loc=1, fontsize='xx-large')
-        
+
     #adding xtick labels to bottom subplot only
     if vari == 'RIVER_DISCHARGE_OVER_LAND_LIQ':
         ax.set_xticklabels(time3, fontsize='large')
@@ -752,7 +752,7 @@ for ax,vari,L in zip(axs,variables,letters):
     #making subplots touch (no space)
     plt.subplots_adjust(hspace=10**-6)
 
-fig.savefig('timeseries_counterfactuals.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_timeseries_counterfactuals.pdf', bbox_inches='tight', pad_inches=0)
 
 
 ##calculates statistcs (mean and/or delta) for each variable and obtains the spread of ensemble points
@@ -793,7 +793,7 @@ for va in varis:
                 & (ds_elm_Controli.coords["lon"] <= maxlon))
 
                 v = l[va].where(mask)
-                v_mean = v.mean( dim=("lat","lon"), skipna=True )  
+                v_mean = v.mean( dim=("lat","lon"), skipna=True )
                 if va == 'PRECT':
                     avg_pre.append(v_mean.mean())
                     for x in range(len(ds_elm_Controli['init'])):
@@ -806,8 +806,8 @@ for va in varis:
             else:
                 #averaging across basin (lat/lon)
                 v = l[va]
-                v_mean = v.mean( dim=("lat","lon"), skipna=True )  
-                
+                v_mean = v.mean( dim=("lat","lon"), skipna=True )
+
                 #calculating average of variable across the basin and init time
                 if va == 'PRECT':
                     avg_pre.append(v_mean.mean())
@@ -819,8 +819,8 @@ for va in varis:
                     avg_temp.append(v_mean.mean())
                     for x in range(len(ds_elm_Controli['init'])):
                         avg_tempi.append(v_mean[x,:].mean())
-    
-    #doing the same thing as above for elm variables 
+
+    #doing the same thing as above for elm variables
     if va in elm_v:
         for l in ELM_runs:
             if SRB_AVG ==False:
@@ -837,12 +837,12 @@ for va in varis:
                     sno_diff.append(v_mean2.max() - v_mean2.min())
                     for x in range(len(ds_elm_Controli['init'])):
                         sno_diffi.append(v_mean[x,:].max()-v_mean[x,:].min())
-        
+
                 if va == 'QRUNOFF':
                     avg_run.append(v_mean.mean())
                     for x in range(len(ds_elm_Controli['init'])):
                         avg_runi.append(v_mean[x,:].mean())
-                        
+
             else:
                 v = l[va]
                 v_mean = v.mean( dim=("lat","lon"), skipna=True )
@@ -860,7 +860,7 @@ for va in varis:
                         #calculating average runoff for each ensemble member
                         avg_runi.append(v_mean[x,:].mean())
 
-                        
+
     if va in mos_v:
         for l in MOS_runs:
             if SRB_AVG ==False:
@@ -876,7 +876,7 @@ for va in varis:
                     avg_dis.append(v_mean.mean())
                     for x in range(len(ds_mos_Controli['init'])):
                         avg_disi.append(v_mean[x,:].mean())
-                        
+
             else:
                 v = l[va]
                 v_mean = v.mean( dim=("lat","lon"), skipna=True )
@@ -907,7 +907,7 @@ yaxis4 = host1.twinx()
 
 # Offsetting the spines and and show it
 yaxis4.spines["left"].set_position(("axes", -0.1))
-yaxis4.spines["left"].set_visible(True)   
+yaxis4.spines["left"].set_visible(True)
 yaxis4.yaxis.set_label_position('left')
 yaxis4.yaxis.set_ticks_position('left')
 yaxis2.spines["right"].set_position(("axes", 1.1))
@@ -940,17 +940,17 @@ yaxis2.tick_params('y', labelsize='x-large')
 yaxis3.tick_params('y', labelsize='x-large')
 yaxis4.tick_params('y', labelsize='x-large')
 
-fig.savefig('avgchange_vs_warming_line.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_avgchange_vs_warming_line.pdf', bbox_inches='tight', pad_inches=0)
 
 
 # ## Figure 10
 
 #plots the spread of the ensemble for each of the variables
 
-#creating array in order to plot points below 
+#creating array in order to plot points below
 temps2 = np.repeat(temps,15)
 #array of non ensemble averaged variable stats
-init_dots=[avg_tempi,avg_prei,sno_diffi,avg_runi, avg_disi]  
+init_dots=[avg_tempi,avg_prei,sno_diffi,avg_runi, avg_disi]
 #array of ensemble averaged variable stats
 var = [avg_temp,avg_pre,sno_diff,avg_run, avg_dis]
 
@@ -979,11 +979,11 @@ for v,i,c,t,y,ax,L in zip(var,init_dots,colors,titl,ylab,axs,letters): #axs.rave
     for x in np.arange(0,90,15):
         twenty_fifth.append(np.nanpercentile(i[x:x+15],25))
         seventy_fifth.append(np.nanpercentile(i[x:x+15],75))
-        
+
     #plotting the shading
     ax.fill_between(temps, twenty_fifth[0:], seventy_fifth[0:], alpha=0.2, color=c)
     shading_titl = ' (25th-75th percentile shaded)'
-    
+
     #adding stuff to plot
     ax.set_ylabel(y, fontsize='x-large')
     ax.set_title(L+ ' '+t, fontsize='xx-large')
@@ -991,7 +991,7 @@ for v,i,c,t,y,ax,L in zip(var,init_dots,colors,titl,ylab,axs,letters): #axs.rave
     ax.set_xticklabels(xtik, fontsize='x-large');
     plt.tight_layout()
 
-fig.savefig('enschange_vs_warming_line.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_enschange_vs_warming_line.pdf', bbox_inches='tight', pad_inches=0)
 
 
 #calculating the ensemble averaged delta SWE by averaging across the delta swe for each ensemble member for a simulation
@@ -1029,13 +1029,13 @@ plt.legend(handles=lns,loc=1, fontsize='large' );
 props = dict(boxstyle='square', facecolor='white', edgecolor='k')
 ax.text(.01,.97,letters[0], fontsize='xx-large',transform=ax.transAxes,ha='left',va='top',bbox=props)
 
-fig.savefig('dSWE_avg_comp.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_dSWE_avg_comp.pdf', bbox_inches='tight', pad_inches=0)
 
 
 ##plots comparison of two averaging techniques for delta swe - parts b/c
 
 #setting up arrays of variables for loops
-init_dots=[sno_diffi,sno_diffi]  
+init_dots=[sno_diffi,sno_diffi]
 var = [sno_diff, snow_diff2]
 #arrays for labeling
 titl=['Delta SWE - Average 1','Delta SWE - Average 2']
@@ -1072,4 +1072,4 @@ for v,i,c,t,y,ax,j in zip(var,init_dots,colors,titl,ylab,axs,[1,2]): #axs.ravel(
     ax.text(.01,.97,letters[j], fontsize='xx-large',transform=ax.transAxes,ha='left',va='top',bbox=props)
     plt.tight_layout()
 
-fig.savefig('dSWE_avg_comp_2.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_dSWE_avg_comp_2.pdf', bbox_inches='tight', pad_inches=0)

@@ -558,7 +558,7 @@ for i,r,title in zip(range(6),[ds_mos_Pre_Ind,ds_mos_Control,ds_mos_Plus_1K,ds_m
     cb.ax.tick_params(labelsize='x-large')
     cb.set_label('m${^3}$ s$^{-1}$', fontsize='xx-large')
 
-fig.savefig('map_streamflow_warming_diff.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_map_streamflow_warming_diff.pdf', bbox_inches='tight', pad_inches=0)
 
 
 #Finding the time of the maximum and the maximum value of each variable for each simulation
@@ -935,15 +935,16 @@ for ii in range(0, 2):
       plt.subplots_adjust(hspace=10**-6)
 
   if ii == 0:
-    fig.savefig('timing_shifts_line.pdf', bbox_inches='tight', pad_inches=0)
+    fig.savefig('FIG_timing_shifts_line.pdf', bbox_inches='tight', pad_inches=0)
   else:
-    fig.savefig('orig_avg_comp_timing.pdf', bbox_inches='tight', pad_inches=0)
+    fig.savefig('FIG_orig_avg_comp_timing.pdf', bbox_inches='tight', pad_inches=0)
 
 
 # ## Figure 11
 
 ##plots 4 variables spatially for the different simulations
 
+print("generating figure 11")
 #setting up figure
 fig, axs = plt.subplots(6,4,subplot_kw={'projection': ccrs.PlateCarree()},figsize=(17,21),constrained_layout=True)
 #creating titles
@@ -1018,13 +1019,14 @@ cb3 = plt.colorbar(rm_plot, ax=[axs[5,3]],shrink=.95,aspect=17,location='bottom'
 cb3.ax.tick_params(labelsize='x-large')
 cb3.ax.set_title('mm day$^{-1}$', fontsize='xx-large');
 
-fig.savefig('spatial_maps_bulk_quants.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_spatial_maps_bulk_quants.pdf', bbox_inches='tight', pad_inches=0)
 
 
 # ## Figure 18
 
 ##plots initial SWE values across basin for different simulations
 
+print("generating figure 18")
 #setting up figure
 fig, axs = plt.subplots(1,6,subplot_kw={'projection': ccrs.PlateCarree()},figsize=(20,4),constrained_layout=True)
 #creating labels
@@ -1054,13 +1056,14 @@ for ax,l,title,L in zip(axs,[ds_elm_Pre_Ind,ds_elm_Control,ds_elm_Plus_1K,ds_elm
         cb1.ax.tick_params(labelsize='x-large')
         cb1.set_label('mm', fontsize='xx-large')
 
-fig.savefig('spatial_maps_maxSWE.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_spatial_maps_maxSWE.pdf', bbox_inches='tight', pad_inches=0)
 
 
 # ## Figure 17
 
 ##Plotting comparison of Low res, high res, and reanalysis
 
+print("generating figure 17")
 #creating own colorbar
 colors = ['w','#fde725','#a0da39','#4ac16d','#1fa187','#277f8e','#365c8d','#46327e','#440154' ]
 #setting up plot
@@ -1130,13 +1133,13 @@ for i,v,vari in zip(range(2),['QRUNOFF','RIVER_DISCHARGE_OVER_LAND_LIQ'],['Runof
     cb.ax.tick_params(labelsize='large')
     cb.set_label('mm day$^{-1}$', fontsize='x-large')
 
-fig.savefig('spatial_maps_resolution.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_spatial_maps_resolution.pdf', bbox_inches='tight', pad_inches=0)
 
 
 # ## Figure 14
 
 ##compares timeseries of the 1996 event for the high res and low res model runs
-
+print("generating figure 14")
 #taking average of the variable over the basin
 if SRB_AVG == False:
     mask = (
@@ -1211,4 +1214,4 @@ if SRB_AVG == True:
     yaxis2.tick_params('y', labelsize='large')
     fig.tight_layout(pad=3.0)
 
-fig.savefig('hydrograph_resolution.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_hydrograph_resolution.pdf', bbox_inches='tight', pad_inches=0)

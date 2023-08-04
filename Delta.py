@@ -85,4 +85,4 @@ for ax,i,t,L in zip(axs,[t2,t1,-1],['2081 January Surface Temperature (K)','1996
     cb.ax.tick_params(labelsize='xx-large')
     #cb.ax.set_title('K', fontsize='xx-large')
 
-fig.savefig('delta_example.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_delta_example.pdf', bbox_inches='tight', pad_inches=0)

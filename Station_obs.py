@@ -12,7 +12,7 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import cartopy.io.shapereader as shpreader
 import xesmf as xe
-import datetime 
+import datetime
 from datetime import timedelta
 import metpy
 import metpy.calc as mpcalc
@@ -58,19 +58,19 @@ end = datetime.date(1996,1,24)
 time = []
 for dt in datetime_range(start, end, {'days':1}):
     time.append(dt)
-    
+
 #changing time array in Month Day format for the xtick labels
 time_s = []
 for x in range(len(time)):
     time_s.append(time[x].strftime('%b %d'))
-    
+
 #creating time arrays for the elm and eam files (changing string to datetime)
 time_m = ds_eam['time'].values
 time_m = time_m.tolist()
 Time_eam = []
 for i in range(len(ds_eam['time'])):
     Time_eam.append(datetime.datetime.strptime(time_m[i], '%Y-%m-%d-%H'))
-    
+
 time_m2 = ds_elm['time'].values
 time_m2 = time_m2.tolist()
 Time_elm = []
@@ -137,7 +137,7 @@ Lat = ds_eam.coords['lat']
 Lon = ds_eam.coords['lon']
 
 # creating function to find the closest value to a certain lat or lon
-def closest(Lat, K): 
+def closest(Lat, K):
       return Lat[min(range(len(Lat)), key = lambda i: abs(Lat[i]-K))]
 
 #station lat on lons
@@ -152,7 +152,7 @@ lons = []
 temps = []
 rh = []
 wnd_spd = []
-dwpt = [] 
+dwpt = []
 
 #loading and creating the same things for low res data if set to true
 if Low_Res == True:
@@ -163,8 +163,8 @@ if Low_Res == True:
     temps_lr = []
     rh_lr = []
     wnd_spd_lr = []
-    dwpt_lr = [] 
-    
+    dwpt_lr = []
+
 #finding the lats and lons from the model that are closest to the stations and saving them in an array
 for x,y,yl in zip(stat_lats, stat_lons, stat_lons_lr):
     #finding closest lats
@@ -173,7 +173,7 @@ for x,y,yl in zip(stat_lats, stat_lons, stat_lons_lr):
     #finding closest lons
     stat_lonn = np.where(Lon == closest(Lon,y))
     lons.append(stat_lonn)
-    
+
     #getting variable data at the above lats and lons
     M_temp = ds_eam['TREFHT'][:,stat_latn[0],stat_lonn[0]]
     M_temp = M_temp.squeeze()
@@ -181,18 +181,18 @@ for x,y,yl in zip(stat_lats, stat_lons, stat_lons_lr):
     Relhum = Relhum.squeeze()
     M_wsd = ds_eam['WSPDSRFAV'][:,stat_latn[0],stat_lonn[0]]
     M_wsp = M_wsd.squeeze()
-    
+
     #adding unit data
     temper = np.array(M_temp) * units.degC
     rel_h = np.array(Relhum) * units.percent
     dewpoint = mpcalc.dewpoint_from_relative_humidity(temper, rel_h)
-    
+
     #appending the data to the empty arrays
     rh.append(Relhum)
     temps.append(M_temp)
     wnd_spd.append(M_wsp)
     dwpt.append(dewpoint)
-    
+
     #doing the same things for the low res data if true
     if Low_Res == True:
         stat_latl = np.where(Lat_lr == closest(Lat_lr,x))
@@ -212,7 +212,7 @@ for x,y,yl in zip(stat_lats, stat_lons, stat_lons_lr):
         temps_lr.append(L_temp)
         wnd_spd_lr.append(L_wsp)
         dwpt_lr.append(dewpoint_lr)
-        
+
 #assigning names to the model data with the associated station name and variable
 Mavp_temp,Mbgm_temp,Mcxy_temp,Mipt_temp,Munv_temp = temps
 Mavp_rh,Mbgm_rh,Mcxy_rh,Mipt_rh,Munv_rh = rh
@@ -233,7 +233,7 @@ Lat = ds_eam.coords['lat']
 Lon = ds_eam.coords['lon']
 
 # creating function to find the closest value to a certain lat or lon
-def closest(Lat, K): 
+def closest(Lat, K):
       return Lat[min(range(len(Lat)), key = lambda i: abs(Lat[i]-K))]
 
 #station lat on lons
@@ -254,7 +254,7 @@ for x,y in zip(stat_lats, stat_lons):
     lats.append(stat_latn)
     stat_lonn = np.where(Lon == closest(Lon,y))
     lons.append(stat_lonn)
-    
+
     R_temp = TREFHT[:,stat_latn[0],stat_lonn[0]]
     R_temp = R_temp.squeeze()
     temper = np.array(R_temp) * units.degC
@@ -385,7 +385,7 @@ if Low_Res == True:
             ax.set_ylabel(y)
             ax.legend()
             plt.tight_layout()
-            
+
 #plotting model and reanalysis
 else:
     #looping through model/reanalysis data at the closest model/rean point to station
@@ -405,7 +405,7 @@ else:
         rean_dp = Rd
 
         fig, axs = plt.subplots(4,1,figsize=(10,14))
-        for ax,s_data, m_data,r_data,S, titl,y,L in zip(axs,['tmpf','relh','sknt','dwpt'],[model_temp, model_rh, model_wsp, model_dp], 
+        for ax,s_data, m_data,r_data,S, titl,y,L in zip(axs,['tmpf','relh','sknt','dwpt'],[model_temp, model_rh, model_wsp, model_dp],
                                                       [rean_temp, rean_rh, rean_wsp, rean_dp],station, title,ylabel,letters):
             #interpolating data so the line is smooth
             x = S[s_data].interpolate(method='linear')
@@ -429,9 +429,9 @@ else:
                 ax.legend(loc=4,fontsize='large', ncol=3)
                 ax.text(0.01,.87,S['station'][S.index[0]], transform=ax.transAxes,fontweight='bold', fontsize=27)
                 #CMZ put freezing line on for review
-                ax.axhline(y = 0.0, color = 'silver', linestyle = '--')                
+                ax.axhline(y = 0.0, color = 'silver', linestyle = '--')
             plt.tight_layout()
-        
+
         thisStation=S['station'][S.index[0]]
         fig.savefig('FIG_timeseries_'+thisStation+'.pdf', bbox_inches='tight', pad_inches=0)
 
@@ -448,7 +448,7 @@ for t in range(len(Time_eam)):
 temps2 = []
 rh2 = []
 wnd_spd2 = []
-dwpt2 = [] 
+dwpt2 = []
 #looping through station and model data
 for s,t,r,w,d in zip([avp_mt,bgm_mt,ipt_mt,unv_mt,cxy_mt], [Mavp_temp,Mbgm_temp,Mipt_temp,Munv_temp,Mcxy_temp],
                      [Mavp_rh,Mbgm_rh,Mipt_rh,Munv_rh,Mcxy_rh],
@@ -502,12 +502,12 @@ for x in range(len(Mavp_dwpt2)):
 
 for x in range(len(Mbgm_dwpt2)):
     y = Mbgm_dwpt2[x].magnitude
-    MBgm_dwpt2.append(y)  
-    
+    MBgm_dwpt2.append(y)
+
 for x in range(len(Mipt_dwpt2)):
     y = Mipt_dwpt2[x].magnitude
     MIpt_dwpt2.append(y)
-    
+
 for x in range(len(Munv_dwpt2)):
     y = Munv_dwpt2[x].magnitude
     MUnv_dwpt2.append(y)
@@ -531,24 +531,24 @@ for s,t,r,w,d,ss in zip([avp_mt,bgm_mt,ipt_mt,unv_mt,cxy_mt], [Mavp_temp2,Mbgm_t
     model_dp  = d
 
     for ax, s_data, m_data,S in zip(axs,['tmpf','relh','sknt', 'dwpt'],[model_temp, model_rh, model_wsp, model_dp], station):
-    
+
         #appending that station name before the data
         if s_data == 'tmpf':
             Bias.append(str(ss))
             R_val.append(str(ss))
-        
+
         ### ARP (interpolate)
         #x = S[s_data].interpolate(method='linear')
         #calculating r and p value for data
         #r_val,p_val = stats.pearsonr(x, m_data)
-        
+
         ### CMZ (don't interpolate)
         c = np.vstack([S[s_data],m_data])
         d = c[:,~np.any(np.isnan(c), axis=0)]
         r_val,p_val = stats.pearsonr(d[0], d[1])
-        
+
         R_val.append(round(r_val,5))
-        
+
         #calculating bias
         z = m_data-S[s_data]
         Bias.append(round(np.mean(z),5))
@@ -568,7 +568,7 @@ f = open('model_bias.csv','w')
 g =  open('model_correlation.csv','w')
 vari_b = ['Bias','Temp', 'RH', 'Wind Speed', 'Dew Point']
 vari_c = ['Corellation','Temp', 'RH', 'Wind Speed', 'Dew Point']
-        
+
 #only need this when first creating. the files
 append_list_as_row('model_bias.csv',vari_b)
 append_list_as_row('model_correlation.csv',vari_c)
@@ -622,7 +622,7 @@ shpfile = shpreader.Reader(shpfilename)
 #This loop iterates over each river within the dataset
 for rec in shpfile.records():
     name = rec.attributes['name']
-    
+
     #This if statement plots both 'Susquehanna' and 'W. Branch Susquehanna' as blue rivers
     try :
         if 'Susquehanna' in name:
@@ -641,7 +641,7 @@ ax.scatter(-77.85,40.85, marker='^', color=c, s=60)
 
 #setting spatial extent of plot
 ax.set_extent([-81.5,-73,38,44.5])
-#choosing labels for each point 
+#choosing labels for each point
 labels= [3,5,1,2,4]
 stat_label = ['Wilkes-Barre/Scranton (AVP)','Binghamton (BGM)','Harrisburg (CXY)', 'Williamsport (IPT)',
               'State College (UNV)']
@@ -652,11 +652,11 @@ for x,l,s in zip(range(5),labels,stat_label):
         ax.scatter(ds_eam['lon'][lons[x]],ds_eam['lat'][lats[x]], marker='^', color=cc, s=60)
         #putting number label next to point
         ax.annotate(l, (ds_eam['lon'][lons[x]]-.09,ds_eam['lat'][lats[x]]+.09),weight='bold', size=14, label=s)
-    
+
     #making it to where only the last point is included in legend
     if x == 4:
         ax.scatter(ds_eam['lon'][lons[x]],ds_eam['lat'][lats[x]], marker='^', color=cc, s=60, label='Nearest Model Point')
         ax.annotate(l, (ds_eam['lon'][lons[x]]-.09,ds_eam['lat'][lats[x]]+.09), weight='bold', size=14)
 ax.legend(loc=2, fontsize=13)
 
-fig.savefig('map_asos.pdf', bbox_inches='tight', pad_inches=0)
+fig.savefig('FIG_map_asos.pdf', bbox_inches='tight', pad_inches=0)
