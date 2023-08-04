@@ -4,8 +4,8 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/contrib/time_axis_labels.ncl"
 begin
 
 dbzthresh=0.1
-minLat=  40.
-maxLat=  43.
+minLat=  40.5
+maxLat=  42.
 minLon= -79.2
 maxLon= -74.8
 ; 18-21
@@ -98,7 +98,7 @@ npanels = npanels+1
 ; create color plot
 ;=============================================
 
-wks  = gsn_open_wks ("pdf", "FIG_preciphov" )           ; send graphics to PNG file
+wks  = gsn_open_wks ("x11", "FIG_preciphov" )           ; send graphics to PNG file
 
 print("npanels: "+npanels)
 
@@ -247,9 +247,14 @@ plot(2) = gsn_csm_hov(wks, dim_avg_n_Wrap(hov_data_cpc(:,{minLat:maxLat},{360.+m
 resP                     = True                ; modify the panel plot
 ;resP@gsnPanelMainString = "Hovmoller"
 
+letters=(/"a.","b.","c.","d.","e.","f.","g.","h.","i.","j.","k.","l.","m.","n.","o.","p.","q.","r.", "s.", "t.","u.","v.","w.","x.","y.","z.","aa.","bb."/)
+resP@gsnPanelFigureStringsFontHeightF = 0.02
+resP@gsnPanelFigureStrings=letters
+resP@amJust           = "TopLeft"
+
 resP@pmLabelBarWidthF     = 0.8
 resP@gsnPanelLabelBar    = True                ; add common colorbar
-resP@lbLabelFontHeightF  = 0.012               ; make labels smaller
+resP@lbLabelFontHeightF  = 0.01               ; make labels smaller
 
 gsn_panel(wks,plot,(/1,npanels/),resP)               ; now draw as one plot
 
