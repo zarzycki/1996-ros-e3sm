@@ -1,21 +1,23 @@
 begin
 
+BASEDATADIR="/storage/home/cmz5202/group/arp5873_NEW/"
+
 stday=16
 enday=21
 
-ds1 = addfile("PRISM_daily_SRB_prcp_1996.nc","r")
+ds1 = addfile(BASEDATADIR+"/obs_PRISM/PRISM_daily_SRB_prcp_1996.nc","r")
 start_date=cd_inv_calendar(1996,01,stday,00,00,00,ds1->time@units, 0)
 end_date=cd_inv_calendar(1996,01,enday,00,00,00,ds1->time@units, 0)
 precip_ds1=ds1->PPT({start_date:end_date},:,:)
 printVarSummary(precip_ds1)
 
-ds2 = addfile("livneh_daily_SRB_prcp_1996.nc","r")
+ds2 = addfile(BASEDATADIR+"/obs_L15/livneh_daily_SRB_prcp_1996.nc","r")
 start_date=cd_inv_calendar(1996,01,stday,00,00,00,ds2->time@units, 0)
 end_date=cd_inv_calendar(1996,01,enday,00,00,00,ds2->time@units, 0)
 precip_ds2=ds2->prec({start_date:end_date},:,:)
 printVarSummary(precip_ds2)
 
-ds3 = addfile("/Users/cmz5202/NetCDF/arp5873_NEW/rean_ERA5/e5.oper.fc.sfc.meanflux.235_055_mtpr.ll025sc.1996010106_1996020106.nc","r")
+ds3 = addfile(BASEDATADIR+"/rean_ERA5/e5.oper.fc.sfc.meanflux.235_055_mtpr.ll025sc.1996010106_1996020106.nc","r")
 start_date=cd_inv_calendar(1996,01,stday,00,00,00,ds3->time@units, 0)
 end_date=cd_inv_calendar(1996,01,enday,00,00,00,ds3->time@units, 0)
 precip_ds3=ds3->MTPR({start_date:end_date},::-1,:)
@@ -24,7 +26,7 @@ precip_ds3!1="lat"
 precip_ds3!2="lon"
 printVarSummary(precip_ds3)
 
-ds4 = addfile("E3SM_h1.nc","r")
+ds4 = addfile(BASEDATADIR+"/model_saved/cut_e3sm_h1_for_eval.nc","r")
 start_date=cd_inv_calendar(1996,01,stday,00,00,00,ds4->time@units, 0)
 end_date=cd_inv_calendar(1996,01,enday,00,00,00,ds4->time@units, 0)
 precip_ds4=ds4->PRECT_indiv(:,{start_date:end_date},:,:)
@@ -34,19 +36,19 @@ precip_ds4:=precip_ds4(7,:,:,:)
 precip_ds4=precip_ds4*86400*1000/8
 printVarSummary(precip_ds4)
 
-ds5 = addfile("daymet_v4_daily_SRB_prcp_1996_RLL.nc","r")
+ds5 = addfile(BASEDATADIR+"/obs_daymet/daymet_v4_daily_SRB_prcp_1996_RLL.nc","r")
 start_date=cd_inv_calendar(1996,01,stday,00,00,00,ds5->time@units, 0)
 end_date=cd_inv_calendar(1996,01,enday,00,00,00,ds5->time@units, 0)
 precip_ds5=ds5->prcp({start_date:end_date},:,:)
 printVarSummary(precip_ds5)
 
-ds6 = addfile("/Users/cmz5202/NetCDF/arp5873_NEW/obs_cpc/precip.1996.nc","r")
+ds6 = addfile(BASEDATADIR+"/obs_cpc/precip.1996.nc","r")
 start_date=cd_inv_calendar(1996,01,stday,00,00,00,ds6->time@units, 0)
 end_date=cd_inv_calendar(1996,01,enday,00,00,00,ds6->time@units, 0)
 precip_ds6=ds6->precip({start_date:end_date},::-1,:)
 printVarSummary(precip_ds6)
 
-ds7 = addfile("/Users/cmz5202/NetCDF/arp5873_NEW/rean_JRA/JRA.h1.1996.PRECT.nc","r")
+ds7 = addfile(BASEDATADIR+"/rean_JRA/JRA.h1.1996.PRECT.nc","r")
 start_date=cd_inv_calendar(1996,01,stday,00,00,00,ds7->time@units, 0)
 end_date=cd_inv_calendar(1996,01,enday,00,00,00,ds7->time@units, 0)
 precip_ds7=ds7->PRECT({start_date:end_date},:,:)
