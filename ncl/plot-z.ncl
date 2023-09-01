@@ -393,6 +393,12 @@ panres@gsnPanelLabelBar    = True             ; turn on the panel label bar
 ;panres@gsnPaperOrientation = "portrait"       ; make sure the paper orientation is set to portrait
 ;panres@lbLabelStride       = 2                ; set the label bar label stride to 2
 
+panres@lbTitleString = "dBZ"
+panres@lbTitleExtentF = 0.02
+panres@lbTitlePosition  = "Right"
+panres@lbTitleFontHeightF= 0.011
+panres@lbTitleDirection = "Across"
+
 panres@amJust           = "TopLeft"
 panres@gsnPanelFigureStringsFontHeightF = 0.014
 panres@gsnPanelFigureStrings= (/"a.","b.","c.","d.","e.","f.","g.","h.","i.","j."/)
