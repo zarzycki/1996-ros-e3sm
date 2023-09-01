@@ -98,7 +98,7 @@ npanels = npanels+1
 ; create color plot
 ;=============================================
 
-wks  = gsn_open_wks ("x11", "FIG_preciphov" )           ; send graphics to PNG file
+wks  = gsn_open_wks ("pdf", "FIG_preciphov_"+toint(minLat)+"N_"+toint(maxLat)+"N" )           ; send graphics to PNG file
 
 print("npanels: "+npanels)
 
@@ -196,7 +196,7 @@ if (turn_off_internal_ylabels) then
 end if
 plot(5) = gsn_csm_hov(wks, dim_avg_n_Wrap(hov_data_jra(:,{minLat:maxLat},{360.+minLon:360.+maxLon}),1), res_jra)
 
-res@gsnCenterString="GAGE"
+res@gsnCenterString="HPD"
 res_obs = res
 res_obs_tick = restick
 res_obs_tick@ttmMajorStride = 24
@@ -254,7 +254,13 @@ resP@amJust           = "TopLeft"
 
 resP@pmLabelBarWidthF     = 0.8
 resP@gsnPanelLabelBar    = True                ; add common colorbar
-resP@lbLabelFontHeightF  = 0.01               ; make labels smaller
+resP@lbLabelFontHeightF  = 0.015               ; make labels smaller
+
+resP@lbTitleString = "dBZ"
+resP@lbTitleExtentF = 0.02
+resP@lbTitlePosition  = "Right"              ; title position
+resP@lbTitleFontHeightF= 0.012             ; make title smaller
+resP@lbTitleDirection = "Across"             ; title direction
 
 gsn_panel(wks,plot,(/1,npanels/),resP)               ; now draw as one plot
 
