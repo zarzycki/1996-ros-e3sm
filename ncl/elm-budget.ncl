@@ -137,8 +137,8 @@ begin
 
 
 
-    system("mkdir -p ./img/")
-    wks   = gsn_open_wks (out_type, "./img/FIG_elm_timeseries_BUDGET")        ; send graphics to PNG file
+    ;system("mkdir -p ./")
+    wks   = gsn_open_wks (out_type, "./FIG_elm_timeseries_BUDGET")        ; send graphics to PNG file
 
     plot = new(9,graphic)
 
