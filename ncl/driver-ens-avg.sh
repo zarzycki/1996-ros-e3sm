@@ -1,27 +1,27 @@
 #!/bin/bash -l
 
 ##### ICDS ROAR
-##PBS -l nodes=1:ppn=6:himem
-##PBS -l pmem=18gb
-##PBS -l walltime=11:00:00
-##PBS -A open
-##PBS -j oe
-##PBS -N abby_ncl
+#PBS -l nodes=1:ppn=6:himem
+#PBS -l pmem=18gb
+#PBS -l walltime=11:00:00
+#PBS -A open
+#PBS -j oe
+#PBS -N abby_ncl
 
 ##### Cheyenne
-#PBS -N arp-ens-avg
-#PBS -A P93300642
-#PBS -l select=1:ncpus=6:mem=100GB
-#PBS -l walltime=10:00:00
-#PBS -q casper
-#PBS -j oe
+##PBS -N arp-ens-avg
+##PBS -A P93300642
+##PBS -l select=1:ncpus=6:mem=100GB
+##PBS -l walltime=10:00:00
+##PBS -q casper
+##PBS -j oe
 
 source /glade/u/home/zarzycki/.bashrc
 
 NUMCORES=6
 PROCESS_DATA="false"   # true or false
-BASEPATH=/glade/u/home/zarzycki/scratch/arp5873_NEW/
-SOFTPATH=/glade/u/home/zarzycki/work/sw/1996-ros-e3sm/
+BASEPATH=/storage/home/cmz5202/group/arp5873_NEW/
+SOFTPATH=/storage/home/cmz5202/work/sw/1996-ros-e3sm
 
 conda activate pettett
 
