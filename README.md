@@ -66,4 +66,6 @@ qsubcasper batch-python.sh
 
 NOTE: Set `PROCESS_DATA` in each script to "false" if `proc_arp` and `ens_means` folders are already generated in ${BASEPATH}. Generating the intermediate files takes a few hours on Cheyenne.
 
+NOTE: The retry loop in batch-python.sh is due to occasional fails where scripts return `terminate called after throwing an instance of 'kiwi::InternalSolverError'`. This appears to happen `under the hood' with certain plotting libraries. The fail appears to be random (perhaps some convergence issue), so retrying up to three times seems sufficient. 
+
 NOTE: `qsubcasper driver-elm.sh` in the NCL directory generates non-required ELM difference plots.
