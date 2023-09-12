@@ -4,10 +4,10 @@
 
 ### Extract prerequisites
 
-This directory points to the data downloaded from DataCommons.
+This directory points to the data downloaded (and unzipped) from DataCommons.
 
 ```
-/glade/u/home/zarzycki/scratch/arp5873_NEW/
+/glade/u/home/zarzycki/scratch/arp5873/
 ```
 
 This points to the source code pulled from Zenodo (or cloned from Github)
@@ -30,11 +30,11 @@ NOTE: This set of packages seems to not work with arm64 (e.g., M1 Mac). This is 
 
 ```
 ### Cheyenne
-BASEPATH=/glade/u/home/zarzycki/scratch/arp5873_NEW/
+BASEPATH=/glade/u/home/zarzycki/scratch/arp5873/
 SOFTPATH=/glade/u/home/zarzycki/work/sw/1996-ros-e3sm/
 
 ### ICDS
-BASEPATH=/storage/home/cmz5202/group/arp5873_NEW/
+BASEPATH=/storage/home/cmz5202/group/arp5873/
 SOFTPATH=/storage/home/cmz5202/work/sw/1996-ros-e3sm
 ```
 
