@@ -26,7 +26,7 @@ precip_ds3!1="lat"
 precip_ds3!2="lon"
 printVarSummary(precip_ds3)
 
-ds4 = addfile(BASEDATADIR+"/model_saved/cut_e3sm_h1_for_eval.nc","r")
+ds4 = addfile(BASEDATADIR+"/E3SM/model_saved/cut_e3sm_h1_for_eval.nc","r")
 start_date=cd_inv_calendar(1996,01,stday,00,00,00,ds4->time@units, 0)
 end_date=cd_inv_calendar(1996,01,enday,00,00,00,ds4->time@units, 0)
 precip_ds4=ds4->PRECT_indiv(:,{start_date:end_date},:,:)
