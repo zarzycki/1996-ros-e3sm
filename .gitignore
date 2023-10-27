@@ -1,3 +1,6 @@
+*.sh.o*
+*.sh.e*
+timing.txt
 arp-py-process.o*
 *png
 arp-1996-analysis.o*
