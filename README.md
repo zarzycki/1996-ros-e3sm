@@ -4,13 +4,13 @@
 
 ### Extract prerequisites
 
-This directory points to the data downloaded (and unzipped) from DataCommons.
+The directory `BASEPATH` points to the data downloaded (and unzipped) from DataCommons.
 
 ```
 /glade/u/home/zarzycki/scratch/arp5873/
 ```
 
-This points to the source code pulled from Zenodo (or cloned from Github)
+The `SOFTPATH` directory points to the source code pulled from Zenodo (or cloned from Github)
 
 ```
 /glade/u/home/zarzycki/work/sw/1996-ros-e3sm/
@@ -48,8 +48,8 @@ SOFTPATH=/storage/home/cmz5202/work/sw/1996-ros-e3sm
 
 ```
 cd ${SOFTPATH}/shapes/
-unzip srb.zip 
-unzip ne_10m_rivers_lake_centerlines.zip 
+unzip srb.zip
+unzip ne_10m_rivers_lake_centerlines.zip
 ```
 
 ### Generate processed datasets and perform associated analyses
@@ -64,8 +64,8 @@ cd ${SOFTPATH}
 qsubcasper batch-python.sh
 ```
 
-NOTE: Set `PROCESS_DATA` in each script to "false" if `proc_arp` and `ens_means` folders are already generated in ${BASEPATH}. Generating the intermediate files takes a few hours on Cheyenne.
+NOTE: Set `PROCESS_DATA` in each script to "false" if `proc_arp` and `ens_means` folders are already generated in ${BASEPATH}. Generating the intermediate files takes a few hours.
 
-NOTE: The retry loop in batch-python.sh is due to occasional fails where scripts return `terminate called after throwing an instance of 'kiwi::InternalSolverError'`. This appears to happen `under the hood' with certain plotting libraries. The fail appears to be random (perhaps some convergence issue), so retrying up to three times seems sufficient. 
+NOTE: The retry loop in batch-python.sh is due to occasional fails where scripts return `terminate called after throwing an instance of 'kiwi::InternalSolverError'`. This appears to happen `under the hood' with certain plotting libraries. The fail appears to be random (perhaps some convergence issue), so retrying up to three times seems sufficient.
 
 NOTE: `qsubcasper driver-elm.sh` in the NCL directory generates non-required ELM difference plots.
